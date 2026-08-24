@@ -1,6 +1,48 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- الصق الكود هنا مباشرة في البداية -->
+    <script>
+        const isMaintenanceMode = true; 
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasSecretAccess = urlParams.get('admin') === 'mysecret123'; 
+
+        if (isMaintenanceMode && !hasSecretAccess) {
+            document.write(`
+                <!DOCTYPE html>
+                <html lang="ar" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>الموقع تحت الصيانة</title>
+                    <style>
+                        body { font-family: Tahoma, sans-serif; background: #f4f4f9; text-align: center; padding-top: 100px; color: #333; }
+                        .box { background: white; max-width: 500px; margin: auto; padding: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                        h1 { color: #d9534f; }
+                    </style>
+                </head>
+                <body>
+                    <div class="box">
+                        <h1>الموقع تحت الصيانة حالياً 🛠️</h1>
+                        <p>نقوم بإجراء بعض التحديثات البرمجية، سنعود قريباً.</p>
+                    </div>
+                </body>
+                </html>
+            `);
+        }
+    </script>
+    <!-- نهاية كود الصيانة -->
+
+    <meta charset="UTF-8">
+    <title>موقعي</title>
+    <!-- باقي أكواد موقعك وتصميمك هنا -->
+</head>
+<body>
+    <!-- محتوى موقعك الأصلي هنا -->
+</body>
+</html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>عالمنا الخاص ❤️</title>
