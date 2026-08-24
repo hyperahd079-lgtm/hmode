@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-</html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>عالمنا الخاص ❤️</title>
@@ -114,6 +113,13 @@
             overflow: hidden; 
         }
         
+        /* تعديل هنا ليبقى التفاعل ممكناً حتى عند اطفاء النور */
+        body:not(.main-lamp-on) .page-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+
         .top-row-grid { display: grid; grid-template-columns: 1.1fr 0.8fr 1.1fr; gap: 6px; width: 100%; margin-top: 2px; position: relative; z-index: 10; flex-shrink: 0; }
         
         .counter-card { background: rgba(255, 182, 193, 0.05); border: 1px solid rgba(255, 182, 193, 0.15); padding: 6px 4px; border-radius: 12px; backdrop-filter: blur(10px); text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -134,6 +140,18 @@
             cursor: pointer; 
             display: none; 
             box-shadow: 0 0 5px rgba(243, 156, 18, 0.4);
+        }
+
+        .game-header-btn {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: #fff;
+            border: none;
+            padding: 1px 5px;
+            border-radius: 6px;
+            font-size: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(155, 89, 182, 0.4);
         }
 
         .live-clock-box { font-size: 9px; color: #dda0dd; margin-bottom: 2px; direction: ltr; }
@@ -175,6 +193,30 @@
         .history-item { background: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 10px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid #ff416c; }
         .history-user { font-weight: bold; color: #ffb6c1; }
         .history-time { font-size: 10px; color: #dda0dd; direction: ltr; }
+
+        /* تصميم لعبة مطابقة الصور (الذاكرة) */
+        .memory-game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .memory-card {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 10px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .memory-card.flipped, .memory-card.matched {
+            background: rgba(255, 105, 180, 0.25);
+            transform: scale(0.95);
+        }
 
         .chat-container { 
             width: 100%; 
@@ -310,7 +352,6 @@
         .admin-opt-btn:hover { background: rgba(255, 105, 180, 0.2); }
 
         body.main-lamp-on #mainLampShade { background: linear-gradient(135deg, #ffb6c1, #ff69b4, #e74c3c); box-shadow: 0 0 30px #ff69b4; }
-        body.main-lamp-on .page-content { opacity: 1; visibility: visible; transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -367,7 +408,8 @@
                     <div class="counter-card-header">
                         <h2 id="typingTitle">أهلاً بك ❤️</h2>
                         <div class="header-actions">
-                            <button class="admin-header-btn" id="adminHeaderBtn">صلاحيات أحمد ⚙️</button>
+                            <button class="game-header-btn" onclick="openMemoryGame()">🎮 لعبة</button>
+                            <button class="admin-header-btn" id="adminHeaderBtn">صلاحيات ⚙️</button>
                             <button class="mini-logout-btn" onclick="handleLogout()">خروج</button>
                         </div>
                     </div>
@@ -441,6 +483,18 @@
             <div class="history-list" id="historyList">
                 <div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل السجل...</div>
             </div>
+        </div>
+    </div>
+
+    <!-- نافذة لعبة مطابقة الصور (الذاكرة) -->
+    <div class="modal-overlay" id="memoryModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>🧩 مطابقة القلوب</h3>
+                <button class="close-modal-btn" onclick="closeMemoryGame()">✖</button>
+            </div>
+            <div style="text-align: center; font-size: 11px; color: #dda0dd;">ابحث عن كل قلبين متشابهين لتفوزا معاً! ✨</div>
+            <div class="memory-game-grid" id="memoryGrid"></div>
         </div>
     </div>
 
@@ -554,6 +608,60 @@
             playClickSound();
             db.ref('lamp_status/main').set(!body.classList.contains('main-lamp-on'));
         };
+
+        // --- لعبة مطابقة الصور (الذاكرة) ---
+        const iconsList = ['💖', '🌹', '✨', '💍', '💖', '🌹', '✨', '💍'];
+        function openMemoryGame() {
+            document.getElementById('memoryModal').style.display = 'flex';
+            initMemoryBoard();
+        }
+        function closeMemoryGame() {
+            document.getElementById('memoryModal').style.display = 'none';
+        }
+
+        function initMemoryBoard() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            const shuffled = [...iconsList].sort(() => 0.5 - Math.random());
+            let flippedCards = [];
+            let matchedCount = 0;
+
+            shuffled.forEach((icon, idx) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.icon = icon;
+                card.innerHTML = '❓';
+                card.onclick = () => {
+                    if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
+                    card.classList.add('flipped');
+                    card.innerHTML = icon;
+                    flippedCards.push(card);
+
+                    if (flippedCards.length === 2) {
+                        const [card1, card2] = flippedCards;
+                        if (card1.dataset.icon === card2.dataset.icon) {
+                            card1.classList.add('matched');
+                            card2.classList.add('matched');
+                            flippedCards = [];
+                            matchedCount += 2;
+                            if (matchedCount === shuffled.length) {
+                                launchHeartsExplosion();
+                                setTimeout(() => alert('🎉 مبروك! لقد فزتما بلعبة مطابقة القلوب بنجاح ❤️'), 300);
+                            }
+                        } else {
+                            setTimeout(() => {
+                                card1.classList.remove('flipped');
+                                card1.innerHTML = '❓';
+                                card2.classList.remove('flipped');
+                                card2.innerHTML = '❓';
+                                flippedCards = [];
+                            }, 700);
+                        }
+                    }
+                };
+                grid.appendChild(card);
+            });
+        }
 
         function setupSharedFingerprint() {
             const btn = document.getElementById('fingerprintBtn');
