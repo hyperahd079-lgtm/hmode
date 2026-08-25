@@ -351,23 +351,47 @@
         }
         @keyframes pulseRecord { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
         
+        /* مؤشر يكتب الان اصبح في اعلى الشات بنقاط متحركة */
         .input-status-indicator {
             display: none;
             align-items: center;
+            justify-content: flex-start;
             gap: 6px;
             font-size: 11px;
             padding: 6px 12px;
-            background: rgba(25, 10, 16, 0.9);
-            border-radius: 19px;
-            border: 1px solid rgba(255, 182, 193, 0.3);
-            margin-right: 4px;
-            flex: 1;
-            height: 36px;
+            background: rgba(25, 10, 16, 0.85);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 182, 193, 0.2);
+            margin: 6px 10px 0 10px;
             animation: fadeInIndicator 0.3s ease;
+            width: fit-content;
         }
-        @keyframes fadeInIndicator { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInIndicator { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
         .input-status-indicator.typing { display: flex; color: #2ecc71; }
         .input-status-indicator.recording { display: flex; color: #e74c3c; }
+        
+        /* تأثير النقاط المتحركة مثل واتساب */
+        .typing-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-right: 4px;
+        }
+        .typing-dots span {
+            width: 5px;
+            height: 5px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            display: inline-block;
+            animation: whatsappDot 1.4s infinite ease-in-out both;
+        }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes whatsappDot {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1.0); opacity: 1; }
+        }
+
         .pinned-bar { display: none; background: rgba(255, 105, 180, 0.15); border-bottom: 1px solid rgba(255, 182, 193, 0.2); padding: 4px 8px; font-size: 10px; color: var(--primary-color); justify-content: space-between; align-items: center; flex-shrink: 0; }
         .pinned-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85%; }
         .unpin-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 10px; }
@@ -432,7 +456,6 @@
         .read-status.delivered { color: rgba(255,255,255,0.9); }
         .read-status.read { color: #4facfe; text-shadow: 0 0 4px rgba(79, 172, 254, 0.8); }
         
-        /* قائمة خيارات الرسالة عند الضغط مطولاً بشكل جميل وعصري */
         .msg-actions-sheet {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -489,7 +512,6 @@
         .msg-action-btn.danger:hover {
             background: rgba(255, 107, 107, 0.25);
         }
-
         .audio-player-custom {
             max-width: 210px;
             height: 36px;
@@ -536,7 +558,6 @@
         <p id="secretText">أنتِ أجمل صدفة بحياتي ❤️</p>
     </div>
     
-    <!-- قائمة الضغطة المطولة للرسالة -->
     <div class="msg-actions-sheet" id="msgActionsSheet" onclick="closeMsgActions(event)">
         <div class="msg-actions-box" id="msgActionsBox">
             <div style="font-size: 11px; color: var(--primary-color); text-align: center; font-weight: bold; margin-bottom: 2px;">خيارات الرسالة 💌</div>
@@ -547,7 +568,6 @@
             <button class="msg-action-btn" onclick="closeMsgActions()" style="justify-content: center; color: #dda0dd; margin-top: 4px;">إلغاء</button>
         </div>
     </div>
-
     <div class="login-container" id="loginContainer">
         <div class="lamp-box">
             <div class="lamp-shade" id="loginLampShade"><div class="lamp-bulb" id="loginLampBulb"></div></div>
@@ -640,13 +660,16 @@
                     <span class="pinned-text" id="pinnedText">📌 لا توجد رسالة مثبتة</span>
                     <button class="unpin-btn" id="unpinBtn" style="display:none;" onclick="unpinMessage()">✖</button>
                 </div>
+                
+                <!-- مؤشر يكتب الان اصبح في أعلى قائمة الرسائل -->
+                <div class="input-status-indicator" id="inputStatusIndicator"></div>
+
                 <div class="chat-messages" id="chatMessages"></div>
                 
                 <div class="chat-input-area">
                     <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
                     <div class="input-wrapper">
                         <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
-                        <div class="input-status-indicator" id="inputStatusIndicator"></div>
                     </div>
                     <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
                     <button class="send-btn" id="sendMsgBtn" title="إرسال">
@@ -734,7 +757,6 @@
         let heartClickCount = 0;
         let heartClickTimer = null;
         
-        // متغيرات للتحكم بالرسالة المختارة للضغطة المطولة
         let activeMsgKey = null;
         let activeMsgData = null;
         let activeMsgAuthor = null;
@@ -748,19 +770,34 @@
             const menu = document.getElementById('slideDropdownMenu');
             if (menu) menu.classList.remove('open');
         });
-        function setTheme(primary, secondary, glow) {
+
+        // تزامن الثيمات بين الطرفين عبر قاعدة البيانات
+        function setTheme(primary, secondary, glow, saveToCloud = true) {
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--secondary-color', secondary);
             document.documentElement.style.setProperty('--glow-color', glow);
             localStorage.setItem('site_theme', JSON.stringify({primary, secondary, glow}));
+            if (saveToCloud) {
+                db.ref('site_theme').set({primary, secondary, glow});
+            }
         }
+
+        // الاستماع لتغيير الثيمات من الطرف الآخر
+        db.ref('site_theme').on('value', (snap) => {
+            const t = snap.val();
+            if (t) {
+                setTheme(t.primary, t.secondary, t.glow, false);
+            }
+        });
+
         const savedTheme = localStorage.getItem('site_theme');
         if(savedTheme) {
             try {
                 const t = JSON.parse(savedTheme);
-                setTheme(t.primary, t.secondary, t.glow);
+                setTheme(t.primary, t.secondary, t.glow, false);
             }catch(e){}
         }
+
         function triggerSecretNote() {
             heartClickCount++;
             clearTimeout(heartClickTimer);
@@ -935,27 +972,26 @@
                 myStatusRef.set({ online: true, last_seen: firebase.database.ServerValue.TIMESTAMP });
             });
             document.getElementById('partnerName').innerText = partnerUser;
+            
+            // مؤشر يكتب الآن في أعلى الرسائل بنقاط متحركة مثل الواتساب
             db.ref(`typing/${partnerKey}`).on('value', (snapshot) => {
                 const typingState = snapshot.val();
-                const chatInput = document.getElementById('chatInput');
                 const indicator = document.getElementById('inputStatusIndicator');
                 
                 if (typingState === 'text') {
-                    chatInput.style.display = 'none';
                     indicator.className = "input-status-indicator typing";
-                    indicator.innerHTML = `<span>${partnerUser} يكتب الآن</span> <span style="display:inline-flex; gap:2px;"><span style="animation:pulseTyping 1s infinite">.</span><span style="animation:pulseTyping 1s infinite 0.3s">.</span><span style="animation:pulseTyping 1s infinite 0.6s">.</span></span>`;
+                    indicator.innerHTML = `<span>${partnerUser} يكتب الان</span> <span class="typing-dots"><span></span><span></span><span></span></span>`;
                     scrollToBottom(true);
                 } else if (typingState === 'voice') {
-                    chatInput.style.display = 'none';
                     indicator.className = "input-status-indicator recording";
                     indicator.innerHTML = `<span>🎙️ ${partnerUser} يسجل مقطعاً صوتياً</span>`;
                     scrollToBottom(true);
                 } else {
                     indicator.className = "input-status-indicator";
                     indicator.innerHTML = "";
-                    chatInput.style.display = 'block';
                 }
             });
+
             db.ref(`status/${partnerKey}`).on('value', (snap) => {
                 const data = snap.val();
                 const dot = document.getElementById('partnerStatusDot');
@@ -1134,19 +1170,14 @@
             if (status === 'delivered') return `<span class="read-status delivered">✓✓</span>`;
             return `<span class="read-status sent">✓</span>`;
         }
-
-        // منطق الضغطة المطولة وقائمة الخيارات الجديدة
         function openMsgActionsModal(msgKey, msgData, author) {
             activeMsgKey = msgKey;
             activeMsgData = msgData;
             activeMsgAuthor = author;
-
             const sheet = document.getElementById('msgActionsSheet');
             const editBtn = document.getElementById('actionEditBtn');
             const deleteBtn = document.getElementById('actionDeleteBtn');
             const pinBtn = document.getElementById('actionPinBtn');
-
-            // تفعيل صلاحية الحذف والتعديل (يمكنك التعديل أو الحذف لرسائلك الخاصة، وأحمد يمتلك صلاحية كاملة أو حسب رغبتك)
             const isMyMessage = author.toLowerCase() === currentUser.toLowerCase();
             if (isMyMessage || isAdmin) {
                 deleteBtn.style.display = 'flex';
@@ -1159,22 +1190,18 @@
                 deleteBtn.style.display = 'none';
                 editBtn.style.display = 'none';
             }
-
             if (isAdmin) {
                 pinBtn.style.display = 'flex';
             } else {
-                pinBtn.style.display = 'flex'; // السماح للجميع بالتثبيت إذا أردت، أو قصرها على أحمد
+                pinBtn.style.display = 'flex';
             }
-
             sheet.style.display = 'flex';
         }
-
         window.closeMsgActions = function(e) {
             if (!e || e.target.id === 'msgActionsSheet') {
                 document.getElementById('msgActionsSheet').style.display = 'none';
             }
         };
-
         window.actionStar = function() {
             if (!activeMsgKey) return;
             db.ref(`starred_messages/${activeMsgKey}`).once('value', (snap) => {
@@ -1188,14 +1215,12 @@
             });
             document.getElementById('msgActionsSheet').style.display = 'none';
         };
-
         window.actionPin = function() {
             if (!activeMsgData) return;
             const textToPin = activeMsgData.text || 'ملاحظة صوتية';
             db.ref('pinned_message').set(textToPin);
             document.getElementById('msgActionsSheet').style.display = 'none';
         };
-
         window.actionEdit = function() {
             document.getElementById('msgActionsSheet').style.display = 'none';
             const newText = prompt("تعديل الرسالة:", activeMsgData.text);
@@ -1205,20 +1230,17 @@
                 });
             }
         };
-
         window.actionDelete = function() {
             document.getElementById('msgActionsSheet').style.display = 'none';
             if (confirm("هل تريد حذف هذه الرسالة؟")) {
                 db.ref(`messages/${activeMsgKey}`).remove();
             }
         };
-
         window.removeStarFavorite = function(key) {
             db.ref(`starred_messages/${key}`).remove();
             alert("تمت إزالة الرسالة من المفضلة 💫");
             document.getElementById('openFavsBtn').click();
         };
-
         function setupLiveChat() {
             const chatBox = document.getElementById('chatMessages');
             chatBox.innerHTML = '';
@@ -1253,7 +1275,6 @@
                         <audio controls class="audio-player-custom" src="${msg.audioData}"></audio>
                     `;
                 }
-
                 const bubble = document.createElement('div');
                 bubble.className = `message-bubble ${isMine ? 'mine' : 'other'}`;
                 bubble.innerHTML = `
@@ -1264,8 +1285,6 @@
                         <span id="ticks-${msgKey}">${ticksHtml}</span>
                     </div>
                 `;
-
-                // تفعيل الضغطة المطولة (للهواتف والكمبيوتر)
                 let pressTimer;
                 bubble.addEventListener('touchstart', (e) => {
                     pressTimer = setTimeout(() => {
@@ -1274,7 +1293,6 @@
                 });
                 bubble.addEventListener('touchend', () => { clearTimeout(pressTimer); });
                 bubble.addEventListener('touchmove', () => { clearTimeout(pressTimer); });
-
                 bubble.addEventListener('mousedown', (e) => {
                     pressTimer = setTimeout(() => {
                         openMsgActionsModal(msgKey, msg, msg.author);
@@ -1282,12 +1300,10 @@
                 });
                 bubble.addEventListener('mouseup', () => { clearTimeout(pressTimer); });
                 bubble.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
-
                 wrapper.appendChild(bubble);
                 chatBox.appendChild(wrapper);
                 scrollToBottom(true);
             });
-
             db.ref('messages').on('child_changed', (snapshot) => {
                 const msgKey = snapshot.key;
                 const msg = snapshot.val();
@@ -1303,12 +1319,10 @@
                     }
                 }
             });
-
             db.ref('messages').on('child_removed', (snapshot) => {
                 const removedMsg = document.getElementById(`msg-${snapshot.key}`);
                 if (removedMsg) removedMsg.remove();
             });
-
             db.ref('pinned_message').on('value', (snapshot) => {
                 const pinnedBar = document.getElementById('pinnedBar');
                 const pinnedText = document.getElementById('pinnedText');
@@ -1322,7 +1336,6 @@
                     pinnedBar.style.display = 'none';
                 }
             });
-
             db.ref('heart_explosions').on('child_added', (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.sender && !isInitialLoad) {
@@ -1507,3 +1520,4 @@
     </script>
 </body>
 </html>
+
