@@ -116,7 +116,6 @@
             overflow: hidden;
         }
         
-        /* تنسيق اللمبة العلوية والجزيرة بشكل مندمج وصغير */
         .ceiling-lamps-container { display: flex; justify-content: center; width: 100%; height: 16px; z-index: 100; position: relative; flex-shrink: 0; }
         .ceiling-lamp { position: relative; display: flex; flex-direction: column; align-items: center; }
         .wire { width: 2px; height: 3px; background: #444; }
@@ -146,7 +145,7 @@
             overflow: hidden; 
         }
         
-        /* تصميم الجزيرة الديناميكية (Dynamic Island) المصغرة والأنيقة */
+        /* 🌟 تصميم الجزيرة الديناميكية المحسّن (حل مشكلة التداخل ونعومة الحركة) */
         .dynamic-island-container {
             width: 100%;
             display: flex;
@@ -157,19 +156,24 @@
             margin-top: 2px;
         }
         .dynamic-island {
-            background: rgba(18, 8, 14, 0.92);
-            border: 1px solid rgba(255, 182, 193, 0.35);
-            backdrop-filter: blur(15px);
-            border-radius: 16px;
-            width: 180px;
-            height: 28px;
+            background: rgba(18, 8, 14, 0.95);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            width: 190px;
+            height: 32px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 8px;
+            justify-content: center;
+            padding: 0 12px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+            /* استخدام دالة تسارع سلسة جداً تمنع أي تقطيع أو تداخل */
+            transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                        height 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                        border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
             overflow: hidden;
             position: relative;
         }
@@ -177,64 +181,85 @@
             width: 100%;
             max-width: 850px;
             height: auto;
-            border-radius: 14px;
-            padding: 8px;
+            max-height: 85dvh;
+            border-radius: 16px;
+            padding: 10px;
             cursor: default;
+            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.25);
         }
+        
+        /* طبقة المحتوى المصغر */
         .island-collapsed-content {
+            position: absolute;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 100%;
-            font-size: 10px;
+            width: calc(100% - 24px);
+            font-size: 11px;
             color: var(--primary-color);
             font-weight: bold;
-            transition: opacity 0.2s;
+            white-space: nowrap;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none;
         }
         .dynamic-island.expanded .island-collapsed-content {
-            display: none;
+            opacity: 0;
+            visibility: hidden;
         }
+        
+        /* طبقة المحتوى الموسع (تظهر حصراً بعد اكتمال الاتساع لعدم تداخل الحروف) */
         .island-expanded-content {
             display: none;
             width: 100%;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: scale(0.97);
+            transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
         }
         .dynamic-island.expanded .island-expanded-content {
             display: grid;
             grid-template-columns: 1.1fr 0.8fr 1.1fr;
-            gap: 6px;
+            gap: 8px;
             opacity: 1;
+            transform: scale(1);
         }
+        
+        @media(max-width: 600px) {
+            .dynamic-island.expanded .island-expanded-content {
+                grid-template-columns: 1fr;
+                max-height: 70dvh;
+                overflow-y: auto;
+            }
+        }
+
         body.lights-off .dynamic-island-container { opacity: 0; visibility: hidden; pointer-events: none; }
         
         .counter-card, .touch-card, .miss-card { 
-            background: rgba(255, 182, 193, 0.08); 
-            border: 1px solid rgba(255, 182, 193, 0.25); 
-            padding: 6px 4px; 
-            border-radius: 10px; 
+            background: rgba(255, 182, 193, 0.06); 
+            border: 1px solid rgba(255, 182, 193, 0.2); 
+            padding: 8px 6px; 
+            border-radius: 12px; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
             text-align: center;
         }
-        .counter-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 2px; margin-bottom: 2px; position: relative; }
-        .counter-card h2 { font-size: 10px; color: var(--primary-color); }
+        .counter-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 2px; margin-bottom: 3px; position: relative; }
+        .counter-card h2 { font-size: 11px; color: var(--primary-color); }
         
         .menu-slide-container { position: relative; display: inline-block; }
-        .menu-trigger-icon { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 182, 193, 0.3); color: var(--primary-color); width: 18px; height: 18px; border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .menu-trigger-icon { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 182, 193, 0.3); color: var(--primary-color); width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .menu-trigger-icon:hover { background: rgba(255, 105, 180, 0.2); }
         
         .slide-dropdown-menu {
             position: absolute;
             top: 0;
-            left: 22px;
-            background: rgba(20, 8, 14, 0.95);
+            left: 24px;
+            background: rgba(20, 8, 14, 0.98);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 182, 193, 0.3);
             border-radius: 10px;
-            padding: 5px;
+            padding: 6px;
             display: flex;
             gap: 4px;
             align-items: center;
@@ -250,45 +275,45 @@
             max-width: 220px;
             opacity: 1;
         }
-        .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 2px 6px; border-radius: 6px; font-size: 8px; cursor: pointer; transition: 0.2s; }
+        .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 9px; cursor: pointer; transition: 0.2s; }
         
         .admin-header-btn { 
             background: linear-gradient(135deg, #f39c12, #d35400); 
             color: #fff; 
             border: none; 
-            padding: 2px 6px; 
+            padding: 3px 8px; 
             border-radius: 6px; 
-            font-size: 8px; 
+            font-size: 9px; 
             font-weight: bold; 
             cursor: pointer; 
             display: none; 
             box-shadow: 0 0 5px rgba(243, 156, 18, 0.4);
         }
-        .live-clock-box { font-size: 8px; color: #dda0dd; margin-bottom: 2px; direction: ltr; }
-        .days-box { font-size: 12px; font-weight: bold; color: var(--primary-color); margin: 1px 0; }
-        .day-btn { padding: 2px 8px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 20px; font-size: 7.5px; font-weight: bold; cursor: pointer; box-shadow: 0 0 5px var(--glow-color); }
+        .live-clock-box { font-size: 9px; color: #dda0dd; margin-bottom: 3px; direction: ltr; }
+        .days-box { font-size: 13px; font-weight: bold; color: var(--primary-color); margin: 2px 0; }
+        .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 20px; font-size: 8.5px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px var(--glow-color); }
         
-        .fingerprint-btn { width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 105, 180, 0.15); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; transition: 0.3s; position: relative; }
+        .fingerprint-btn { width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 105, 180, 0.15); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.3s; position: relative; }
         .fingerprint-btn.active { background: rgba(255, 105, 180, 0.4); border-style: solid; box-shadow: 0 0 10px var(--primary-color); transform: scale(0.95); }
         .fingerprint-btn.synced { background: #2ecc71; border-color: #2ecc71; box-shadow: 0 0 12px #2ecc71; animation: pulseSync 0.6s infinite alternate; }
         @keyframes pulseSync { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
-        .touch-status { font-size: 7px; color: #dda0dd; }
-        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 3px 4px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 20px; font-size: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.4); }
+        .touch-status { font-size: 8px; color: #dda0dd; }
+        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 20px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.4); }
         
         .last-pulse-box {
-            font-size: 6.5px;
+            font-size: 7.5px;
             color: var(--primary-color);
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 182, 193, 0.2);
-            border-radius: 5px;
-            padding: 2px 4px;
+            border-radius: 6px;
+            padding: 3px 6px;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            line-height: 1.1;
+            line-height: 1.2;
         }
-        .history-btn { padding: 2px 4px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 182, 193, 0.25); border-radius: 6px; color: var(--primary-color); font-size: 7px; cursor: pointer; width: 100%; }
+        .history-btn { padding: 3px 6px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 182, 193, 0.25); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #180910; border: 1px solid rgba(255, 182, 193, 0.3); border-radius: 18px; width: 90%; max-width: 400px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
@@ -474,7 +499,6 @@
         .message-wrapper.mine { justify-content: flex-start; }
         .message-wrapper.other { justify-content: flex-end; }
         
-        /* تعديل فقاعة المحادثة لتأخذ حجم النص بدلاً من عرض الشاشة بالكامل */
         .message-bubble { 
             width: fit-content;
             max-width: 80%; 
@@ -629,7 +653,7 @@
         </div>
     </div>
     
-    <!-- واجهة تسجيل الدخول / إنشاء حساب جديد -->
+    <!-- واجهة تسجيل الدخول -->
     <div class="login-container" id="loginContainer">
         <div class="lamp-box">
             <div class="lamp-shade" id="loginLampShade"><div class="lamp-bulb" id="loginLampBulb"></div></div>
@@ -671,17 +695,17 @@
             </div>
         </div>
         <div class="page-content">
-            <!-- الجزيرة الديناميكية العلوية المصغرة -->
+            <!-- الجزيرة الديناميكية المطورة والأنيقة -->
             <div class="dynamic-island-container">
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
                     <div class="island-collapsed-content">
                         <span>❤️ عالمنا الخاص</span>
-                        <span id="islandIndicatorText" style="font-size: 9.5px; color: #dda0dd;">اضغط للتفاصيل</span>
+                        <span id="islandIndicatorText" style="font-size: 10px; color: #dda0dd;">اضغط ✨</span>
                     </div>
                     <div class="island-expanded-content" id="islandExpandedContent">
                         <div class="counter-card">
                             <div class="counter-card-header">
-                                <h2 id="typingTitle">أهلاً بك ❤️</h2>
+                                <h2 id="typingTitle">حياك الله ❤️</h2>
                                 <div class="menu-slide-container">
                                     <div class="menu-trigger-icon" id="menuTriggerIcon" onclick="toggleSlideMenu(event)" title="الإعدادات">⚙️</div>
                                     <div class="slide-dropdown-menu" id="slideDropdownMenu">
@@ -695,12 +719,12 @@
                             <button class="day-btn" id="markDayBtn">حضور 🌹</button>
                         </div>
                         <div class="touch-card">
-                            <h2 style="font-size: 8.5px; color: var(--primary-color);">البصمة المشتركة</h2>
+                            <h2 style="font-size: 9px; color: var(--primary-color);">البصمة نبصم</h2>
                             <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
                             <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
                         </div>
                         <div class="miss-card">
-                            <h2 style="font-size: 8.5px; color: var(--primary-color);">نبضات الشوق</h2>
+                            <h2 style="font-size: 9px; color: var(--primary-color);">نبضات الشوق</h2>
                             <button class="miss-btn" id="missBtn">
                                 <span>❤️</span> أنا مشتاق
                             </button>
@@ -708,7 +732,7 @@
                                 <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
                                 <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
                             </div>
-                            <div style="display: flex; gap: 2px; width: 100%;">
+                            <div style="display: flex; gap: 3px; width: 100%;">
                                 <button class="history-btn" id="openHistoryBtn">السجل 📜</button>
                                 <button class="history-btn" id="openFavsBtn" style="color: #ffd700;">⭐ المفضلة</button>
                             </div>
@@ -716,10 +740,11 @@
                     </div>
                 </div>
             </div>
+            
             <!-- صندوق المحادثة الشامل -->
             <div class="chat-container">
                 <div class="chat-header">
-                    <span>💌 المحادثة المباشرة</span>
+                    <span>💌 سواليف</span>
                     <div class="partner-info">
                         <span id="partnerName">انتظار الطرف الآخر...</span>
                         <div style="display: flex; align-items: center; gap: 4px;">
@@ -740,7 +765,7 @@
                 <div class="chat-input-area">
                     <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
                     <div class="input-wrapper">
-                        <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
+                        <input type="text" id="chatInput" placeholder="اكتب رسالة ..." autocomplete="off">
                     </div>
                     <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
                     <button class="send-btn" id="sendMsgBtn" title="إرسال">
@@ -1014,7 +1039,7 @@
                 } else {
                     btn.classList.remove('synced');
                     statusText.innerText = "اضغط باستمرار...";
-                    islandText.innerText = "اضغط للجزيرة التفصيلية";
+                    islandText.innerText = "اضغط للتفاصيل ✨";
                     islandText.style.color = "#dda0dd";
                 }
             });
@@ -1278,7 +1303,7 @@
             document.getElementById('msgActionsSheet').style.display = 'none';
             const newText = prompt("تعديل الرسالة:", activeMsgData.text);
             if (newText !== null && newText.trim() !== "") {
-                db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " (معدلة ✏️)" });
+                db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " (بعرها ✏️)" });
             }
         };
         window.actionDelete = function() {
@@ -1520,7 +1545,7 @@
             partnerKey = pKey;
             loginContainer.style.display = 'none';
             mainPage.style.display = 'flex';
-            document.getElementById('typingTitle').innerText = `أهلاً بك يا ${name} ❤️`;
+            document.getElementById('typingTitle').innerText = `حياك الله يا ${name} ❤️`;
             
             setTimeout(() => {
                 launchHeartsExplosion();
