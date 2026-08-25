@@ -97,36 +97,40 @@
             box-shadow: none !important;
         }
         .login-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 0 10px var(--glow-color); }
+        .switch-auth { text-align: center; margin-top: 10px; font-size: 12px; color: #dda0dd; cursor: pointer; }
+        .switch-auth span { color: var(--primary-color); font-weight: bold; text-decoration: underline; }
         
+        /* واجهة التطبيق الرئيسية بكامل الشاشة */
         .main-page { 
             display: none; 
             z-index: 10; 
-            width: 100%; 
-            max-width: 850px; 
+            width: 100vw; 
             height: 100vh; 
             height: 100dvh; 
             flex-direction: column; 
             align-items: center; 
             justify-content: flex-start; 
-            padding: 4px 8px 15px 8px; 
+            padding: 4px 6px 6px 6px; 
             position: relative; 
             box-sizing: border-box;
             overflow: hidden;
         }
         
-        .ceiling-lamps-container { display: flex; justify-content: center; width: 100%; height: 25px; z-index: 100; position: relative; margin-bottom: 0; flex-shrink: 0; }
+        /* تنسيق اللمبة العلوية والجزيرة بشكل مندمج وصغير */
+        .ceiling-lamps-container { display: flex; justify-content: center; width: 100%; height: 16px; z-index: 100; position: relative; flex-shrink: 0; }
         .ceiling-lamp { position: relative; display: flex; flex-direction: column; align-items: center; }
-        .wire { width: 2px; height: 6px; background: #444; }
-        .main-lamp-shade { width: 65px; height: 18px; background: linear-gradient(135deg, #ffb6c1, var(--primary-color), var(--secondary-color)); box-shadow: 0 0 15px var(--primary-color); border-radius: 35px 35px 6px 6px; position: relative; transition: all 0.5s ease; }
+        .wire { width: 2px; height: 3px; background: #444; }
+        .main-lamp-shade { width: 40px; height: 12px; background: linear-gradient(135deg, #ffb6c1, var(--primary-color), var(--secondary-color)); box-shadow: 0 0 10px var(--primary-color); border-radius: 20px 20px 4px 4px; position: relative; transition: all 0.5s ease; }
         body.lights-off .main-lamp-shade { background: #333 !important; box-shadow: none !important; }
         
         .main-pull-string { 
-            position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 16px; height: 16px; 
+            position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 14px; height: 12px; 
             cursor: pointer; z-index: 250; display: flex; justify-content: center; 
         }
-        .main-pull-line { width: 2px; height: 12px; background: rgba(255, 215, 0, 0.9); transition: transform 0.1s ease; }
-        .main-pull-string:active .main-pull-line { transform: translateY(4px); }
-        .main-pull-handle { position: absolute; bottom: 0; width: 6px; height: 6px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 5px #ffd700; }
+        .main-pull-line { width: 2px; height: 8px; background: rgba(255, 215, 0, 0.9); transition: transform 0.1s ease; }
+        .main-pull-string:active .main-pull-line { transform: translateY(3px); }
+        .main-pull-handle { position: absolute; bottom: 0; width: 4px; height: 4px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 4px #ffd700; }
+        
         .page-content { 
             opacity: 1; 
             visibility: visible; 
@@ -134,23 +138,81 @@
             width: 100%; 
             display: flex; 
             flex-direction: column; 
-            gap: 6px; 
+            gap: 4px; 
             flex: 1; 
-            height: calc(100% - 25px);
+            height: calc(100% - 16px);
             justify-content: flex-start; 
             align-items: center; 
             overflow: hidden; 
         }
         
-        .top-row-grid { display: grid; grid-template-columns: 1.1fr 0.8fr 1.1fr; gap: 6px; width: 100%; margin-top: 8px; position: relative; z-index: 6; flex-shrink: 0; transition: opacity 0.4s ease, visibility 0.4s ease; }
-        body.lights-off .top-row-grid { opacity: 0; visibility: hidden; pointer-events: none; }
+        /* تصميم الجزيرة الديناميكية (Dynamic Island) المصغرة والأنيقة */
+        .dynamic-island-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 120;
+            flex-shrink: 0;
+            position: relative;
+            margin-top: 2px;
+        }
+        .dynamic-island {
+            background: rgba(18, 8, 14, 0.92);
+            border: 1px solid rgba(255, 182, 193, 0.35);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            width: 180px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+            overflow: hidden;
+            position: relative;
+        }
+        .dynamic-island.expanded {
+            width: 100%;
+            max-width: 850px;
+            height: auto;
+            border-radius: 14px;
+            padding: 8px;
+            cursor: default;
+        }
+        .island-collapsed-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        .dynamic-island.expanded .island-collapsed-content {
+            display: none;
+        }
+        .island-expanded-content {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .dynamic-island.expanded .island-expanded-content {
+            display: grid;
+            grid-template-columns: 1.1fr 0.8fr 1.1fr;
+            gap: 6px;
+            opacity: 1;
+        }
+        body.lights-off .dynamic-island-container { opacity: 0; visibility: hidden; pointer-events: none; }
         
         .counter-card, .touch-card, .miss-card { 
             background: rgba(255, 182, 193, 0.08); 
             border: 1px solid rgba(255, 182, 193, 0.25); 
-            padding: 8px 6px; 
-            border-radius: 14px; 
-            backdrop-filter: blur(10px); 
+            padding: 6px 4px; 
+            border-radius: 10px; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
@@ -158,16 +220,16 @@
             text-align: center;
         }
         .counter-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 2px; margin-bottom: 2px; position: relative; }
-        .counter-card h2 { font-size: 11px; color: var(--primary-color); }
+        .counter-card h2 { font-size: 10px; color: var(--primary-color); }
         
         .menu-slide-container { position: relative; display: inline-block; }
-        .menu-trigger-icon { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 182, 193, 0.3); color: var(--primary-color); width: 22px; height: 22px; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .menu-trigger-icon { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 182, 193, 0.3); color: var(--primary-color); width: 18px; height: 18px; border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .menu-trigger-icon:hover { background: rgba(255, 105, 180, 0.2); }
         
         .slide-dropdown-menu {
             position: absolute;
             top: 0;
-            left: 28px;
+            left: 22px;
             background: rgba(20, 8, 14, 0.95);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 182, 193, 0.3);
@@ -202,22 +264,23 @@
             display: none; 
             box-shadow: 0 0 5px rgba(243, 156, 18, 0.4);
         }
-        .live-clock-box { font-size: 9px; color: #dda0dd; margin-bottom: 2px; direction: ltr; }
-        .days-box { font-size: 14px; font-weight: bold; color: var(--primary-color); margin: 1px 0; }
-        .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 20px; font-size: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 5px var(--glow-color); }
-        .fingerprint-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 105, 180, 0.15); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: 0.3s; position: relative; }
+        .live-clock-box { font-size: 8px; color: #dda0dd; margin-bottom: 2px; direction: ltr; }
+        .days-box { font-size: 12px; font-weight: bold; color: var(--primary-color); margin: 1px 0; }
+        .day-btn { padding: 2px 8px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 20px; font-size: 7.5px; font-weight: bold; cursor: pointer; box-shadow: 0 0 5px var(--glow-color); }
+        
+        .fingerprint-btn { width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 105, 180, 0.15); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; transition: 0.3s; position: relative; }
         .fingerprint-btn.active { background: rgba(255, 105, 180, 0.4); border-style: solid; box-shadow: 0 0 10px var(--primary-color); transform: scale(0.95); }
-        .fingerprint-btn.synced { background: #2ecc71; border-color: #2ecc71; box-shadow: 0 0 15px #2ecc71; animation: pulseSync 0.6s infinite alternate; }
+        .fingerprint-btn.synced { background: #2ecc71; border-color: #2ecc71; box-shadow: 0 0 12px #2ecc71; animation: pulseSync 0.6s infinite alternate; }
         @keyframes pulseSync { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
-        .touch-status { font-size: 8px; color: #dda0dd; }
-        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 5px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 20px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.4); }
+        .touch-status { font-size: 7px; color: #dda0dd; }
+        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 3px 4px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 20px; font-size: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.4); }
         
         .last-pulse-box {
-            font-size: 7.5px;
+            font-size: 6.5px;
             color: var(--primary-color);
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 182, 193, 0.2);
-            border-radius: 6px;
+            border-radius: 5px;
             padding: 2px 4px;
             width: 100%;
             display: flex;
@@ -225,7 +288,7 @@
             align-items: center;
             line-height: 1.1;
         }
-        .history-btn { padding: 2px 5px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 182, 193, 0.25); border-radius: 8px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
+        .history-btn { padding: 2px 4px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 182, 193, 0.25); border-radius: 6px; color: var(--primary-color); font-size: 7px; cursor: pointer; width: 100%; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #180910; border: 1px solid rgba(255, 182, 193, 0.3); border-radius: 18px; width: 90%; max-width: 400px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
@@ -237,6 +300,7 @@
         .history-user { font-weight: bold; color: var(--primary-color); }
         .history-time { font-size: 10px; color: #dda0dd; direction: ltr; }
         
+        /* صندوق المحادثة الشامل */
         .chat-container { 
             width: 100%; 
             flex: 1; 
@@ -247,7 +311,6 @@
             border-radius: 16px; 
             backdrop-filter: blur(10px); 
             overflow: hidden; 
-            margin-bottom: 6px; 
             min-height: 0;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); 
             z-index: 10; 
@@ -259,13 +322,14 @@
             border-color: rgba(255, 255, 255, 0.05) !important;
             box-shadow: none !important;
         }
-        .chat-header { padding: 8px 12px; background: rgba(255, 105, 180, 0.08); color: var(--primary-color); font-weight: bold; font-size: 11px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; transition: opacity 0.4s ease; }
+        .chat-header { padding: 6px 12px; background: rgba(255, 105, 180, 0.08); color: var(--primary-color); font-weight: bold; font-size: 10.5px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; transition: opacity 0.4s ease; }
         body.lights-off .chat-header { opacity: 0; pointer-events: none; height: 0; padding: 0; overflow: hidden; }
         .partner-info { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--primary-color); }
-        .battery-badge { font-size: 9px; padding: 1px 6px; background: rgba(255, 255, 255, 0.12); border-radius: 8px; color: var(--primary-color); border: 1px solid rgba(255, 182, 193, 0.25); }
+        .battery-badge { font-size: 8.5px; padding: 1px 5px; background: rgba(255, 255, 255, 0.12); border-radius: 8px; color: var(--primary-color); border: 1px solid rgba(255, 182, 193, 0.25); }
         .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
         .status-dot.online { background-color: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
         .status-dot.offline { background-color: #e74c3c; }
+        
         .chat-input-area { 
             width: 100%; 
             padding: 6px 8px; 
@@ -304,7 +368,7 @@
         }
         .chat-input-area input { 
             width: 100%; 
-            height: 36px; 
+            height: 34px; 
             padding: 0 10px; 
             background: transparent; 
             border: none; 
@@ -314,8 +378,8 @@
         }
         .chat-input-area input::placeholder { color: rgba(255, 255, 255, 0.5); }
         .send-btn, .heart-quick-btn, .voice-record-btn { 
-            width: 36px; 
-            height: 36px; 
+            width: 34px; 
+            height: 34px; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
@@ -324,7 +388,7 @@
             cursor: pointer; 
             flex-shrink: 0;
             transition: all 0.25s ease;
-            font-size: 14px;
+            font-size: 13px;
         }
         .send-btn { 
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); 
@@ -337,7 +401,7 @@
         .heart-quick-btn { 
             background: rgba(255, 105, 180, 0.12); 
             border: 1px solid rgba(255, 105, 180, 0.25);
-            font-size: 15px;
+            font-size: 14px;
         }
         .voice-record-btn { 
             background: rgba(255, 255, 255, 0.08); 
@@ -351,18 +415,17 @@
         }
         @keyframes pulseRecord { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
         
-        /* مؤشر يكتب الان اصبح في اعلى الشات بنقاط متحركة */
         .input-status-indicator {
             display: none;
             align-items: center;
             justify-content: flex-start;
             gap: 6px;
-            font-size: 11px;
-            padding: 6px 12px;
+            font-size: 10.5px;
+            padding: 5px 10px;
             background: rgba(25, 10, 16, 0.85);
             border-radius: 12px;
             border: 1px solid rgba(255, 182, 193, 0.2);
-            margin: 6px 10px 0 10px;
+            margin: 4px 8px 0 8px;
             animation: fadeInIndicator 0.3s ease;
             width: fit-content;
         }
@@ -370,7 +433,6 @@
         .input-status-indicator.typing { display: flex; color: #2ecc71; }
         .input-status-indicator.recording { display: flex; color: #e74c3c; }
         
-        /* تأثير النقاط المتحركة مثل واتساب */
         .typing-dots {
             display: inline-flex;
             align-items: center;
@@ -378,8 +440,8 @@
             margin-right: 4px;
         }
         .typing-dots span {
-            width: 5px;
-            height: 5px;
+            width: 4px;
+            height: 4px;
             background-color: #2ecc71;
             border-radius: 50%;
             display: inline-block;
@@ -391,10 +453,10 @@
             0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
             40% { transform: scale(1.0); opacity: 1; }
         }
-
         .pinned-bar { display: none; background: rgba(255, 105, 180, 0.15); border-bottom: 1px solid rgba(255, 182, 193, 0.2); padding: 4px 8px; font-size: 10px; color: var(--primary-color); justify-content: space-between; align-items: center; flex-shrink: 0; }
         .pinned-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85%; }
         .unpin-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 10px; }
+        
         .chat-messages { 
             flex: 1; 
             padding: 10px 12px; 
@@ -407,12 +469,16 @@
             transition: opacity 0.4s ease, visibility 0.4s ease; 
         }
         body.lights-off .chat-messages { opacity: 0; visibility: hidden; pointer-events: none; }
+        
         .message-wrapper { display: flex; align-items: flex-end; gap: 4px; width: 100%; margin-bottom: 1px; }
         .message-wrapper.mine { justify-content: flex-start; }
         .message-wrapper.other { justify-content: flex-end; }
         
+        /* تعديل فقاعة المحادثة لتأخذ حجم النص بدلاً من عرض الشاشة بالكامل */
         .message-bubble { 
+            width: fit-content;
             max-width: 80%; 
+            min-width: 60px;
             padding: 6px 10px; 
             border-radius: 14px; 
             font-size: 12.5px; 
@@ -423,16 +489,13 @@
             line-height: 1.35; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.15); 
             position: relative;
-            min-width: 60px;
             cursor: pointer;
         }
-        
         .message-bubble.mine { 
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); 
             color: #fff; 
             border-bottom-right-radius: 3px; 
         }
-        
         .message-bubble.other { 
             background: rgba(255, 255, 255, 0.12); 
             backdrop-filter: blur(5px);
@@ -451,7 +514,7 @@
         .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 2px; align-self: flex-end; }
         .msg-time { font-size: 8px; opacity: 0.75; direction: ltr; }
         
-        .read-status { font-size: 9px; font-weight: bold; }
+        .read-status { font-size: 8.5px; font-weight: bold; }
         .read-status.sent { color: rgba(255,255,255,0.6); }
         .read-status.delivered { color: rgba(255,255,255,0.9); }
         .read-status.read { color: #4facfe; text-shadow: 0 0 4px rgba(79, 172, 254, 0.8); }
@@ -509,12 +572,9 @@
             border-color: rgba(255, 107, 107, 0.3);
             background: rgba(255, 107, 107, 0.1);
         }
-        .msg-action-btn.danger:hover {
-            background: rgba(255, 107, 107, 0.25);
-        }
         .audio-player-custom {
-            max-width: 210px;
-            height: 36px;
+            max-width: 200px;
+            height: 34px;
             border-radius: 20px;
             outline: none;
             margin-top: 4px;
@@ -568,6 +628,8 @@
             <button class="msg-action-btn" onclick="closeMsgActions()" style="justify-content: center; color: #dda0dd; margin-top: 4px;">إلغاء</button>
         </div>
     </div>
+    
+    <!-- واجهة تسجيل الدخول / إنشاء حساب جديد -->
     <div class="login-container" id="loginContainer">
         <div class="lamp-box">
             <div class="lamp-shade" id="loginLampShade"><div class="lamp-bulb" id="loginLampBulb"></div></div>
@@ -580,20 +642,22 @@
             </div>
         </div>
         <div class="login-card">
-            <h2>عالمنا الخاص ❤️</h2>
-            <form id="loginForm">
+            <h2 id="authFormTitle">تسجيل الدخول ❤️</h2>
+            <form id="authForm">
                 <div class="input-group">
                     <label>الاسم</label>
-                    <input type="text" id="username" placeholder="اسمك اللطيف..." autocomplete="off">
+                    <input type="text" id="username" placeholder="اسمك اللطيف..." autocomplete="off" required>
                 </div>
                 <div class="input-group">
                     <label>كلمة السر</label>
-                    <input type="password" id="password" placeholder="••••">
+                    <input type="password" id="password" placeholder="••••" required>
                 </div>
-                <button type="submit" class="login-btn" id="loginBtn">دخول</button>
+                <button type="submit" class="login-btn" id="authBtn">دخول</button>
             </form>
+            <div class="switch-auth" id="switchAuthBtn">ليس لديك حساب؟ <span id="switchText">إنشاء حساب جديد</span></div>
         </div>
     </div>
+    
     <div class="main-page" id="mainPage">
         <div class="ceiling-lamps-container">
             <div class="ceiling-lamp">
@@ -607,51 +671,60 @@
             </div>
         </div>
         <div class="page-content">
-            <div class="top-row-grid">
-                <div class="counter-card">
-                    <div class="counter-card-header">
-                        <h2 id="typingTitle">أهلاً بك ❤️</h2>
-                        <div class="menu-slide-container">
-                            <div class="menu-trigger-icon" id="menuTriggerIcon" onclick="toggleSlideMenu(event)" title="الإعدادات">⚙️</div>
-                            <div class="slide-dropdown-menu" id="slideDropdownMenu">
-                                <button class="admin-header-btn" id="adminHeaderBtn">صلاحيات أحمد ⚙️</button>
-                                <button class="mini-logout-btn" onclick="handleLogout()">خروج</button>
+            <!-- الجزيرة الديناميكية العلوية المصغرة -->
+            <div class="dynamic-island-container">
+                <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
+                    <div class="island-collapsed-content">
+                        <span>❤️ عالمنا الخاص</span>
+                        <span id="islandIndicatorText" style="font-size: 9.5px; color: #dda0dd;">اضغط للتفاصيل</span>
+                    </div>
+                    <div class="island-expanded-content" id="islandExpandedContent">
+                        <div class="counter-card">
+                            <div class="counter-card-header">
+                                <h2 id="typingTitle">أهلاً بك ❤️</h2>
+                                <div class="menu-slide-container">
+                                    <div class="menu-trigger-icon" id="menuTriggerIcon" onclick="toggleSlideMenu(event)" title="الإعدادات">⚙️</div>
+                                    <div class="slide-dropdown-menu" id="slideDropdownMenu">
+                                        <button class="admin-header-btn" id="adminHeaderBtn">صلاحيات التحكم ⚙️</button>
+                                        <button class="mini-logout-btn" onclick="handleLogout()">خروج</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="live-clock-box" id="liveClock">التاريخ...</div>
+                            <div class="days-box" id="daysCounter">0 أيام</div>
+                            <button class="day-btn" id="markDayBtn">حضور 🌹</button>
+                        </div>
+                        <div class="touch-card">
+                            <h2 style="font-size: 8.5px; color: var(--primary-color);">البصمة المشتركة</h2>
+                            <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
+                            <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
+                        </div>
+                        <div class="miss-card">
+                            <h2 style="font-size: 8.5px; color: var(--primary-color);">نبضات الشوق</h2>
+                            <button class="miss-btn" id="missBtn">
+                                <span>❤️</span> أنا مشتاق
+                            </button>
+                            <div class="last-pulse-box" id="lastPulseBox">
+                                <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
+                                <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
+                            </div>
+                            <div style="display: flex; gap: 2px; width: 100%;">
+                                <button class="history-btn" id="openHistoryBtn">السجل 📜</button>
+                                <button class="history-btn" id="openFavsBtn" style="color: #ffd700;">⭐ المفضلة</button>
                             </div>
                         </div>
                     </div>
-                    <div class="live-clock-box" id="liveClock">التاريخ...</div>
-                    <div class="days-box" id="daysCounter">0 أيام</div>
-                    <button class="day-btn" id="markDayBtn">حضور 🌹</button>
-                </div>
-                <div class="touch-card">
-                    <h2 style="font-size: 10px; color: var(--primary-color);">البصمة المشتركة</h2>
-                    <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
-                    <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
-                </div>
-                <div class="miss-card">
-                    <h2 style="font-size: 10px; color: var(--primary-color);">نبضات الشوق</h2>
-                    <button class="miss-btn" id="missBtn">
-                        <span>❤️</span> أنا مشتاق
-                    </button>
-                    
-                    <div class="last-pulse-box" id="lastPulseBox">
-                        <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
-                        <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
-                    </div>
-                    <div style="display: flex; gap: 3px; width: 100%;">
-                        <button class="history-btn" id="openHistoryBtn">السجل 📜</button>
-                        <button class="history-btn" id="openFavsBtn" style="color: #ffd700;">⭐ المفضلة</button>
-                    </div>
                 </div>
             </div>
+            <!-- صندوق المحادثة الشامل -->
             <div class="chat-container">
                 <div class="chat-header">
                     <span>💌 المحادثة المباشرة</span>
                     <div class="partner-info">
-                        <span id="partnerName"></span>
+                        <span id="partnerName">انتظار الطرف الآخر...</span>
                         <div style="display: flex; align-items: center; gap: 4px;">
                             <span id="partnerStatusDot" class="status-dot offline"></span>
-                            <span id="partnerStatusText" style="font-size: 9px; color: #dda0dd;">غير متصل</span>
+                            <span id="partnerStatusText" style="font-size: 8.5px; color: #dda0dd;">غير متصل</span>
                         </div>
                         <span id="partnerBattery" class="battery-badge" style="display:none;">🔋 --%</span>
                     </div>
@@ -661,9 +734,7 @@
                     <button class="unpin-btn" id="unpinBtn" style="display:none;" onclick="unpinMessage()">✖</button>
                 </div>
                 
-                <!-- مؤشر يكتب الان اصبح في أعلى قائمة الرسائل -->
                 <div class="input-status-indicator" id="inputStatusIndicator"></div>
-
                 <div class="chat-messages" id="chatMessages"></div>
                 
                 <div class="chat-input-area">
@@ -673,7 +744,7 @@
                     </div>
                     <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
                     <button class="send-btn" id="sendMsgBtn" title="إرسال">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="22" y1="2" x2="11" y2="13"></line>
                             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                         </svg>
@@ -682,6 +753,7 @@
             </div>
         </div>
     </div>
+    
     <div class="modal-overlay" id="historyModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -707,7 +779,7 @@
     <div class="modal-overlay" id="adminModal">
         <div class="modal-box">
             <div class="modal-header">
-                <h3>⚙️ صلاحيات أحمد المتقدمة والثيمات</h3>
+                <h3>⚙️ لوحة التحكم والثيمات</h3>
                 <button class="close-modal-btn" id="closeAdminBtn">✖</button>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -719,7 +791,7 @@
                     <div class="theme-dot" style="background: #e67e22;" onclick="setTheme('#e67e22', '#d35400', 'rgba(230, 126, 34, 0.5)')" title="ذهبي دافئ"></div>
                 </div>
                 <hr style="border-color: rgba(255,182,193,0.15); margin: 6px 0;">
-                <button class="admin-opt-btn" onclick="sendVibrationSignal()">📳 إرسال هزّة تنبيه فورية لشهد</button>
+                <button class="admin-opt-btn" onclick="sendVibrationSignal()">📳 إرسال هزّة تنبيه فورية للطرف الآخر</button>
                 <button class="admin-opt-btn" onclick="triggerFireworks()">🎆 إطلاق ألعاب نارية قلوب لدى الطرفين</button>
                 <button class="admin-opt-btn" onclick="toggleMainLamp()">💡 إطفاء/إضاءة اللمبة (التحكم بالظلام)</button>
                 <button class="admin-opt-btn" onclick="editDaysCounter()">🗓️ تعديل عدد أيام الحب المباشر</button>
@@ -728,6 +800,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDyq2aIYtFdTzQEWCPILFhDQNhw7rSCnbU",
@@ -740,38 +813,65 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
         const loginContainer = document.getElementById('loginContainer');
         const mainPage = document.getElementById('mainPage');
         const loginPullString = document.getElementById('loginPullString');
         const mainPullString = document.getElementById('mainPullString');
+        
         let currentUser = "";
         let partnerUser = "";
         let myKey = "";
         let partnerKey = "";
         let isInitialLoad = true;
-        let isAdmin = false;
+        let isAdmin = true;
+        let isRegistering = false;
         let typingTimeout = null;
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
         let heartClickCount = 0;
         let heartClickTimer = null;
-        
         let activeMsgKey = null;
         let activeMsgData = null;
-        let activeMsgAuthor = null;
+        
+        function toggleDynamicIsland(e) {
+            if (e.target.closest('button') || e.target.closest('.fingerprint-btn') || e.target.closest('.menu-slide-container')) return;
+            const island = document.getElementById('dynamicIsland');
+            island.classList.toggle('expanded');
+        }
+        
+        const switchAuthBtn = document.getElementById('switchAuthBtn');
+        const authFormTitle = document.getElementById('authFormTitle');
+        const authBtn = document.getElementById('authBtn');
+        const switchText = document.getElementById('switchText');
+        switchAuthBtn.onclick = () => {
+            isRegistering = !isRegistering;
+            if (isRegistering) {
+                authFormTitle.innerText = "إنشاء حساب جديد ❤️";
+                authBtn.innerText = "تسجيل وحفظ";
+                switchText.innerText = "لديك حساب بالفعل؟ تسجيل الدخول";
+            } else {
+                authFormTitle.innerText = "تسجيل الدخول ❤️";
+                authBtn.innerText = "دخول";
+                switchText.innerText = "إنشاء حساب جديد";
+            }
+        };
         
         function toggleSlideMenu(e) {
             e.stopPropagation();
             const menu = document.getElementById('slideDropdownMenu');
             menu.classList.toggle('open');
         }
-        document.addEventListener('click', () => {
+        document.addEventListener('click', (e) => {
             const menu = document.getElementById('slideDropdownMenu');
-            if (menu) menu.classList.remove('open');
+            if (menu && !e.target.closest('.menu-slide-container')) menu.classList.remove('open');
+            
+            const island = document.getElementById('dynamicIsland');
+            if (island && island.classList.contains('expanded') && !e.target.closest('#dynamicIsland')) {
+                island.classList.remove('expanded');
+            }
         });
-
-        // تزامن الثيمات بين الطرفين عبر قاعدة البيانات
         function setTheme(primary, secondary, glow, saveToCloud = true) {
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--secondary-color', secondary);
@@ -781,15 +881,11 @@
                 db.ref('site_theme').set({primary, secondary, glow});
             }
         }
-
-        // الاستماع لتغيير الثيمات من الطرف الآخر
+        
         db.ref('site_theme').on('value', (snap) => {
             const t = snap.val();
-            if (t) {
-                setTheme(t.primary, t.secondary, t.glow, false);
-            }
+            if (t) setTheme(t.primary, t.secondary, t.glow, false);
         });
-
         const savedTheme = localStorage.getItem('site_theme');
         if(savedTheme) {
             try {
@@ -797,11 +893,9 @@
                 setTheme(t.primary, t.secondary, t.glow, false);
             }catch(e){}
         }
-
         function triggerSecretNote() {
             heartClickCount++;
             clearTimeout(heartClickTimer);
-            
             if(heartClickCount >= 4) {
                 heartClickCount = 0;
                 const secretPopup = document.getElementById('secretPopup');
@@ -814,14 +908,9 @@
                 document.getElementById('secretText').innerText = secrets[Math.floor(Math.random() * secrets.length)];
                 secretPopup.classList.add('show');
                 launchHeartsExplosion();
-                
-                setTimeout(() => {
-                    secretPopup.classList.remove('show');
-                }, 3500);
+                setTimeout(() => { secretPopup.classList.remove('show'); }, 3500);
             } else {
-                heartClickTimer = setTimeout(() => {
-                    heartClickCount = 0;
-                }, 800);
+                heartClickTimer = setTimeout(() => { heartClickCount = 0; }, 800);
             }
         }
         function playClickSound() {
@@ -869,27 +958,21 @@
         }
         loginPullString.onclick = () => { playClickSound(); toggleMainLamp(); };
         mainPullString.onclick = () => { playClickSound(); toggleMainLamp(); };
+        
         db.ref('lights_on').on('value', (snap) => {
             const isOn = snap.val() !== null ? snap.val() : true;
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-            const loginBtn = document.getElementById('loginBtn');
             if (isOn) {
                 document.body.classList.remove('lights-off');
-                if (usernameInput) usernameInput.disabled = false;
-                if (passwordInput) passwordInput.disabled = false;
-                if (loginBtn) loginBtn.disabled = false;
             } else {
                 document.body.classList.add('lights-off');
-                if (usernameInput) usernameInput.disabled = true;
-                if (passwordInput) passwordInput.disabled = true;
-                if (loginBtn) loginBtn.disabled = true;
             }
         });
         function setupSharedFingerprint() {
             const btn = document.getElementById('fingerprintBtn');
             const statusText = document.getElementById('touchStatus');
+            const islandText = document.getElementById('islandIndicatorText');
             const touchRef = db.ref('shared_touch');
+            
             function startTouch(e) {
                 if (e.cancelable) e.preventDefault();
                 btn.classList.add('active');
@@ -906,6 +989,7 @@
             btn.addEventListener('touchstart', startTouch, { passive: false });
             btn.addEventListener('touchend', endTouch);
             btn.addEventListener('touchcancel', endTouch);
+            
             touchRef.on('value', (snapshot) => {
                 const data = snapshot.val() || {};
                 const myTouch = data[myKey];
@@ -913,17 +997,25 @@
                 if (myTouch && partnerTouch) {
                     btn.classList.add('synced');
                     statusText.innerHTML = "<b style='color:#2ecc71;'>✨ تلامس الأيدي! ✨</b>";
+                    islandText.innerHTML = "✨ تلامس الأيدي نشط!";
+                    islandText.style.color = "#2ecc71";
                     triggerVibration();
                     launchHeartsExplosion();
                 } else if (myTouch) {
                     btn.classList.remove('synced');
                     statusText.innerText = `بانتظار ${partnerUser}...`;
+                    islandText.innerText = `بانتظار ${partnerUser} بالبصمة...`;
+                    islandText.style.color = "var(--primary-color)";
                 } else if (partnerTouch) {
                     btn.classList.remove('synced');
                     statusText.innerHTML = `<span style='color:var(--primary-color);'>${partnerUser} يضع أصبعه!</span>`;
+                    islandText.innerHTML = `<span style='color:var(--primary-color);'>👆 ${partnerUser} يضع أصبعه!</span>`;
+                    triggerVibration();
                 } else {
                     btn.classList.remove('synced');
                     statusText.innerText = "اضغط باستمرار...";
+                    islandText.innerText = "اضغط للجزيرة التفصيلية";
+                    islandText.style.color = "#dda0dd";
                 }
             });
         }
@@ -933,11 +1025,7 @@
                     function updateAndSendBattery() {
                         const level = Math.round(battery.level * 100);
                         const isCharging = battery.charging;
-                        db.ref(`battery/${myKey}`).set({
-                            level: level,
-                            charging: isCharging,
-                            timestamp: firebase.database.ServerValue.TIMESTAMP
-                        });
+                        db.ref(`battery/${myKey}`).set({ level, charging: isCharging });
                     }
                     updateAndSendBattery();
                     battery.addEventListener('levelchange', updateAndSendBattery);
@@ -956,28 +1044,25 @@
         }
         function scrollToBottom(smooth = true) {
             const chatBox = document.getElementById('chatMessages');
-            chatBox.scrollTo({
-                top: chatBox.scrollHeight,
-                behavior: smooth ? 'smooth' : 'auto'
-            });
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
         }
         function setupPresenceAndTypingSystem() {
             const myStatusRef = db.ref(`status/${myKey}`);
             const myTypingRef = db.ref(`typing/${myKey}`);
             const connectedRef = db.ref('.info/connected');
+            
             connectedRef.on('value', (snap) => {
                 if (snap.val() === false) return;
                 myStatusRef.onDisconnect().set({ online: false, last_seen: firebase.database.ServerValue.TIMESTAMP });
                 myTypingRef.onDisconnect().set('idle');
                 myStatusRef.set({ online: true, last_seen: firebase.database.ServerValue.TIMESTAMP });
             });
+            
             document.getElementById('partnerName').innerText = partnerUser;
             
-            // مؤشر يكتب الآن في أعلى الرسائل بنقاط متحركة مثل الواتساب
             db.ref(`typing/${partnerKey}`).on('value', (snapshot) => {
                 const typingState = snapshot.val();
                 const indicator = document.getElementById('inputStatusIndicator');
-                
                 if (typingState === 'text') {
                     indicator.className = "input-status-indicator typing";
                     indicator.innerHTML = `<span>${partnerUser} يكتب الان</span> <span class="typing-dots"><span></span><span></span><span></span></span>`;
@@ -991,7 +1076,7 @@
                     indicator.innerHTML = "";
                 }
             });
-
+            
             db.ref(`status/${partnerKey}`).on('value', (snap) => {
                 const data = snap.val();
                 const dot = document.getElementById('partnerStatusDot');
@@ -1031,11 +1116,12 @@
             const markBtn = document.getElementById('markDayBtn');
             const daysCounter = document.getElementById('daysCounter');
             const clockBox = document.getElementById('liveClock');
+            
             function updateClockAndCheckDate() {
                 const now = new Date();
                 clockBox.innerText = now.toLocaleDateString('ar-EG', { weekday: 'short', day: 'numeric' }) + " | " + now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                
                 const todayString = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, '0') + "-" + String(now.getDate()).padStart(2, '0');
+                
                 db.ref('last_click_date').once('value', (snapshot) => {
                     if (snapshot.val() === todayString) {
                         markBtn.disabled = true;
@@ -1048,9 +1134,11 @@
             }
             setInterval(updateClockAndCheckDate, 1000);
             updateClockAndCheckDate();
+            
             db.ref('love_days').on('value', (snapshot) => {
                 daysCounter.innerText = `${snapshot.val() || 0} أيام`;
             });
+            
             markBtn.onclick = () => {
                 const now = new Date();
                 const todayString = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, '0') + "-" + String(now.getDate()).padStart(2, '0');
@@ -1068,38 +1156,33 @@
             const missBtn = document.getElementById('missBtn');
             const lastPulseSender = document.getElementById('lastPulseSender');
             const lastPulseTime = document.getElementById('lastPulseTime');
+            
             missBtn.onclick = () => {
-                const newPulse = {
-                    sender: currentUser,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                };
+                const newPulse = { sender: currentUser, timestamp: firebase.database.ServerValue.TIMESTAMP };
                 db.ref('miss_heart_signal').set(newPulse);
                 db.ref('miss_heart_history').push(newPulse);
                 triggerVibration();
                 launchHeartsExplosion();
             };
+            
             db.ref('miss_heart_signal').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (!data) return;
                 lastPulseSender.innerText = data.sender || "--";
                 lastPulseTime.innerText = formatFullDateTime(data.timestamp);
-                if (data.sender && data.sender.toLowerCase() !== currentUser.toLowerCase()) {
-                    if (!isInitialLoad) {
-                        triggerVibration();
-                        playClickSound();
-                        launchHeartsExplosion();
-                    }
+                if (data.sender && data.sender.toLowerCase() !== currentUser.toLowerCase() && !isInitialLoad) {
+                    triggerVibration();
+                    playClickSound();
+                    launchHeartsExplosion();
                 }
                 isInitialLoad = false;
             });
         }
         function setupHistoryModal() {
             const historyModal = document.getElementById('historyModal');
-            const openHistoryBtn = document.getElementById('openHistoryBtn');
-            const closeHistoryBtn = document.getElementById('closeHistoryBtn');
-            const historyList = document.getElementById('historyList');
-            openHistoryBtn.onclick = () => {
+            document.getElementById('openHistoryBtn').onclick = () => {
                 historyModal.style.display = 'flex';
+                const historyList = document.getElementById('historyList');
                 historyList.innerHTML = '<div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل السجل...</div>';
                 db.ref('miss_heart_history').limitToLast(30).once('value', (snapshot) => {
                     historyList.innerHTML = '';
@@ -1113,23 +1196,17 @@
                     items.forEach(item => {
                         const div = document.createElement('div');
                         div.className = 'history-item';
-                        div.innerHTML = `
-                            <span class="history-user">${item.sender}</span>
-                            <span style="color:#eee;">أرسل نبضة شوق ❤️</span>
-                            <span class="history-time">${formatFullDateTime(item.timestamp)}</span>
-                        `;
+                        div.innerHTML = `<span class="history-user">${item.sender}</span><span style="color:#eee;">أرسل نبضة شوق ❤️</span><span class="history-time">${formatFullDateTime(item.timestamp)}</span>`;
                         historyList.appendChild(div);
                     });
                 });
             };
-            closeHistoryBtn.onclick = () => { historyModal.style.display = 'none'; };
-            historyModal.onclick = (e) => { if (e.target === historyModal) historyModal.style.display = 'none'; };
+            document.getElementById('closeHistoryBtn').onclick = () => { historyModal.style.display = 'none'; };
+            
             const favsModal = document.getElementById('favsModal');
-            const openFavsBtn = document.getElementById('openFavsBtn');
-            const closeFavsBtn = document.getElementById('closeFavsBtn');
-            const favsList = document.getElementById('favsList');
-            openFavsBtn.onclick = () => {
+            document.getElementById('openFavsBtn').onclick = () => {
                 favsModal.style.display = 'flex';
+                const favsList = document.getElementById('favsList');
                 favsList.innerHTML = '<div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل المفضلة...</div>';
                 db.ref('starred_messages').once('value', (snapshot) => {
                     favsList.innerHTML = '';
@@ -1144,26 +1221,14 @@
                         const div = document.createElement('div');
                         div.className = 'history-item';
                         div.style.borderColor = '#ffd700';
-                        
                         let textContent = item.text;
-                        if(item.type === 'voice') {
-                            textContent = `🎙️ ملاحظة صوتية <audio controls class="audio-player-custom" src="${item.audioData}"></audio>`;
-                        }
-                        
-                        div.innerHTML = `
-                            <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
-                                <span class="history-user">${item.author} ⭐</span>
-                                <span style="color:#fff; font-size:12px;">${textContent}</span>
-                                <span class="history-time">${formatFullDateTime(item.timestamp)}</span>
-                            </div>
-                            <button class="msg-action-btn" style="padding:4px 8px; font-size:10px; border-color:#ff6b6b; color:#ff6b6b;" onclick="removeStarFavorite('${key}')" title="إزالة">✖</button>
-                        `;
+                        if(item.type === 'voice') textContent = `🎙️ ملاحظة صوتية <audio controls class="audio-player-custom" src="${item.audioData}"></audio>`;
+                        div.innerHTML = `<div style="display:flex; flex-direction:column; gap:2px; flex:1;"><span class="history-user">${item.author} ⭐</span><span style="color:#fff; font-size:12px;">${textContent}</span><span class="history-time">${formatFullDateTime(item.timestamp)}</span></div><button class="msg-action-btn" style="padding:4px 8px; font-size:10px; border-color:#ff6b6b; color:#ff6b6b;" onclick="removeStarFavorite('${key}')">✖</button>`;
                         favsList.appendChild(div);
                     });
                 });
             };
-            closeFavsBtn.onclick = () => { favsModal.style.display = 'none'; };
-            favsModal.onclick = (e) => { if (e.target === favsModal) favsModal.style.display = 'none'; };
+            document.getElementById('closeFavsBtn').onclick = () => { favsModal.style.display = 'none'; };
         }
         function renderStatusTicks(status) {
             if (status === 'read') return `<span class="read-status read">✓✓</span>`;
@@ -1173,34 +1238,23 @@
         function openMsgActionsModal(msgKey, msgData, author) {
             activeMsgKey = msgKey;
             activeMsgData = msgData;
-            activeMsgAuthor = author;
             const sheet = document.getElementById('msgActionsSheet');
             const editBtn = document.getElementById('actionEditBtn');
             const deleteBtn = document.getElementById('actionDeleteBtn');
-            const pinBtn = document.getElementById('actionPinBtn');
             const isMyMessage = author.toLowerCase() === currentUser.toLowerCase();
+            
             if (isMyMessage || isAdmin) {
                 deleteBtn.style.display = 'flex';
-                if(isMyMessage && msgData.type !== 'voice') {
-                    editBtn.style.display = 'flex';
-                } else {
-                    editBtn.style.display = 'none';
-                }
+                if(isMyMessage && msgData.type !== 'voice') editBtn.style.display = 'flex';
+                else editBtn.style.display = 'none';
             } else {
                 deleteBtn.style.display = 'none';
                 editBtn.style.display = 'none';
             }
-            if (isAdmin) {
-                pinBtn.style.display = 'flex';
-            } else {
-                pinBtn.style.display = 'flex';
-            }
             sheet.style.display = 'flex';
         }
         window.closeMsgActions = function(e) {
-            if (!e || e.target.id === 'msgActionsSheet') {
-                document.getElementById('msgActionsSheet').style.display = 'none';
-            }
+            if (!e || e.target.id === 'msgActionsSheet') document.getElementById('msgActionsSheet').style.display = 'none';
         };
         window.actionStar = function() {
             if (!activeMsgKey) return;
@@ -1217,28 +1271,22 @@
         };
         window.actionPin = function() {
             if (!activeMsgData) return;
-            const textToPin = activeMsgData.text || 'ملاحظة صوتية';
-            db.ref('pinned_message').set(textToPin);
+            db.ref('pinned_message').set(activeMsgData.text || 'ملاحظة صوتية');
             document.getElementById('msgActionsSheet').style.display = 'none';
         };
         window.actionEdit = function() {
             document.getElementById('msgActionsSheet').style.display = 'none';
             const newText = prompt("تعديل الرسالة:", activeMsgData.text);
             if (newText !== null && newText.trim() !== "") {
-                db.ref(`messages/${activeMsgKey}`).update({
-                    text: newText.trim() + " (معدلة ✏️)"
-                });
+                db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " (معدلة ✏️)" });
             }
         };
         window.actionDelete = function() {
             document.getElementById('msgActionsSheet').style.display = 'none';
-            if (confirm("هل تريد حذف هذه الرسالة؟")) {
-                db.ref(`messages/${activeMsgKey}`).remove();
-            }
+            if (confirm("هل تريد حذف هذه الرسالة؟")) db.ref(`messages/${activeMsgKey}`).remove();
         };
         window.removeStarFavorite = function(key) {
             db.ref(`starred_messages/${key}`).remove();
-            alert("تمت إزالة الرسالة من المفضلة 💫");
             document.getElementById('openFavsBtn').click();
         };
         function setupLiveChat() {
@@ -1246,60 +1294,33 @@
             chatBox.innerHTML = '';
             db.ref('messages').off();
             
-            db.ref('messages').limitToLast(50).once('value', (snapshot) => {
-                snapshot.forEach(child => {
-                    const msg = child.val();
-                    if (msg.author.toLowerCase() !== currentUser.toLowerCase() && msg.status !== 'read') {
-                        db.ref(`messages/${child.key}/status`).set('read');
-                    }
-                });
-            });
             db.ref('messages').limitToLast(50).on('child_added', (snapshot) => {
                 const msgKey = snapshot.key;
                 const msg = snapshot.val();
-                
                 const wrapper = document.createElement('div');
                 const isMine = msg.author.toLowerCase() === currentUser.toLowerCase();
                 wrapper.className = `message-wrapper ${isMine ? 'mine' : 'other'}`;
                 wrapper.id = `msg-${msgKey}`;
+                
                 if (!isMine && msg.status !== 'read') {
                     db.ref(`messages/${msgKey}/status`).set('read');
                 }
                 
-                const ticksHtml = isMine ? renderStatusTicks(msg.status || 'sent') : '';
-                
                 let contentHtml = `<span>${msg.text}</span>`;
                 if (msg.type === 'voice') {
-                    contentHtml = `
-                        <div style="font-size:10px; font-weight:bold; margin-bottom:2px;">🎙️ ملاحظة صوتية</div>
-                        <audio controls class="audio-player-custom" src="${msg.audioData}"></audio>
-                    `;
+                    contentHtml = `<div style="font-size:10px; font-weight:bold; margin-bottom:2px;">🎙️ ملاحظة صوتية</div><audio controls class="audio-player-custom" src="${msg.audioData}"></audio>`;
                 }
+                
                 const bubble = document.createElement('div');
                 bubble.className = `message-bubble ${isMine ? 'mine' : 'other'}`;
-                bubble.innerHTML = `
-                    <span class="msg-author">${msg.author}</span>
-                    ${contentHtml}
-                    <div class="msg-footer">
-                        <span class="msg-time">${formatFullDateTime(msg.timestamp)}</span>
-                        <span id="ticks-${msgKey}">${ticksHtml}</span>
-                    </div>
-                `;
+                bubble.innerHTML = `<span class="msg-author">${msg.author}</span>${contentHtml}<div class="msg-footer"><span class="msg-time">${formatFullDateTime(msg.timestamp)}</span><span id="ticks-${msgKey}">${isMine ? renderStatusTicks(msg.status || 'sent') : ''}</span></div>`;
+                
                 let pressTimer;
-                bubble.addEventListener('touchstart', (e) => {
-                    pressTimer = setTimeout(() => {
-                        openMsgActionsModal(msgKey, msg, msg.author);
-                    }, 600);
-                });
-                bubble.addEventListener('touchend', () => { clearTimeout(pressTimer); });
-                bubble.addEventListener('touchmove', () => { clearTimeout(pressTimer); });
-                bubble.addEventListener('mousedown', (e) => {
-                    pressTimer = setTimeout(() => {
-                        openMsgActionsModal(msgKey, msg, msg.author);
-                    }, 600);
-                });
-                bubble.addEventListener('mouseup', () => { clearTimeout(pressTimer); });
-                bubble.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
+                bubble.addEventListener('touchstart', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 600); });
+                bubble.addEventListener('touchend', () => clearTimeout(pressTimer));
+                bubble.addEventListener('mousedown', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 600); });
+                bubble.addEventListener('mouseup', () => clearTimeout(pressTimer));
+                
                 wrapper.appendChild(bubble);
                 chatBox.appendChild(wrapper);
                 scrollToBottom(true);
@@ -1310,13 +1331,9 @@
                 const wrapper = document.getElementById(`msg-${msgKey}`);
                 if (wrapper) {
                     const textSpan = wrapper.querySelector('.message-bubble span:not(.msg-author):not(.msg-time)');
-                    if (textSpan && msg.type !== 'voice') {
-                        textSpan.innerText = msg.text;
-                    }
+                    if (textSpan && msg.type !== 'voice') textSpan.innerText = msg.text;
                     const ticksSpan = document.getElementById(`ticks-${msgKey}`);
-                    if (ticksSpan && msg.author.toLowerCase() === currentUser.toLowerCase()) {
-                        ticksSpan.innerHTML = renderStatusTicks(msg.status);
-                    }
+                    if (ticksSpan && msg.author.toLowerCase() === currentUser.toLowerCase()) ticksSpan.innerHTML = renderStatusTicks(msg.status);
                 }
             });
             db.ref('messages').on('child_removed', (snapshot) => {
@@ -1325,36 +1342,31 @@
             });
             db.ref('pinned_message').on('value', (snapshot) => {
                 const pinnedBar = document.getElementById('pinnedBar');
-                const pinnedText = document.getElementById('pinnedText');
-                const unpinBtn = document.getElementById('unpinBtn');
                 const val = snapshot.val();
                 if (val) {
-                    pinnedText.innerText = "📌 " + val;
+                    document.getElementById('pinnedText').innerText = "📌 " + val;
                     pinnedBar.style.display = 'flex';
-                    unpinBtn.style.display = 'block';
+                    document.getElementById('unpinBtn').style.display = 'block';
                 } else {
                     pinnedBar.style.display = 'none';
                 }
             });
             db.ref('heart_explosions').on('child_added', (snapshot) => {
-                const data = snapshot.val();
-                if (data && data.sender && !isInitialLoad) {
+                if (snapshot.val() && !isInitialLoad) {
                     launchHeartsExplosion();
                     triggerVibration();
                 }
             });
             db.ref('vibration_signals').on('child_added', (snapshot) => {
                 const data = snapshot.val();
-                if (data && data.target === currentUser && !isInitialLoad) {
-                    triggerVibration();
-                }
+                if (data && data.target === currentUser && !isInitialLoad) triggerVibration();
             });
         }
         function setupVoiceRecording() {
             const voiceBtn = document.getElementById('voiceBtn');
             voiceBtn.onclick = async () => {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    alert("⚠️ المتصفح لا يدعم الوصول للميكروفون أو تم رفض الإذن.");
+                if (!navigator.mediaDevices?.getUserMedia) {
+                    alert("⚠️ المتصفح لا يدعم الميكروفون.");
                     return;
                 }
                 if (!isRecording) {
@@ -1362,21 +1374,21 @@
                         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                         mediaRecorder = new MediaRecorder(stream);
                         audioChunks = [];
-                        mediaRecorder.ondataavailable = event => { audioChunks.push(event.data); };
+                        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                         mediaRecorder.onstop = async () => {
-                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                            const blob = new Blob(audioChunks, { type: 'audio/webm' });
                             const reader = new FileReader();
-                            reader.readAsDataURL(audioBlob);
-                            reader.onloadend = () => { sendVoiceMessage(reader.result); };
-                            stream.getTracks().forEach(track => track.stop());
+                            reader.readAsDataURL(blob);
+                            reader.onloadend = () => sendVoiceMessage(reader.result);
+                            stream.getTracks().forEach(t => t.stop());
                         };
                         mediaRecorder.start();
                         isRecording = true;
                         db.ref(`typing/${myKey}`).set('voice');
                         voiceBtn.classList.add('recording');
                         voiceBtn.innerText = "⏹️";
-                    } catch (err) {
-                        alert("⚠️ لم يمنح المتصفح إذن المايكروفون.");
+                    } catch(e) {
+                        alert("⚠️ لم يتم منح إذن المايكروفون.");
                     }
                 } else {
                     if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
@@ -1389,125 +1401,139 @@
         }
         function sendVoiceMessage(base64Audio) {
             db.ref(`typing/${myKey}`).set('idle');
-            db.ref(`status/${partnerKey}`).once('value', (snapshot) => {
-                const isPartnerOnline = snapshot.val() && snapshot.val().online;
-                const initialStatus = isPartnerOnline ? 'delivered' : 'sent';
+            db.ref(`status/${partnerKey}`).once('value', (snap) => {
+                const isOnline = snap.val() && snap.val().online;
                 db.ref('messages').push({
                     author: currentUser,
                     text: "🎙️ رسالة صوتية",
                     type: "voice",
                     audioData: base64Audio,
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: initialStatus
+                    status: isOnline ? 'delivered' : 'sent'
                 });
             });
         }
         window.unpinMessage = function() { db.ref('pinned_message').remove(); };
-        function setupAdminPanel() {
-            const adminHeaderBtn = document.getElementById('adminHeaderBtn');
-            const adminModal = document.getElementById('adminModal');
-            const closeAdminBtn = document.getElementById('closeAdminBtn');
-            if (isAdmin) adminHeaderBtn.style.display = 'inline-block';
-            else adminHeaderBtn.style.display = 'none';
-            adminHeaderBtn.onclick = () => { adminModal.style.display = 'flex'; };
-            closeAdminBtn.onclick = () => { adminModal.style.display = 'none'; };
-        }
+        const adminHeaderBtn = document.getElementById('adminHeaderBtn');
+        const adminModal = document.getElementById('adminModal');
+        adminHeaderBtn.style.display = 'inline-block';
+        adminHeaderBtn.onclick = () => adminModal.style.display = 'flex';
+        document.getElementById('closeAdminBtn').onclick = () => adminModal.style.display = 'none';
+        
         window.sendVibrationSignal = function() {
-            db.ref('vibration_signals').push({
-                sender: currentUser,
-                target: partnerUser,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            });
-            alert("تم إرسال هزّة تنبيه فورية لشهد!");
+            db.ref('vibration_signals').push({ sender: currentUser, target: partnerUser, timestamp: firebase.database.ServerValue.TIMESTAMP });
+            alert("تم إرسال هزّة تنبيه!");
         };
         window.triggerFireworks = function() {
-            db.ref('heart_explosions').push({
-                sender: currentUser,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            });
-            alert("تم إطلاق تأثير القلوب لدى الطرفين!");
+            db.ref('heart_explosions').push({ sender: currentUser, timestamp: firebase.database.ServerValue.TIMESTAMP });
+            alert("تم إطلاق تأثير القلوب!");
         };
         window.editDaysCounter = function() {
-            const newDays = prompt("أدخل عدد الأيام الجديد للعداد:");
-            if (newDays !== null && !isNaN(newDays)) {
-                db.ref('love_days').set(parseInt(newDays));
-                alert("تم تحديث العداد بنجاح!");
-            }
+            const nd = prompt("أدخل عدد الأيام الجديد:");
+            if (nd !== null && !isNaN(nd)) db.ref('love_days').set(parseInt(nd));
         };
         window.clearAllChat = function() {
-            if (confirm("⚠️ هل أنت تأكد من مسح جميع الرسائل فوراً؟")) db.ref('messages').remove();
+            if (confirm("مسح جميع الرسائل؟")) db.ref('messages').remove();
         };
         window.clearMissHistory = function() {
-            if (confirm("⚠️ هل تريد مسح سجل النبضات بالكامل؟")) db.ref('miss_heart_history').remove();
+            if (confirm("مسح سجل النبضات؟")) db.ref('miss_heart_history').remove();
         };
         function sendMessage(text) {
             if (!text.trim()) return;
             db.ref(`typing/${myKey}`).set('idle');
-            db.ref(`status/${partnerKey}`).once('value', (snapshot) => {
-                const isPartnerOnline = snapshot.val() && snapshot.val().online;
-                const initialStatus = isPartnerOnline ? 'delivered' : 'sent';
+            db.ref(`status/${partnerKey}`).once('value', (snap) => {
+                const isOnline = snap.val() && snap.val().online;
                 db.ref('messages').push({
                     author: currentUser,
                     text: text.trim(),
                     type: "text",
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: initialStatus
+                    status: isOnline ? 'delivered' : 'sent'
                 });
             });
-        }
-        function triggerSharedHeartExplosion() {
-            sendMessage('❤️');
-            db.ref('heart_explosions').push({
-                sender: currentUser,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            });
-            triggerSecretNote();
         }
         document.getElementById('sendMsgBtn').onclick = () => {
             const input = document.getElementById('chatInput');
             sendMessage(input.value);
             input.value = '';
         };
-        document.getElementById('sendHeartBtn').onclick = () => { triggerSharedHeartExplosion(); };
+        document.getElementById('sendHeartBtn').onclick = () => {
+            sendMessage('❤️');
+            db.ref('heart_explosions').push({ sender: currentUser, timestamp: firebase.database.ServerValue.TIMESTAMP });
+            triggerSecretNote();
+        };
         document.getElementById('chatInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') document.getElementById('sendMsgBtn').click();
         });
-        const accounts = {
-            "شهد": { pass: "2000", partner: "أحمد", myKey: "shahad", partnerKey: "ahmed", isAdmin: false },
-            "shahad": { pass: "2000", partner: "ahmed", myKey: "shahad", partnerKey: "ahmed", isAdmin: false },
-            "أحمد": { pass: "2001", partner: "شهد", myKey: "ahmed", partnerKey: "shahad", isAdmin: true },
-            "ahmed": { pass: "2001", partner: "shahad", myKey: "ahmed", partnerKey: "shahad", isAdmin: true }
-        };
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+        document.getElementById('authForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
-            const lowerUser = user.toLowerCase();
-            if (accounts[lowerUser] && accounts[lowerUser].pass === pass) {
-                currentUser = user;
-                partnerUser = accounts[lowerUser].partner;
-                myKey = accounts[lowerUser].myKey;
-                partnerKey = accounts[lowerUser].partnerKey;
-                isAdmin = accounts[lowerUser].isAdmin;
-                loginContainer.style.display = 'none';
-                mainPage.style.display = 'flex';
-                document.getElementById('typingTitle').innerText = `أهلاً بك يا ${user} ❤️`;
-                setTimeout(() => {
-                    launchHeartsExplosion();
-                    setupPresenceAndTypingSystem();
-                    setupBatterySync();
-                    setupSharedFingerprint();
-                    setupLiveClockAndCounter();
-                    setupMissYouSystem();
-                    setupHistoryModal();
-                    setupLiveChat();
-                    setupVoiceRecording();
-                    setupAdminPanel();
-                }, 300);
-            } else {
-                alert("❌ اسم المستخدم أو كلمة السر غير صحيحة!");
-            }
+            const cleanUserKey = user.replace(/[^a-zA-Z0-9_\u0600-\u06FF]/g, "_");
+            db.ref(`users/${cleanUserKey}`).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (isRegistering) {
+                    if (userData) {
+                        alert("⚠️ هذا الاسم مستخدم بالفعل، جرب اسمًا آخر أو قم بتسجيل الدخول.");
+                        return;
+                    }
+                    db.ref('users').once('value', (allUsersSnap) => {
+                        const allUsers = allUsersSnap.val() || {};
+                        const existingKeys = Object.keys(allUsers);
+                        
+                        let assignedPartner = "الطرف الآخر";
+                        let assignedPartnerKey = "partner";
+                        
+                        if (existingKeys.length > 0) {
+                            const firstUserKey = existingKeys[0];
+                            assignedPartner = allUsers[firstUserKey].name;
+                            assignedPartnerKey = firstUserKey;
+                            
+                            db.ref(`users/${firstUserKey}`).update({
+                                partner: user,
+                                partnerKey: cleanUserKey
+                            });
+                        }
+                        const newAccount = {
+                            name: user,
+                            pass: pass,
+                            partner: assignedPartner,
+                            partnerKey: assignedPartnerKey
+                        };
+                        db.ref(`users/${cleanUserKey}`).set(newAccount).then(() => {
+                            initUserSession(user, cleanUserKey, assignedPartner, assignedPartnerKey);
+                        });
+                    });
+                } else {
+                    if (!userData || userData.pass !== pass) {
+                        alert("❌ اسم المستخدم أو كلمة السر غير صحيحة!");
+                        return;
+                    }
+                    initUserSession(userData.name, cleanUserKey, userData.partner || "الطرف الآخر", userData.partnerKey || "partner");
+                }
+            });
         });
+        function initUserSession(name, key, pName, pKey) {
+            currentUser = name;
+            myKey = key;
+            partnerUser = pName;
+            partnerKey = pKey;
+            loginContainer.style.display = 'none';
+            mainPage.style.display = 'flex';
+            document.getElementById('typingTitle').innerText = `أهلاً بك يا ${name} ❤️`;
+            
+            setTimeout(() => {
+                launchHeartsExplosion();
+                setupPresenceAndTypingSystem();
+                setupBatterySync();
+                setupSharedFingerprint();
+                setupLiveClockAndCounter();
+                setupMissYouSystem();
+                setupHistoryModal();
+                setupLiveChat();
+                setupVoiceRecording();
+            }, 300);
+        }
         function handleLogout() {
             if (myKey) {
                 db.ref(`status/${myKey}`).set({ online: false, last_seen: firebase.database.ServerValue.TIMESTAMP });
