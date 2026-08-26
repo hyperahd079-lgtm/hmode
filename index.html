@@ -1,6 +1,107 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الموقع تحت الصيانة</title>
+    <style>
+        /* كود الصيانة الذي يغطي الشاشة بالكامل ويخفي الموقع الأصلي */
+        #maintenance-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0b070c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+        }
+        .maintenance-card {
+            background: #ffffff;
+            color: #333;
+            width: 85%;
+            max-width: 380px;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-family: Tahoma, sans-serif;
+        }
+        .maintenance-card h1 {
+            color: #d9534f;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        .maintenance-card p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة الصيانة التي ستظهر للزوار -->
+    <div id="maintenance-screen">
+        <div class="maintenance-card">
+            <h1>الموقع تحت الصيانة حالياً 🛠️</h1>
+            <p>نقوم حالياً بإجراء بعض التحديثات والتعديلات، سنعود للعمل قريباً جداً.</p>
+        </div>
+    </div>
+
+    <!-- 🛑 ضع موقعك الأصلي هنا بالأسفل (تحت هذا التعليق) -->
+    <div id="original-website-content" style="display: none;">
+        
+        <!-- هنا ضع كل أكواد موقعك القديمة -->
+        <h1>هذا موقعك الأصلي</h1>
+
+    </div>
+
+    <script>
+        // 1. حالة الصيانة العامة (true تعني أن الموقع مغلق للطرف الثاني ويظهر لهم شاشة الصيانة)
+        const isMaintenanceMode = true; 
+
+        // 2. التحقق مما إذا كنت قد فتحت الموقع مسبقاً من جهازك (محفوظ في المتصفح)
+        const isUnlockedLocally = localStorage.getItem('admin_unlocked') === 'true';
+
+        // 3. التحقق من الرابط السري (يبقى كخيار احتياطي إذا أردت فتحه من متصفح الهاتف مثلاً)
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasSecretAccess = urlParams.get('admin') === 'mysecret123';
+
+        if (hasSecretAccess) {
+            // إذا دخلت بالرابط السري، احفظ الوصول في المتصفح تلقائياً
+            localStorage.setItem('admin_unlocked', 'true');
+        }
+
+        // دالة إظهار الموقع وإخفاء شاشة الصيانة
+        function showWebsite() {
+            document.getElementById('maintenance-screen').style.display = 'none';
+            document.getElementById('original-website-content').style.display = 'block';
+        }
+
+        // إذا كانت الصيانة معطلة، أو معك صلاحية محفوظة، أو دخلت بالرابط السري افتح الموقع فوراً
+        if (!isMaintenanceMode || isUnlockedLocally || hasSecretAccess) {
+            showWebsite();
+        }
+
+        // 4. مفتاح الكيبورد السري: عندما تضغط على زر F4 في لوحة المفاتيح، سيفتح الموقع ويحفظ دخولك للأبد!
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'F4') { // يمكنك تغيير 'F4' إلى أي زر آخر مثل 'Enter' أو حرف 'm' مثلاً
+                localStorage.setItem('admin_unlocked', 'true');
+                showWebsite();
+                alert('تم فتح الموقع بنجاح وصلاحيات المدير مفعلة!');
+            }
+        });
+    </script>
+</body>
+</html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>عالمنا الخاص ❤️</title>
