@@ -24,9 +24,8 @@
             --chat-input-bg: rgba(15, 5, 10, 0.95);
         }
         
-        /* تقليل سطوع الثيم الأبيض وتنعيم درجات الألوان */
         body.light-mode-active {
-            --bg-dark: #eef1f6; /* خلفية هادئة وغير ساطعة */
+            --bg-dark: #eef1f6;
             --text-main: #2c3e50;
             --text-sub: #6c757d;
             --card-bg: rgba(255, 255, 255, 0.75);
@@ -167,7 +166,7 @@
             overflow: hidden; 
         }
         
-        /* ------------------ Apple Dynamic Island - التصميم المحسّن المصغّر ------------------ */
+        /* ------------------ Dynamic Island - انسيابية وسلاسة محسّنة ------------------ */
         .dynamic-island-container {
             width: 100%;
             display: flex;
@@ -191,27 +190,25 @@
             position: relative;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            transition: width 0.35s cubic-bezier(0.32, 0.72, 0, 1), 
-                        height 0.35s cubic-bezier(0.32, 0.72, 0, 1), 
-                        border-radius 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            transition: all 0.45s cubic-bezier(0.32, 0.72, 0, 1);
             transform-origin: top center;
+            will-change: width, height, border-radius, background-color;
         }
         .dynamic-island:active {
             transform: scale(0.97);
         }
         
-        /* تصغير الجزيرة عند التوسيع وتقسيمها لهيكل العداد في الأعلى و 1 و 2 في الأسفل */
         .dynamic-island.expanded {
-            width: 90%;
+            width: 92%;
             max-width: 420px;
-            height: auto;
-            border-radius: 24px;
-            padding: 10px 12px;
+            height: 230px;
+            border-radius: 28px;
+            padding: 12px;
             cursor: default;
             background: var(--island-exp-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--card-border);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
         }
         
         .island-collapsed-content {
@@ -225,50 +222,78 @@
             color: var(--primary-color);
             font-weight: 600;
             white-space: nowrap;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s ease;
             pointer-events: none;
         }
         .dynamic-island.expanded .island-collapsed-content {
             opacity: 0;
+            transform: scale(0.92);
         }
+        
+        /* موجة الصوت لتشغيل والتسجيل */
         .island-voice-wave {
             display: none;
             align-items: center;
             gap: 3px;
+        }
+        .island-voice-wave.active {
+            display: flex;
         }
         .island-voice-wave span {
             width: 3px;
             height: 10px;
             background: #ffd700;
             border-radius: 3px;
-            animation: islandWave 0.8s infinite ease-in-out alternate;
+            animation: islandWave 0.6s infinite ease-in-out alternate;
         }
-        .island-voice-wave span:nth-child(2) { animation-delay: 0.2s; }
-        .island-voice-wave span:nth-child(3) { animation-delay: 0.4s; }
+        .island-voice-wave span:nth-child(2) { animation-delay: 0.15s; }
+        .island-voice-wave span:nth-child(3) { animation-delay: 0.3s; }
+        
+        .island-recording-dot {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            color: #ff4d4d;
+            font-size: 10px;
+        }
+        .island-recording-dot.active {
+            display: flex;
+        }
+        .rec-dot-pulse {
+            width: 8px; height: 8px;
+            background: #ff4d4d;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ff4d4d;
+            animation: recPulse 1s infinite alternate;
+        }
+        @keyframes recPulse { 0% { opacity: 0.3; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
         @keyframes islandWave { 0% { height: 4px; } 100% { height: 14px; } }
         
         .island-expanded-content {
-            display: none;
+            display: flex;
             width: 100%;
+            height: 100%;
             flex-direction: column;
             gap: 8px;
             opacity: 0;
-            transition: opacity 0.3s ease 0.05s;
+            transform: scale(0.95);
+            transition: opacity 0.3s ease 0.1s, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) 0.1s;
+            pointer-events: none;
         }
         
         .dynamic-island.expanded .island-expanded-content {
-            display: flex;
             opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
         }
         
-        /* القسم السفلي ينقسم بالنصف (بصمة + أنا مشتاق) */
         .island-bottom-split {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             width: 100%;
+            flex: 1;
         }
-
         body.lights-off .dynamic-island-container { opacity: 0; visibility: hidden; pointer-events: none; }
         
         .counter-card, .touch-card, .miss-card { 
@@ -283,7 +308,6 @@
             text-align: center;
         }
         
-        /* العداد في الأعلى بكامل العرض */
         .counter-card { width: 100%; }
         .counter-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2px; }
         .counter-card h2 { font-size: 11px; color: var(--primary-color); }
@@ -334,14 +358,12 @@
         .days-box { font-size: 13px; font-weight: bold; color: var(--primary-color); margin: 2px 0; }
         .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 14px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px var(--glow-color); }
         
-        /* 1. قسم البصمة */
         .touch-card { width: 100%; height: 100%; }
         .fingerprint-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 105, 180, 0.12); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.3s; margin: 4px 0; }
         .fingerprint-btn.active { background: rgba(255, 105, 180, 0.3); border-style: solid; transform: scale(0.95); }
         .fingerprint-btn.synced { background: #2ecc71; border-color: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
         .touch-status { font-size: 8px; color: var(--text-sub); }
         
-        /* 2. قسم أنا مشتاق */
         .miss-card { width: 100%; height: 100%; gap: 3px; }
         .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 12px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.3); }
         .last-pulse-box {
@@ -731,14 +753,23 @@
         </div>
         <div class="page-content">
             <div class="dynamic-island-container">
-                <!-- Dynamic Island Container -->
+                <!-- Dynamic Island Container - مع انسيابية محسنة في الحركة وتفاعلات الصوت -->
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
                     <div class="island-collapsed-content" id="islandCollapsedContent">
-                        <span>❤️ عالمنا الخاص</span>
+                        <span id="islandMainTitle">❤️ عالمنا الخاص</span>
+                        
+                        <!-- مؤشر التسجيل -->
+                        <div class="island-recording-dot" id="islandRecordingDot">
+                            <div class="rec-dot-pulse"></div>
+                            <span>تسجيل صوتي...</span>
+                        </div>
+                        
+                        <!-- مؤشر الاستماع للفويس -->
                         <div class="island-voice-wave" id="islandVoiceWave">
                             <span></span><span></span><span></span>
                             <span style="font-size: 10px; color: #ffd700; margin-right: 4px;">يستمع للفويس...</span>
                         </div>
+                        
                         <span id="islandIndicatorText" style="font-size: 10px; color: var(--text-sub);">اضغط للتفاصيل ✨</span>
                     </div>
                     
@@ -867,7 +898,6 @@
                     <div class="theme-dot" style="background: #9b59b6;" onclick="setTheme('#9b59b6', '#8e44ad', 'rgba(155, 89, 182, 0.5)', '#09030c')" title="بنفسجي ليلي"></div>
                     <div class="theme-dot" style="background: #3498db;" onclick="setTheme('#3498db', '#2980b9', 'rgba(52, 152, 219, 0.5)', '#020b14')" title="أزرق سماوي"></div>
                     <div class="theme-dot" style="background: #e67e22;" onclick="setTheme('#e67e22', '#d35400', 'rgba(230, 126, 34, 0.5)', '#120800')" title="ذهبي دافئ"></div>
-                    <!-- ثيم أبيض غير ساطع ومريح للعين -->
                     <div class="theme-dot" style="background: #eef1f6; border-color: #ff69b4;" onclick="setTheme('#ff69b4', '#ff1493', 'rgba(255, 105, 180, 0.2)', '#eef1f6', true)" title="أبيض هادئ"></div>
                 </div>
                 <hr style="border-color: var(--card-border); margin: 6px 0;">
@@ -963,7 +993,6 @@
             }
         });
 
-        /* ثيم أبيض غير ساطع ومريح للعين */
         function setTheme(primary, secondary, glow, bgDark = '#050203', isLight = false, saveToCloud = true) {
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--secondary-color', secondary);
@@ -991,7 +1020,6 @@
                 setTheme(t.primary, t.secondary, t.glow, t.bgDark || '#050203', t.isLight || false, false);
             }catch(e){}
         }
-
         function triggerSecretNote() {
             heartClickCount++;
             clearTimeout(heartClickTimer);
@@ -1444,17 +1472,29 @@
                 db.ref(`voice_playing/${myKey}`).set(false);
             }
         };
+        
+        /* مزامنة الجزيرة الديناميكية مع استماع وتسجيل الصوت */
         function setupVoiceIslandSync() {
+            const waveElem = document.getElementById('islandVoiceWave');
+            const mainTitle = document.getElementById('islandMainTitle');
+            const indicatorText = document.getElementById('islandIndicatorText');
+
             db.ref(`voice_playing/${partnerKey}`).on('value', (snap) => {
                 const isPlaying = snap.val();
-                const island = document.getElementById('dynamicIsland');
                 if (isPlaying) {
-                    island.classList.add('listening-voice');
+                    waveElem.classList.add('active');
+                    mainTitle.style.display = 'none';
+                    indicatorText.style.display = 'none';
                 } else {
-                    island.classList.remove('listening-voice');
+                    waveElem.classList.remove('active');
+                    if (!isRecording) {
+                        mainTitle.style.display = 'inline';
+                        indicatorText.style.display = 'inline';
+                    }
                 }
             });
         }
+        
         function setupLiveChat() {
             const chatBox = document.getElementById('chatMessages');
             chatBox.innerHTML = '';
@@ -1557,11 +1597,16 @@
                 if (data && data.target === currentUser && !isInitialLoad) triggerVibration();
             });
         }
+        
         function setupVoiceRecording() {
             const voiceBtn = document.getElementById('voiceBtn');
             const cancelBtn = document.getElementById('cancelVoiceBtn');
             const overlay = document.getElementById('tgVoiceOverlay');
             const timerElem = document.getElementById('tgVoiceTimer');
+            const recDot = document.getElementById('islandRecordingDot');
+            const mainTitle = document.getElementById('islandMainTitle');
+            const indicatorText = document.getElementById('islandIndicatorText');
+
             function startTimer() {
                 voiceSeconds = 0;
                 timerElem.innerText = "00:00";
@@ -1578,6 +1623,7 @@
                 voiceSeconds = 0;
                 timerElem.innerText = "00:00";
             }
+            
             cancelBtn.onclick = () => {
                 if (isRecording) {
                     cancelRecording = true;
@@ -1586,6 +1632,9 @@
                     db.ref(`typing/${myKey}`).set('idle');
                     voiceBtn.classList.remove('recording');
                     overlay.classList.remove('active');
+                    recDot.classList.remove('active');
+                    mainTitle.style.display = 'inline';
+                    indicatorText.style.display = 'inline';
                     stopTimer();
                 }
             };
@@ -1603,6 +1652,9 @@
                         mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                         mediaRecorder.onstop = async () => {
                             overlay.classList.remove('active');
+                            recDot.classList.remove('active');
+                            mainTitle.style.display = 'inline';
+                            indicatorText.style.display = 'inline';
                             stopTimer();
                             if (!cancelRecording) {
                                 const blob = new Blob(audioChunks, { type: 'audio/webm' });
@@ -1615,6 +1667,9 @@
                         db.ref(`typing/${myKey}`).set('voice');
                         voiceBtn.classList.add('recording');
                         overlay.classList.add('active');
+                        recDot.classList.add('active');
+                        mainTitle.style.display = 'none';
+                        indicatorText.style.display = 'none';
                         startTimer();
                     } catch(e) {
                         alert("⚠️ لم يتم منح إذن المايكروفون.");
@@ -1624,9 +1679,13 @@
                     isRecording = false;
                     db.ref(`typing/${myKey}`).set('idle');
                     voiceBtn.classList.remove('recording');
+                    recDot.classList.remove('active');
+                    mainTitle.style.display = 'inline';
+                    indicatorText.style.display = 'inline';
                 }
             };
         }
+        
         function uploadAndSendVoice(blob) {
             const reader = new FileReader();
             reader.readAsDataURL(blob);
@@ -1641,6 +1700,7 @@
                 });
             };
         }
+        
         function setupChatActions() {
             const chatInput = document.getElementById('chatInput');
             const sendBtn = document.getElementById('sendMsgBtn');
@@ -1672,6 +1732,7 @@
                 launchHeartsExplosion();
             };
         }
+        
         function setupAdminPanel() {
             const adminBtn = document.getElementById('adminHeaderBtn');
             const adminModal = document.getElementById('adminModal');
@@ -1704,7 +1765,7 @@
             localStorage.removeItem('love_user');
             location.reload();
         };
-
+        
         const authForm = document.getElementById('authForm');
         authForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -1736,7 +1797,7 @@
                 });
             }
         };
-
+        
         function startSession(username) {
             currentUser = username;
             myKey = username.toLowerCase();
@@ -1772,4 +1833,3 @@
     </script>
 </body>
 </html>
-
