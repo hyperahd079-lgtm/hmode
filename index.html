@@ -7,18 +7,41 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <style>
         :root {
             --primary-color: #ff69b4;
             --secondary-color: #e74c3c;
             --glow-color: rgba(255, 105, 180, 0.5);
             --bg-dark: #050203;
+            --text-main: #ffffff;
+            --text-sub: #dda0dd;
+            --card-bg: rgba(255, 182, 193, 0.06);
+            --card-border: rgba(255, 182, 193, 0.2);
+            --island-bg: #000000;
+            --island-exp-bg: rgba(12, 6, 10, 0.96);
+            --chat-bg: rgba(20, 8, 14, 0.85);
+            --chat-input-bg: rgba(15, 5, 10, 0.95);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; user-select: none; }
+        
+        /* تقليل سطوع الثيم الأبيض وتنعيم درجات الألوان */
+        body.light-mode-active {
+            --bg-dark: #eef1f6; /* خلفية هادئة وغير ساطعة */
+            --text-main: #2c3e50;
+            --text-sub: #6c757d;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --island-bg: #e2e8f0;
+            --island-exp-bg: rgba(245, 247, 250, 0.96);
+            --chat-bg: rgba(255, 255, 255, 0.8);
+            --chat-input-bg: #f8f9fa;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; user-select: none; }
         input, textarea { user-select: text !important; -webkit-user-select: text !important; }
         body { 
             background-color: var(--bg-dark); 
-            color: #fff; 
+            color: var(--text-main); 
             height: 100vh; 
             height: 100dvh;
             display: flex; 
@@ -26,7 +49,7 @@
             align-items: center; 
             overflow: hidden; 
             position: relative; 
-            transition: background-color 0.6s ease;
+            transition: background-color 0.6s ease, color 0.4s ease;
         }
         .screen-overlay { 
             position: fixed; 
@@ -49,16 +72,16 @@
             z-index: 50; 
             width: 100%; 
             max-width: 750px; 
-            background: rgba(20, 8, 12, 0.95); 
+            background: var(--island-exp-bg); 
             backdrop-filter: blur(15px); 
             border-radius: 24px; 
             display: flex; 
             justify-content: space-around; 
             align-items: center; 
             padding: 25px; 
-            border: 1px solid rgba(255, 182, 193, 0.25); 
+            border: 1px solid var(--card-border); 
             gap: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
         }
         
         .lamp-box { position: relative; width: 200px; height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
@@ -77,11 +100,11 @@
         body.lights-off .lamp-shade { background: #333 !important; box-shadow: none !important; }
         body.lights-off .lamp-bulb { background: #555 !important; box-shadow: none !important; }
         
-        .login-card { width: 100%; max-width: 320px; padding: 25px 20px; background: rgba(255, 192, 203, 0.05); border-radius: 18px; border: 1px solid rgba(255, 182, 193, 0.2); transition: all 0.4s ease; }
+        .login-card { width: 100%; max-width: 320px; padding: 25px 20px; background: var(--card-bg); border-radius: 18px; border: 1px solid var(--card-border); transition: all 0.4s ease; }
         .login-card h2 { margin-bottom: 15px; text-align: center; color: var(--primary-color); font-size: 20px; }
         .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; color: #dda0dd; margin-bottom: 4px; font-size: 13px; }
-        .input-group input { width: 100%; padding: 10px 12px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 192, 203, 0.2); border-radius: 10px; color: #fff; outline: none; font-size: 14px; transition: all 0.3s ease; }
+        .input-group label { display: block; color: var(--text-sub); margin-bottom: 4px; font-size: 13px; }
+        .input-group input { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-main); outline: none; font-size: 14px; transition: all 0.3s ease; }
         
         body.lights-off .login-card input {
             background: rgba(255, 255, 255, 0.03) !important;
@@ -97,10 +120,9 @@
             box-shadow: none !important;
         }
         .login-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 0 10px var(--glow-color); }
-        .switch-auth { text-align: center; margin-top: 10px; font-size: 12px; color: #dda0dd; cursor: pointer; }
+        .switch-auth { text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-sub); cursor: pointer; }
         .switch-auth span { color: var(--primary-color); font-weight: bold; text-decoration: underline; }
         
-        /* واجهة التطبيق الرئيسية بكامل الشاشة */
         .main-page { 
             display: none; 
             z-index: 10; 
@@ -145,7 +167,7 @@
             overflow: hidden; 
         }
         
-        /* 🌟 تصميم الجزيرة الديناميكية المحسّن (حل مشكلة التداخل ونعومة الحركة) */
+        /* ------------------ Apple Dynamic Island - التصميم المحسّن المصغّر ------------------ */
         .dynamic-island-container {
             width: 100%;
             display: flex;
@@ -156,126 +178,145 @@
             margin-top: 2px;
         }
         .dynamic-island {
-            background: rgba(18, 8, 14, 0.95);
-            border: 1px solid rgba(255, 182, 193, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px;
-            width: 190px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 12px;
-            cursor: pointer;
-            /* استخدام دالة تسارع سلسة جداً تمنع أي تقطيع أو تداخل */
-            transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
-                        height 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
-                        border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                        box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            overflow: hidden;
-            position: relative;
-        }
-        .dynamic-island.expanded {
-            width: 100%;
-            max-width: 850px;
-            height: auto;
-            max-height: 85dvh;
-            border-radius: 16px;
-            padding: 10px;
-            cursor: default;
-            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.25);
-        }
-        
-        /* طبقة المحتوى المصغر */
-        .island-collapsed-content {
-            position: absolute;
+            background: var(--island-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            width: 210px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: calc(100% - 24px);
+            padding: 0 16px;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: width 0.35s cubic-bezier(0.32, 0.72, 0, 1), 
+                        height 0.35s cubic-bezier(0.32, 0.72, 0, 1), 
+                        border-radius 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            transform-origin: top center;
+        }
+        .dynamic-island:active {
+            transform: scale(0.97);
+        }
+        
+        /* تصغير الجزيرة عند التوسيع وتقسيمها لهيكل العداد في الأعلى و 1 و 2 في الأسفل */
+        .dynamic-island.expanded {
+            width: 90%;
+            max-width: 420px;
+            height: auto;
+            border-radius: 24px;
+            padding: 10px 12px;
+            cursor: default;
+            background: var(--island-exp-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .island-collapsed-content {
+            position: absolute;
+            left: 0; top: 0; width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
             font-size: 11px;
             color: var(--primary-color);
-            font-weight: bold;
+            font-weight: 600;
             white-space: nowrap;
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.2s ease;
             pointer-events: none;
         }
         .dynamic-island.expanded .island-collapsed-content {
             opacity: 0;
-            visibility: hidden;
         }
+        .island-voice-wave {
+            display: none;
+            align-items: center;
+            gap: 3px;
+        }
+        .island-voice-wave span {
+            width: 3px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 3px;
+            animation: islandWave 0.8s infinite ease-in-out alternate;
+        }
+        .island-voice-wave span:nth-child(2) { animation-delay: 0.2s; }
+        .island-voice-wave span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes islandWave { 0% { height: 4px; } 100% { height: 14px; } }
         
-        /* طبقة المحتوى الموسع (تظهر حصراً بعد اكتمال الاتساع لعدم تداخل الحروف) */
         .island-expanded-content {
             display: none;
             width: 100%;
-            opacity: 0;
-            transform: scale(0.97);
-            transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
-        }
-        .dynamic-island.expanded .island-expanded-content {
-            display: grid;
-            grid-template-columns: 1.1fr 0.8fr 1.1fr;
+            flex-direction: column;
             gap: 8px;
-            opacity: 1;
-            transform: scale(1);
+            opacity: 0;
+            transition: opacity 0.3s ease 0.05s;
         }
         
-        @media(max-width: 600px) {
-            .dynamic-island.expanded .island-expanded-content {
-                grid-template-columns: 1fr;
-                max-height: 70dvh;
-                overflow-y: auto;
-            }
+        .dynamic-island.expanded .island-expanded-content {
+            display: flex;
+            opacity: 1;
+        }
+        
+        /* القسم السفلي ينقسم بالنصف (بصمة + أنا مشتاق) */
+        .island-bottom-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
         }
 
         body.lights-off .dynamic-island-container { opacity: 0; visibility: hidden; pointer-events: none; }
         
         .counter-card, .touch-card, .miss-card { 
-            background: rgba(255, 182, 193, 0.06); 
-            border: 1px solid rgba(255, 182, 193, 0.2); 
-            padding: 8px 6px; 
-            border-radius: 12px; 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            padding: 8px 10px; 
+            border-radius: 14px; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
             text-align: center;
         }
-        .counter-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 2px; margin-bottom: 3px; position: relative; }
+        
+        /* العداد في الأعلى بكامل العرض */
+        .counter-card { width: 100%; }
+        .counter-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2px; }
         .counter-card h2 { font-size: 11px; color: var(--primary-color); }
         
         .menu-slide-container { position: relative; display: inline-block; }
-        .menu-trigger-icon { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 182, 193, 0.3); color: var(--primary-color); width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .menu-trigger-icon { background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); color: var(--primary-color); width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .menu-trigger-icon:hover { background: rgba(255, 105, 180, 0.2); }
         
         .slide-dropdown-menu {
             position: absolute;
             top: 0;
             left: 24px;
-            background: rgba(20, 8, 14, 0.98);
+            background: var(--island-exp-bg);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 182, 193, 0.3);
+            border: 1px solid var(--card-border);
             border-radius: 10px;
             padding: 6px;
             display: flex;
             gap: 4px;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             z-index: 100;
             max-width: 0;
             opacity: 0;
             overflow: hidden;
             white-space: nowrap;
-            transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            transition: max-width 0.3s ease, opacity 0.3s ease;
         }
         .slide-dropdown-menu.open {
             max-width: 220px;
             opacity: 1;
         }
-        .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 9px; cursor: pointer; transition: 0.2s; }
+        .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 9px; cursor: pointer; }
         
         .admin-header-btn { 
             background: linear-gradient(135deg, #f39c12, #d35400); 
@@ -287,70 +328,70 @@
             font-weight: bold; 
             cursor: pointer; 
             display: none; 
-            box-shadow: 0 0 5px rgba(243, 156, 18, 0.4);
         }
-        .live-clock-box { font-size: 9px; color: #dda0dd; margin-bottom: 3px; direction: ltr; }
+        
+        .live-clock-box { font-size: 9px; color: var(--text-sub); margin-bottom: 2px; direction: ltr; }
         .days-box { font-size: 13px; font-weight: bold; color: var(--primary-color); margin: 2px 0; }
-        .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 20px; font-size: 8.5px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px var(--glow-color); }
+        .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 14px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px var(--glow-color); }
         
-        .fingerprint-btn { width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 105, 180, 0.15); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.3s; position: relative; }
-        .fingerprint-btn.active { background: rgba(255, 105, 180, 0.4); border-style: solid; box-shadow: 0 0 10px var(--primary-color); transform: scale(0.95); }
-        .fingerprint-btn.synced { background: #2ecc71; border-color: #2ecc71; box-shadow: 0 0 12px #2ecc71; animation: pulseSync 0.6s infinite alternate; }
-        @keyframes pulseSync { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
-        .touch-status { font-size: 8px; color: #dda0dd; }
-        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 20px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.4); }
+        /* 1. قسم البصمة */
+        .touch-card { width: 100%; height: 100%; }
+        .fingerprint-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 105, 180, 0.12); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.3s; margin: 4px 0; }
+        .fingerprint-btn.active { background: rgba(255, 105, 180, 0.3); border-style: solid; transform: scale(0.95); }
+        .fingerprint-btn.synced { background: #2ecc71; border-color: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+        .touch-status { font-size: 8px; color: var(--text-sub); }
         
+        /* 2. قسم أنا مشتاق */
+        .miss-card { width: 100%; height: 100%; gap: 3px; }
+        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 12px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.3); }
         .last-pulse-box {
             font-size: 7.5px;
             color: var(--primary-color);
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 182, 193, 0.2);
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--card-border);
             border-radius: 6px;
-            padding: 3px 6px;
+            padding: 2px 4px;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            line-height: 1.2;
         }
-        .history-btn { padding: 3px 6px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 182, 193, 0.25); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
+        .history-btn { padding: 2px 4px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
         
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); z-index: 300; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: #180910; border: 1px solid rgba(255, 182, 193, 0.3); border-radius: 18px; width: 90%; max-width: 400px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 182, 193, 0.15); padding-bottom: 8px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(5px); z-index: 300; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: var(--island-exp-bg); border: 1px solid var(--card-border); border-radius: 18px; width: 90%; max-width: 400px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; box-shadow: 0 10px 30px rgba(0,0,0,0.2); color: var(--text-main); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; }
         .modal-header h3 { font-size: 15px; color: var(--primary-color); }
         .close-modal-btn { background: none; border: none; color: var(--primary-color); font-size: 18px; cursor: pointer; }
         .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; max-height: 50vh; padding-left: 5px; }
-        .history-item { background: rgba(255, 255, 255, 0.06); padding: 8px 12px; border-radius: 10px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid #ff416c; }
+        .history-item { background: var(--card-bg); padding: 8px 12px; border-radius: 10px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid #ff416c; }
         .history-user { font-weight: bold; color: var(--primary-color); }
-        .history-time { font-size: 10px; color: #dda0dd; direction: ltr; }
+        .history-time { font-size: 10px; color: var(--text-sub); direction: ltr; }
         
-        /* صندوق المحادثة الشامل */
         .chat-container { 
             width: 100%; 
             flex: 1; 
             display: flex; 
             flex-direction: column; 
-            background: rgba(20, 8, 14, 0.85); 
-            border: 1px solid rgba(255, 105, 180, 0.3); 
+            background: var(--chat-bg); 
+            border: 1px solid var(--card-border); 
             border-radius: 16px; 
             backdrop-filter: blur(10px); 
             overflow: hidden; 
             min-height: 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
             z-index: 10; 
             position: relative;
-            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            transition: background 0.4s ease, border-color 0.4s ease;
         }
         body.lights-off .chat-container {
             background: #000000 !important;
             border-color: rgba(255, 255, 255, 0.05) !important;
-            box-shadow: none !important;
         }
-        .chat-header { padding: 6px 12px; background: rgba(255, 105, 180, 0.08); color: var(--primary-color); font-weight: bold; font-size: 10.5px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; transition: opacity 0.4s ease; }
+        .chat-header { padding: 6px 12px; background: rgba(255, 105, 180, 0.06); color: var(--primary-color); font-weight: bold; font-size: 10.5px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         body.lights-off .chat-header { opacity: 0; pointer-events: none; height: 0; padding: 0; overflow: hidden; }
         .partner-info { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--primary-color); }
-        .battery-badge { font-size: 8.5px; padding: 1px 5px; background: rgba(255, 255, 255, 0.12); border-radius: 8px; color: var(--primary-color); border: 1px solid rgba(255, 182, 193, 0.25); }
+        .battery-badge { font-size: 8.5px; padding: 1px 5px; background: rgba(0, 0, 0, 0.05); border-radius: 8px; color: var(--primary-color); border: 1px solid var(--card-border); }
         .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
         .status-dot.online { background-color: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
         .status-dot.offline { background-color: #e74c3c; }
@@ -359,16 +400,16 @@
             width: 100%; 
             padding: 6px 8px; 
             padding-bottom: max(6px, env(safe-area-inset-bottom));
-            border-top: 1px solid rgba(255, 182, 193, 0.15); 
+            border-top: 1px solid var(--card-border); 
             display: flex; 
             align-items: center;
             gap: 6px; 
-            background: rgba(15, 5, 10, 0.95); 
+            background: var(--chat-input-bg); 
             backdrop-filter: blur(12px);
             box-sizing: border-box; 
             z-index: 100;
             flex-shrink: 0;
-            transition: background 0.4s ease, border-color 0.4s ease;
+            position: relative;
         }
         body.lights-off .chat-input-area {
             background: #000000 !important;
@@ -380,16 +421,13 @@
             display: flex;
             align-items: center;
             min-width: 0;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 182, 193, 0.2);
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 2px 6px;
-            transition: all 0.3s ease;
         }
         .input-wrapper:focus-within {
             border-color: var(--primary-color);
-            box-shadow: 0 0 8px var(--glow-color);
-            background: rgba(255, 255, 255, 0.1);
         }
         .chat-input-area input { 
             width: 100%; 
@@ -397,12 +435,12 @@
             padding: 0 10px; 
             background: transparent; 
             border: none; 
-            color: #fff; 
+            color: var(--text-main); 
             outline: none; 
             font-size: 13px; 
         }
-        .chat-input-area input::placeholder { color: rgba(255, 255, 255, 0.5); }
-        .send-btn, .heart-quick-btn, .voice-record-btn { 
+        .chat-input-area input::placeholder { color: var(--text-sub); opacity: 0.7; }
+        .send-btn, .heart-quick-btn, .voice-record-btn, .cancel-voice-btn { 
             width: 34px; 
             height: 34px; 
             border-radius: 50%; 
@@ -420,65 +458,61 @@
             color: #fff; 
             box-shadow: 0 2px 8px var(--glow-color);
         }
-        .send-btn:active, .heart-quick-btn:active, .voice-record-btn:active {
-            transform: scale(0.92);
-        }
         .heart-quick-btn { 
-            background: rgba(255, 105, 180, 0.12); 
-            border: 1px solid rgba(255, 105, 180, 0.25);
+            background: rgba(255, 105, 180, 0.1); 
+            border: 1px solid var(--card-border);
             font-size: 14px;
         }
         .voice-record-btn { 
-            background: rgba(255, 255, 255, 0.08); 
-            border: 1px solid rgba(255, 182, 193, 0.2); 
-            color: #fff;
+            background: rgba(0, 0, 0, 0.03); 
+            border: 1px solid var(--card-border); 
+            color: var(--text-main);
         }
         .voice-record-btn.recording { 
             background: #e74c3c; 
             box-shadow: 0 0 12px rgba(231, 76, 60, 0.6);
-            animation: pulseRecord 1s infinite alternate; 
+            color: #fff;
         }
-        @keyframes pulseRecord { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
+        .cancel-voice-btn {
+            background: rgba(255, 77, 77, 0.2);
+            border: 1px solid rgba(255, 77, 77, 0.4);
+            color: #ff6b6b;
+            display: none;
+        }
+        
+        .tg-voice-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--chat-input-bg);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            border-radius: 20px;
+        }
+        .tg-voice-overlay.active { display: flex; }
+        .tg-rec-timer { font-size: 13px; font-weight: bold; color: #ff6b6b; display: flex; align-items: center; gap: 6px; }
+        .tg-rec-dot { width: 8px; height: 8px; background: #ff4d4d; border-radius: 50%; }
+        .tg-cancel-text { font-size: 12px; color: #ff6b6b; cursor: pointer; border: 1px solid rgba(255, 107, 107, 0.3); padding: 4px 10px; border-radius: 12px; background: rgba(255, 107, 107, 0.1); }
         
         .input-status-indicator {
             display: none;
             align-items: center;
-            justify-content: flex-start;
-            gap: 6px;
-            font-size: 10.5px;
-            padding: 5px 10px;
-            background: rgba(25, 10, 16, 0.85);
+            gap: 8px;
+            font-size: 11px;
+            padding: 5px 12px;
+            background: rgba(255, 105, 180, 0.1);
+            color: var(--primary-color);
             border-radius: 12px;
-            border: 1px solid rgba(255, 182, 193, 0.2);
+            border: 1px solid var(--card-border);
             margin: 4px 8px 0 8px;
-            animation: fadeInIndicator 0.3s ease;
             width: fit-content;
+            font-weight: 600;
         }
-        @keyframes fadeInIndicator { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-        .input-status-indicator.typing { display: flex; color: #2ecc71; }
-        .input-status-indicator.recording { display: flex; color: #e74c3c; }
-        
-        .typing-dots {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            margin-right: 4px;
-        }
-        .typing-dots span {
-            width: 4px;
-            height: 4px;
-            background-color: #2ecc71;
-            border-radius: 50%;
-            display: inline-block;
-            animation: whatsappDot 1.4s infinite ease-in-out both;
-        }
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes whatsappDot {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
-            40% { transform: scale(1.0); opacity: 1; }
-        }
-        .pinned-bar { display: none; background: rgba(255, 105, 180, 0.15); border-bottom: 1px solid rgba(255, 182, 193, 0.2); padding: 4px 8px; font-size: 10px; color: var(--primary-color); justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .input-status-indicator.active { display: flex; }
+        .pinned-bar { display: none; background: rgba(255, 105, 180, 0.12); border-bottom: 1px solid var(--card-border); padding: 4px 8px; font-size: 10px; color: var(--primary-color); justify-content: space-between; align-items: center; flex-shrink: 0; }
         .pinned-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85%; }
         .unpin-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 10px; }
         
@@ -491,7 +525,6 @@
             flex-direction: column; 
             gap: 6px; 
             min-height: 0; 
-            transition: opacity 0.4s ease, visibility 0.4s ease; 
         }
         body.lights-off .chat-messages { opacity: 0; visibility: hidden; pointer-events: none; }
         
@@ -511,7 +544,7 @@
             display: flex; 
             flex-direction: column; 
             line-height: 1.35; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15); 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
             position: relative;
             cursor: pointer;
         }
@@ -521,44 +554,53 @@
             border-bottom-right-radius: 3px; 
         }
         .message-bubble.other { 
-            background: rgba(255, 255, 255, 0.12); 
+            background: var(--card-bg); 
             backdrop-filter: blur(5px);
-            color: #fff; 
+            color: var(--text-main); 
             border-bottom-left-radius: 3px; 
-            border: 1px solid rgba(255, 182, 193, 0.15);
+            border: 1px solid var(--card-border);
         }
         .msg-author { 
             font-size: 9px; 
             opacity: 0.85; 
             margin-bottom: 1px; 
             font-weight: 600; 
-            color: rgba(255, 255, 255, 0.85); 
+            color: var(--text-sub); 
         }
         .message-bubble.mine .msg-author { color: rgba(255, 255, 255, 0.9); }
         .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 2px; align-self: flex-end; }
         .msg-time { font-size: 8px; opacity: 0.75; direction: ltr; }
         
+        .msg-reactions {
+            display: flex;
+            gap: 2px;
+            margin-top: 4px;
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 2px 6px;
+            border-radius: 12px;
+            width: fit-content;
+            font-size: 12px;
+            cursor: pointer;
+        }
         .read-status { font-size: 8.5px; font-weight: bold; }
-        .read-status.sent { color: rgba(255,255,255,0.6); }
-        .read-status.delivered { color: rgba(255,255,255,0.9); }
-        .read-status.read { color: #4facfe; text-shadow: 0 0 4px rgba(79, 172, 254, 0.8); }
+        .read-status.sent { opacity: 0.6; }
+        .read-status.delivered { opacity: 0.9; }
+        .read-status.read { color: #4facfe; }
         
         .msg-actions-sheet {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
             z-index: 1000;
             display: none;
             justify-content: center;
             align-items: center;
-            animation: fadeInSheet 0.2s ease;
         }
-        @keyframes fadeInSheet { from { opacity: 0; } to { opacity: 1; } }
-        
         .msg-actions-box {
-            background: rgba(25, 10, 18, 0.95);
-            border: 1px solid rgba(255, 182, 193, 0.3);
+            background: var(--island-exp-bg);
+            border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 12px;
             display: flex;
@@ -566,16 +608,22 @@
             gap: 6px;
             width: 85%;
             max-width: 280px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            transform: scale(0.9);
-            animation: scaleUpSheet 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            color: var(--text-main);
         }
-        @keyframes scaleUpSheet { to { transform: scale(1); } }
-        
+        .reaction-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 6px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+        }
+        .reaction-btn { font-size: 18px; cursor: pointer; }
         .msg-action-btn {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 182, 193, 0.15);
-            color: #fff;
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
             padding: 10px 14px;
             border-radius: 12px;
             font-size: 13px;
@@ -584,54 +632,36 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.2s;
             text-align: right;
         }
-        .msg-action-btn:hover {
-            background: rgba(255, 105, 180, 0.2);
-            border-color: var(--primary-color);
+        .msg-action-btn.danger { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.3); background: rgba(255, 107, 107, 0.1); }
+        .tg-voice-player { display: flex; align-items: center; gap: 8px; padding: 4px 0; min-width: 170px; }
+        .tg-play-btn {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1); border: none; color: var(--text-main);
+            display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; flex-shrink: 0;
         }
-        .msg-action-btn.danger {
-            color: #ff6b6b;
-            border-color: rgba(255, 107, 107, 0.3);
-            background: rgba(255, 107, 107, 0.1);
-        }
-        .audio-player-custom {
-            max-width: 200px;
-            height: 34px;
-            border-radius: 20px;
-            outline: none;
-            margin-top: 4px;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
-        }
-        .admin-opt-btn { width: 100%; padding: 10px 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 182, 193, 0.25); color: var(--primary-color); border-radius: 10px; font-size: 12px; cursor: pointer; text-align: right; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
-        .admin-opt-btn:hover { background: rgba(255, 105, 180, 0.2); }
+        .message-bubble.mine .tg-play-btn { background: rgba(255, 255, 255, 0.25); color: #fff; }
+        .tg-voice-info { display: flex; flex-direction: column; flex: 1; gap: 2px; }
+        .tg-voice-waves { display: flex; align-items: center; gap: 2px; height: 16px; }
+        .tg-voice-waves i { width: 2.5px; background: var(--primary-color); border-radius: 2px; display: inline-block; }
+        
+        .admin-opt-btn { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.03); border: 1px solid var(--card-border); color: var(--primary-color); border-radius: 10px; font-size: 12px; cursor: pointer; text-align: right; display: flex; align-items: center; gap: 8px; }
+        
         .secret-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
+            position: fixed; top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0.5);
-            background: rgba(20, 8, 12, 0.95);
-            border: 2px solid var(--primary-color);
-            padding: 20px 30px;
-            border-radius: 20px;
-            z-index: 500;
-            text-align: center;
-            box-shadow: 0 0 30px var(--glow-color);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--island-exp-bg); border: 2px solid var(--primary-color);
+            padding: 20px 30px; border-radius: 20px; z-index: 500; text-align: center;
+            box-shadow: 0 0 30px var(--glow-color); opacity: 0; pointer-events: none;
+            transition: all 0.4s ease;
         }
-        .secret-popup.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            pointer-events: auto;
-        }
+        .secret-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
         .secret-popup h3 { color: var(--primary-color); font-size: 18px; margin-bottom: 6px; }
-        .secret-popup p { font-size: 13px; color: #fff; }
-        .theme-selector { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; transition: transform 0.2s; }
-        .theme-dot:hover { transform: scale(1.15); }
+        .secret-popup p { font-size: 13px; color: var(--text-main); }
+        
+        .theme-selector { display: flex; gap: 6px; margin-top: 8px; justify-content: center; flex-wrap: wrap; }
+        .theme-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
@@ -645,15 +675,20 @@
     <div class="msg-actions-sheet" id="msgActionsSheet" onclick="closeMsgActions(event)">
         <div class="msg-actions-box" id="msgActionsBox">
             <div style="font-size: 11px; color: var(--primary-color); text-align: center; font-weight: bold; margin-bottom: 2px;">خيارات الرسالة 💌</div>
+            <div class="reaction-bar">
+                <span class="reaction-btn" onclick="addReaction('❤️')">❤️</span>
+                <span class="reaction-btn" onclick="addReaction('😂')">😂</span>
+                <span class="reaction-btn" onclick="addReaction('😮')">😮</span>
+                <span class="reaction-btn" onclick="addReaction('😢')">😢</span>
+            </div>
             <button class="msg-action-btn" id="actionStarBtn" onclick="actionStar()">⭐ إضافة إلى المفضلة</button>
             <button class="msg-action-btn" id="actionPinBtn" onclick="actionPin()">📌 تثبيت الرسالة بالأعلى</button>
             <button class="msg-action-btn" id="actionEditBtn" onclick="actionEdit()" style="display:none; color: #f39c12; border-color: rgba(243,156,18,0.3); background: rgba(243,156,18,0.1);">✏️ تعديل الرسالة</button>
             <button class="msg-action-btn danger" id="actionDeleteBtn" onclick="actionDelete()" style="display:none;">🗑️ حذف الرسالة</button>
-            <button class="msg-action-btn" onclick="closeMsgActions()" style="justify-content: center; color: #dda0dd; margin-top: 4px;">إلغاء</button>
+            <button class="msg-action-btn" onclick="closeMsgActions()" style="justify-content: center; color: var(--text-sub); margin-top: 4px;">إلغاء</button>
         </div>
     </div>
     
-    <!-- واجهة تسجيل الدخول -->
     <div class="login-container" id="loginContainer">
         <div class="lamp-box">
             <div class="lamp-shade" id="loginLampShade"><div class="lamp-bulb" id="loginLampBulb"></div></div>
@@ -695,14 +730,20 @@
             </div>
         </div>
         <div class="page-content">
-            <!-- الجزيرة الديناميكية المطورة والأنيقة -->
             <div class="dynamic-island-container">
+                <!-- Dynamic Island Container -->
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
-                    <div class="island-collapsed-content">
+                    <div class="island-collapsed-content" id="islandCollapsedContent">
                         <span>❤️ عالمنا الخاص</span>
-                        <span id="islandIndicatorText" style="font-size: 10px; color: #dda0dd;">اضغط للتفاصيل ✨</span>
+                        <div class="island-voice-wave" id="islandVoiceWave">
+                            <span></span><span></span><span></span>
+                            <span style="font-size: 10px; color: #ffd700; margin-right: 4px;">يستمع للفويس...</span>
+                        </div>
+                        <span id="islandIndicatorText" style="font-size: 10px; color: var(--text-sub);">اضغط للتفاصيل ✨</span>
                     </div>
+                    
                     <div class="island-expanded-content" id="islandExpandedContent">
+                        <!-- العداد في الأعلى بكامل العرض -->
                         <div class="counter-card">
                             <div class="counter-card-header">
                                 <h2 id="typingTitle">أهلاً بك ❤️</h2>
@@ -718,30 +759,36 @@
                             <div class="days-box" id="daysCounter">0 أيام</div>
                             <button class="day-btn" id="markDayBtn">حضور 🌹</button>
                         </div>
-                        <div class="touch-card">
-                            <h2 style="font-size: 9px; color: var(--primary-color);">البصمة المشتركة</h2>
-                            <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
-                            <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
-                        </div>
-                        <div class="miss-card">
-                            <h2 style="font-size: 9px; color: var(--primary-color);">نبضات الشوق</h2>
-                            <button class="miss-btn" id="missBtn">
-                                <span>❤️</span> أنا مشتاق
-                            </button>
-                            <div class="last-pulse-box" id="lastPulseBox">
-                                <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
-                                <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
+                        
+                        <!-- القسم السفلي مقسوم بنصفين (1 و 2) -->
+                        <div class="island-bottom-split">
+                            <!-- رقم 1: البصمة المشتركة -->
+                            <div class="touch-card">
+                                <h2 style="font-size: 9px; color: var(--primary-color);">١. البصمة المشتركة</h2>
+                                <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
+                                <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
                             </div>
-                            <div style="display: flex; gap: 3px; width: 100%;">
-                                <button class="history-btn" id="openHistoryBtn">السجل 📜</button>
-                                <button class="history-btn" id="openFavsBtn" style="color: #ffd700;">⭐ المفضلة</button>
+                            
+                            <!-- رقم 2: أنا مشتاق -->
+                            <div class="miss-card">
+                                <h2 style="font-size: 9px; color: var(--primary-color);">٢. أنا مشتاق</h2>
+                                <button class="miss-btn" id="missBtn">
+                                    <span>❤️</span> أنا مشتاق
+                                </button>
+                                <div class="last-pulse-box" id="lastPulseBox">
+                                    <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
+                                    <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
+                                </div>
+                                <div style="display: flex; gap: 3px; width: 100%;">
+                                    <button class="history-btn" id="openHistoryBtn">السجل 📜</button>
+                                    <button class="history-btn" id="openFavsBtn" style="color: #ffd700;">⭐ المفضلة</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- صندوق المحادثة الشامل -->
             <div class="chat-container">
                 <div class="chat-header">
                     <span>💌 المحادثة المباشرة</span>
@@ -749,7 +796,7 @@
                         <span id="partnerName">انتظار الطرف الآخر...</span>
                         <div style="display: flex; align-items: center; gap: 4px;">
                             <span id="partnerStatusDot" class="status-dot offline"></span>
-                            <span id="partnerStatusText" style="font-size: 8.5px; color: #dda0dd;">غير متصل</span>
+                            <span id="partnerStatusText" style="font-size: 8.5px; color: var(--text-sub);">غير متصل</span>
                         </div>
                         <span id="partnerBattery" class="battery-badge" style="display:none;">🔋 --%</span>
                     </div>
@@ -763,6 +810,13 @@
                 <div class="chat-messages" id="chatMessages"></div>
                 
                 <div class="chat-input-area">
+                    <div class="tg-voice-overlay" id="tgVoiceOverlay">
+                        <div class="tg-rec-timer">
+                            <div class="tg-rec-dot"></div>
+                            <span id="tgVoiceTimer">00:00</span>
+                        </div>
+                        <div class="tg-cancel-text" id="cancelVoiceBtn">إلغاء ✖</div>
+                    </div>
                     <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
                     <div class="input-wrapper">
                         <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
@@ -778,7 +832,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal-overlay" id="historyModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -786,7 +839,7 @@
                 <button class="close-modal-btn" id="closeHistoryBtn">✖</button>
             </div>
             <div class="history-list" id="historyList">
-                <div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل السجل...</div>
+                <div style="text-align: center; color: var(--text-sub); font-size: 12px;">جاري تحميل السجل...</div>
             </div>
         </div>
     </div>
@@ -797,7 +850,7 @@
                 <button class="close-modal-btn" id="closeFavsBtn">✖</button>
             </div>
             <div class="history-list" id="favsList">
-                <div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل المفضلة...</div>
+                <div style="text-align: center; color: var(--text-sub); font-size: 12px;">جاري تحميل المفضلة...</div>
             </div>
         </div>
     </div>
@@ -810,12 +863,14 @@
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="font-size: 11px; color: var(--primary-color); margin-bottom: 2px;">🎨 اختر لون إضاءة الجو العام:</div>
                 <div class="theme-selector">
-                    <div class="theme-dot" style="background: #ff69b4;" onclick="setTheme('#ff69b4', '#e74c3c', 'rgba(255, 105, 180, 0.5)')" title="وردي رومانسي"></div>
-                    <div class="theme-dot" style="background: #9b59b6;" onclick="setTheme('#9b59b6', '#8e44ad', 'rgba(155, 89, 182, 0.5)')" title="بنفسجي ليلي"></div>
-                    <div class="theme-dot" style="background: #3498db;" onclick="setTheme('#3498db', '#2980b9', 'rgba(52, 152, 219, 0.5)')" title="أزرق سماوي"></div>
-                    <div class="theme-dot" style="background: #e67e22;" onclick="setTheme('#e67e22', '#d35400', 'rgba(230, 126, 34, 0.5)')" title="ذهبي دافئ"></div>
+                    <div class="theme-dot" style="background: #ff69b4;" onclick="setTheme('#ff69b4', '#e74c3c', 'rgba(255, 105, 180, 0.5)', '#050203')" title="وردي رومانسي"></div>
+                    <div class="theme-dot" style="background: #9b59b6;" onclick="setTheme('#9b59b6', '#8e44ad', 'rgba(155, 89, 182, 0.5)', '#09030c')" title="بنفسجي ليلي"></div>
+                    <div class="theme-dot" style="background: #3498db;" onclick="setTheme('#3498db', '#2980b9', 'rgba(52, 152, 219, 0.5)', '#020b14')" title="أزرق سماوي"></div>
+                    <div class="theme-dot" style="background: #e67e22;" onclick="setTheme('#e67e22', '#d35400', 'rgba(230, 126, 34, 0.5)', '#120800')" title="ذهبي دافئ"></div>
+                    <!-- ثيم أبيض غير ساطع ومريح للعين -->
+                    <div class="theme-dot" style="background: #eef1f6; border-color: #ff69b4;" onclick="setTheme('#ff69b4', '#ff1493', 'rgba(255, 105, 180, 0.2)', '#eef1f6', true)" title="أبيض هادئ"></div>
                 </div>
-                <hr style="border-color: rgba(255,182,193,0.15); margin: 6px 0;">
+                <hr style="border-color: var(--card-border); margin: 6px 0;">
                 <button class="admin-opt-btn" onclick="sendVibrationSignal()">📳 إرسال هزّة تنبيه فورية للطرف الآخر</button>
                 <button class="admin-opt-btn" onclick="triggerFireworks()">🎆 إطلاق ألعاب نارية قلوب لدى الطرفين</button>
                 <button class="admin-opt-btn" onclick="toggleMainLamp()">💡 إطفاء/إضاءة اللمبة (التحكم بالظلام)</button>
@@ -825,7 +880,6 @@
             </div>
         </div>
     </div>
-    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDyq2aIYtFdTzQEWCPILFhDQNhw7rSCnbU",
@@ -838,6 +892,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        const storage = firebase.storage();
         
         const loginContainer = document.getElementById('loginContainer');
         const mainPage = document.getElementById('mainPage');
@@ -855,10 +910,20 @@
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
+        let cancelRecording = false;
         let heartClickCount = 0;
         let heartClickTimer = null;
         let activeMsgKey = null;
         let activeMsgData = null;
+        let voiceTimerInterval = null;
+        let voiceSeconds = 0;
+        
+        async function hashPassword(str) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
         
         function toggleDynamicIsland(e) {
             if (e.target.closest('button') || e.target.closest('.fingerprint-btn') || e.target.closest('.menu-slide-container')) return;
@@ -897,27 +962,36 @@
                 island.classList.remove('expanded');
             }
         });
-        function setTheme(primary, secondary, glow, saveToCloud = true) {
+
+        /* ثيم أبيض غير ساطع ومريح للعين */
+        function setTheme(primary, secondary, glow, bgDark = '#050203', isLight = false, saveToCloud = true) {
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--secondary-color', secondary);
             document.documentElement.style.setProperty('--glow-color', glow);
-            localStorage.setItem('site_theme', JSON.stringify({primary, secondary, glow}));
+            document.documentElement.style.setProperty('--bg-dark', bgDark);
+            if(isLight) {
+                document.body.classList.add('light-mode-active');
+            } else {
+                document.body.classList.remove('light-mode-active');
+            }
+            localStorage.setItem('site_theme', JSON.stringify({primary, secondary, glow, bgDark, isLight}));
             if (saveToCloud) {
-                db.ref('site_theme').set({primary, secondary, glow});
+                db.ref('site_theme').set({primary, secondary, glow, bgDark, isLight});
             }
         }
         
         db.ref('site_theme').on('value', (snap) => {
             const t = snap.val();
-            if (t) setTheme(t.primary, t.secondary, t.glow, false);
+            if (t) setTheme(t.primary, t.secondary, t.glow, t.bgDark || '#050203', t.isLight || false, false);
         });
         const savedTheme = localStorage.getItem('site_theme');
         if(savedTheme) {
             try {
                 const t = JSON.parse(savedTheme);
-                setTheme(t.primary, t.secondary, t.glow, false);
+                setTheme(t.primary, t.secondary, t.glow, t.bgDark || '#050203', t.isLight || false, false);
             }catch(e){}
         }
+
         function triggerSecretNote() {
             heartClickCount++;
             clearTimeout(heartClickTimer);
@@ -1029,7 +1103,7 @@
                 } else if (myTouch) {
                     btn.classList.remove('synced');
                     statusText.innerText = `بانتظار ${partnerUser}...`;
-                    islandText.innerText = `بانتظار ${partnerUser} بالبصمة...`;
+                    islandText.innerText = `بانتظار ${partnerUser}...`;
                     islandText.style.color = "var(--primary-color)";
                 } else if (partnerTouch) {
                     btn.classList.remove('synced');
@@ -1040,7 +1114,7 @@
                     btn.classList.remove('synced');
                     statusText.innerText = "اضغط باستمرار...";
                     islandText.innerText = "اضغط للتفاصيل ✨";
-                    islandText.style.color = "#dda0dd";
+                    islandText.style.color = "var(--text-sub)";
                 }
             });
         }
@@ -1089,15 +1163,15 @@
                 const typingState = snapshot.val();
                 const indicator = document.getElementById('inputStatusIndicator');
                 if (typingState === 'text') {
-                    indicator.className = "input-status-indicator typing";
-                    indicator.innerHTML = `<span>${partnerUser} يكتب الان</span> <span class="typing-dots"><span></span><span></span><span></span></span>`;
+                    indicator.classList.add('active');
+                    indicator.innerHTML = `✍️ <span>${partnerUser} يكتب الآن...</span>`;
                     scrollToBottom(true);
                 } else if (typingState === 'voice') {
-                    indicator.className = "input-status-indicator recording";
-                    indicator.innerHTML = `<span>🎙️ ${partnerUser} يسجل مقطعاً صوتياً</span>`;
+                    indicator.classList.add('active');
+                    indicator.innerHTML = `🎙️ <span>${partnerUser} يسجل فويس الآن...</span>`;
                     scrollToBottom(true);
                 } else {
-                    indicator.className = "input-status-indicator";
+                    indicator.classList.remove('active');
                     indicator.innerHTML = "";
                 }
             });
@@ -1110,6 +1184,14 @@
                     dot.className = "status-dot online";
                     statusText.innerText = "متصل الآن";
                     statusText.style.color = "#2ecc71";
+                    
+                    db.ref('messages').orderByChild('status').equalTo('delivered').once('value', (snapshot) => {
+                        snapshot.forEach((child) => {
+                            if(child.val().author !== currentUser) {
+                                db.ref(`messages/${child.key}/status`).set('read');
+                            }
+                        });
+                    });
                 } else {
                     dot.className = "status-dot offline";
                     if (data && data.last_seen) {
@@ -1120,7 +1202,7 @@
                     } else {
                         statusText.innerText = "غير متصل";
                     }
-                    statusText.style.color = "#dda0dd";
+                    statusText.style.color = "var(--text-sub)";
                 }
             });
             const chatInput = document.getElementById('chatInput');
@@ -1208,12 +1290,12 @@
             document.getElementById('openHistoryBtn').onclick = () => {
                 historyModal.style.display = 'flex';
                 const historyList = document.getElementById('historyList');
-                historyList.innerHTML = '<div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل السجل...</div>';
+                historyList.innerHTML = '<div style="text-align: center; color: var(--text-sub); font-size: 12px;">جاري تحميل السجل...</div>';
                 db.ref('miss_heart_history').limitToLast(30).once('value', (snapshot) => {
                     historyList.innerHTML = '';
                     const data = snapshot.val();
                     if (!data) {
-                        historyList.innerHTML = '<div style="text-align: center; color: #dda0dd; font-size: 12px;">لا يوجد سجل نبضات سابق 🌹</div>';
+                        historyList.innerHTML = '<div style="text-align: center; color: var(--text-sub); font-size: 12px;">لا يوجد سجل نبضات سابق 🌹</div>';
                         return;
                     }
                     const items = [];
@@ -1221,7 +1303,7 @@
                     items.forEach(item => {
                         const div = document.createElement('div');
                         div.className = 'history-item';
-                        div.innerHTML = `<span class="history-user">${item.sender}</span><span style="color:#eee;">أرسل نبضة شوق ❤️</span><span class="history-time">${formatFullDateTime(item.timestamp)}</span>`;
+                        div.innerHTML = `<span class="history-user">${item.sender}</span><span style="color:var(--text-main);">أرسل نبضة شوق ❤️</span><span class="history-time">${formatFullDateTime(item.timestamp)}</span>`;
                         historyList.appendChild(div);
                     });
                 });
@@ -1232,12 +1314,12 @@
             document.getElementById('openFavsBtn').onclick = () => {
                 favsModal.style.display = 'flex';
                 const favsList = document.getElementById('favsList');
-                favsList.innerHTML = '<div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل المفضلة...</div>';
+                favsList.innerHTML = '<div style="text-align: center; color: var(--text-sub); font-size: 12px;">جاري تحميل المفضلة...</div>';
                 db.ref('starred_messages').once('value', (snapshot) => {
                     favsList.innerHTML = '';
                     const data = snapshot.val();
                     if (!data) {
-                        favsList.innerHTML = '<div style="text-align: center; color: #dda0dd; font-size: 12px;">لا توجد رسائل مفضلة بعد ⭐</div>';
+                        favsList.innerHTML = '<div style="text-align: center; color: var(--text-sub); font-size: 12px;">لا توجد رسائل مفضلة بعد ⭐</div>';
                         return;
                     }
                     snapshot.forEach(child => {
@@ -1247,8 +1329,8 @@
                         div.className = 'history-item';
                         div.style.borderColor = '#ffd700';
                         let textContent = item.text;
-                        if(item.type === 'voice') textContent = `🎙️ ملاحظة صوتية <audio controls class="audio-player-custom" src="${item.audioData}"></audio>`;
-                        div.innerHTML = `<div style="display:flex; flex-direction:column; gap:2px; flex:1;"><span class="history-user">${item.author} ⭐</span><span style="color:#fff; font-size:12px;">${textContent}</span><span class="history-time">${formatFullDateTime(item.timestamp)}</span></div><button class="msg-action-btn" style="padding:4px 8px; font-size:10px; border-color:#ff6b6b; color:#ff6b6b;" onclick="removeStarFavorite('${key}')">✖</button>`;
+                        if(item.type === 'voice') textContent = `🎙️ ملاحظة صوتية`;
+                        div.innerHTML = `<div style="display:flex; flex-direction:column; gap:2px; flex:1;"><span class="history-user">${item.author} ⭐</span><span style="color:var(--text-main); font-size:12px;">${textContent}</span><span class="history-time">${formatFullDateTime(item.timestamp)}</span></div><button class="msg-action-btn" style="padding:4px 8px; font-size:10px; border-color:#ff6b6b; color:#ff6b6b;" onclick="removeStarFavorite('${key}')">✖</button>`;
                         favsList.appendChild(div);
                     });
                 });
@@ -1280,6 +1362,26 @@
         }
         window.closeMsgActions = function(e) {
             if (!e || e.target.id === 'msgActionsSheet') document.getElementById('msgActionsSheet').style.display = 'none';
+        };
+        
+        window.addReaction = function(emoji) {
+            if (!activeMsgKey) return;
+            const reactionRef = db.ref(`messages/${activeMsgKey}/reactions/${currentUser}`);
+            reactionRef.once('value', (snap) => {
+                if (snap.val() === emoji) {
+                    reactionRef.remove();
+                } else {
+                    reactionRef.set(emoji);
+                }
+            });
+            document.getElementById('msgActionsSheet').style.display = 'none';
+        };
+        
+        window.toggleReactionDirect = function(msgKey, currentReaction) {
+            const reactionRef = db.ref(`messages/${msgKey}/reactions/${currentUser}`);
+            if (currentReaction.includes(currentUser)) {
+                reactionRef.remove();
+            }
         };
         window.actionStar = function() {
             if (!activeMsgKey) return;
@@ -1314,6 +1416,45 @@
             db.ref(`starred_messages/${key}`).remove();
             document.getElementById('openFavsBtn').click();
         };
+        
+        window.playTgVoice = function(btn, audioUrl) {
+            let audio = btn.nextElementSibling;
+            
+            if (!audio || audio.tagName !== 'AUDIO') {
+                audio = new Audio(audioUrl);
+                btn.after(audio);
+            }
+            
+            audio.onended = () => { 
+                btn.innerText = "▶"; 
+                db.ref(`voice_playing/${myKey}`).set(false);
+            };
+            audio.onpause = () => {
+                db.ref(`voice_playing/${myKey}`).set(false);
+            };
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(a => a.pause());
+                document.querySelectorAll('.tg-play-btn').forEach(b => b.innerText = "▶");
+                audio.play();
+                btn.innerText = "⏸";
+                db.ref(`voice_playing/${myKey}`).set(true);
+            } else {
+                audio.pause();
+                btn.innerText = "▶";
+                db.ref(`voice_playing/${myKey}`).set(false);
+            }
+        };
+        function setupVoiceIslandSync() {
+            db.ref(`voice_playing/${partnerKey}`).on('value', (snap) => {
+                const isPlaying = snap.val();
+                const island = document.getElementById('dynamicIsland');
+                if (isPlaying) {
+                    island.classList.add('listening-voice');
+                } else {
+                    island.classList.remove('listening-voice');
+                }
+            });
+        }
         function setupLiveChat() {
             const chatBox = document.getElementById('chatMessages');
             chatBox.innerHTML = '';
@@ -1333,17 +1474,32 @@
                 
                 let contentHtml = `<span>${msg.text}</span>`;
                 if (msg.type === 'voice') {
-                    contentHtml = `<div style="font-size:10px; font-weight:bold; margin-bottom:2px;">🎙️ ملاحظة صوتية</div><audio controls class="audio-player-custom" src="${msg.audioData}"></audio>`;
+                    contentHtml = `
+                        <div class="tg-voice-player">
+                            <button class="tg-play-btn" onclick="playTgVoice(this, '${msg.audioData}')">▶</button>
+                            <div class="tg-voice-info">
+                                <div class="tg-voice-waves">
+                                    <i style="height: 8px;"></i><i style="height: 14px;"></i><i style="height: 6px;"></i><i style="height: 12px;"></i><i style="height: 16px;"></i><i style="height: 9px;"></i><i style="height: 5px;"></i><i style="height: 11px;"></i><i style="height: 15px;"></i><i style="height: 7px;"></i>
+                                </div>
+                                <span style="font-size: 8px; opacity:0.8;">🎙️ صوتية</span>
+                            </div>
+                        </div>`;
                 }
                 
+                let reactionsHtml = '';
+                if (msg.reactions) {
+                    const reactionList = Object.entries(msg.reactions);
+                    const emojis = reactionList.map(([u, r]) => `<span class="react-item">${r}</span>`).join(' ');
+                    reactionsHtml = `<div class="msg-reactions" onclick="addReaction('${msg.reactions[currentUser]}')">${emojis}</div>`;
+                }
                 const bubble = document.createElement('div');
                 bubble.className = `message-bubble ${isMine ? 'mine' : 'other'}`;
-                bubble.innerHTML = `<span class="msg-author">${msg.author}</span>${contentHtml}<div class="msg-footer"><span class="msg-time">${formatFullDateTime(msg.timestamp)}</span><span id="ticks-${msgKey}">${isMine ? renderStatusTicks(msg.status || 'sent') : ''}</span></div>`;
+                bubble.innerHTML = `<span class="msg-author">${msg.author}</span>${contentHtml}${reactionsHtml}<div class="msg-footer"><span class="msg-time">${formatFullDateTime(msg.timestamp)}</span><span id="ticks-${msgKey}">${isMine ? renderStatusTicks(msg.status || 'sent') : ''}</span></div>`;
                 
                 let pressTimer;
-                bubble.addEventListener('touchstart', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 600); });
+                bubble.addEventListener('touchstart', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 500); });
                 bubble.addEventListener('touchend', () => clearTimeout(pressTimer));
-                bubble.addEventListener('mousedown', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 600); });
+                bubble.addEventListener('mousedown', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 500); });
                 bubble.addEventListener('mouseup', () => clearTimeout(pressTimer));
                 
                 wrapper.appendChild(bubble);
@@ -1359,6 +1515,20 @@
                     if (textSpan && msg.type !== 'voice') textSpan.innerText = msg.text;
                     const ticksSpan = document.getElementById(`ticks-${msgKey}`);
                     if (ticksSpan && msg.author.toLowerCase() === currentUser.toLowerCase()) ticksSpan.innerHTML = renderStatusTicks(msg.status);
+                    
+                    let reactionDiv = wrapper.querySelector('.msg-reactions');
+                    if (msg.reactions && Object.keys(msg.reactions).length > 0) {
+                        const emojis = Object.values(msg.reactions).map(r => `<span class="react-item">${r}</span>`).join(' ');
+                        if (!reactionDiv) {
+                            reactionDiv = document.createElement('div');
+                            reactionDiv.className = 'msg-reactions';
+                            reactionDiv.onclick = () => addReaction(msg.reactions[currentUser]);
+                            wrapper.querySelector('.message-bubble').appendChild(reactionDiv);
+                        }
+                        reactionDiv.innerHTML = emojis;
+                    } else if (reactionDiv) {
+                        reactionDiv.remove();
+                    }
                 }
             });
             db.ref('messages').on('child_removed', (snapshot) => {
@@ -1389,6 +1559,36 @@
         }
         function setupVoiceRecording() {
             const voiceBtn = document.getElementById('voiceBtn');
+            const cancelBtn = document.getElementById('cancelVoiceBtn');
+            const overlay = document.getElementById('tgVoiceOverlay');
+            const timerElem = document.getElementById('tgVoiceTimer');
+            function startTimer() {
+                voiceSeconds = 0;
+                timerElem.innerText = "00:00";
+                clearInterval(voiceTimerInterval);
+                voiceTimerInterval = setInterval(() => {
+                    voiceSeconds++;
+                    const mins = String(Math.floor(voiceSeconds / 60)).padStart(2, '0');
+                    const secs = String(voiceSeconds % 60).padStart(2, '0');
+                    timerElem.innerText = `${mins}:${secs}`;
+                }, 1000);
+            }
+            function stopTimer() {
+                clearInterval(voiceTimerInterval);
+                voiceSeconds = 0;
+                timerElem.innerText = "00:00";
+            }
+            cancelBtn.onclick = () => {
+                if (isRecording) {
+                    cancelRecording = true;
+                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+                    isRecording = false;
+                    db.ref(`typing/${myKey}`).set('idle');
+                    voiceBtn.classList.remove('recording');
+                    overlay.classList.remove('active');
+                    stopTimer();
+                }
+            };
             voiceBtn.onclick = async () => {
                 if (!navigator.mediaDevices?.getUserMedia) {
                     alert("⚠️ المتصفح لا يدعم الميكروفون.");
@@ -1399,19 +1599,23 @@
                         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                         mediaRecorder = new MediaRecorder(stream);
                         audioChunks = [];
+                        cancelRecording = false;
                         mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                         mediaRecorder.onstop = async () => {
-                            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const reader = new FileReader();
-                            reader.readAsDataURL(blob);
-                            reader.onloadend = () => sendVoiceMessage(reader.result);
+                            overlay.classList.remove('active');
+                            stopTimer();
+                            if (!cancelRecording) {
+                                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                                uploadAndSendVoice(blob);
+                            }
                             stream.getTracks().forEach(t => t.stop());
                         };
                         mediaRecorder.start();
                         isRecording = true;
                         db.ref(`typing/${myKey}`).set('voice');
                         voiceBtn.classList.add('recording');
-                        voiceBtn.innerText = "⏹️";
+                        overlay.classList.add('active');
+                        startTimer();
                     } catch(e) {
                         alert("⚠️ لم يتم منح إذن المايكروفون.");
                     }
@@ -1420,154 +1624,151 @@
                     isRecording = false;
                     db.ref(`typing/${myKey}`).set('idle');
                     voiceBtn.classList.remove('recording');
-                    voiceBtn.innerText = "🎤";
                 }
             };
         }
-        function sendVoiceMessage(base64Audio) {
-            db.ref(`typing/${myKey}`).set('idle');
-            db.ref(`status/${partnerKey}`).once('value', (snap) => {
-                const isOnline = snap.val() && snap.val().online;
+        function uploadAndSendVoice(blob) {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+                const base64Audio = reader.result;
                 db.ref('messages').push({
                     author: currentUser,
-                    text: "🎙️ رسالة صوتية",
-                    type: "voice",
+                    type: 'voice',
                     audioData: base64Audio,
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: isOnline ? 'delivered' : 'sent'
+                    status: 'sent'
                 });
-            });
+            };
         }
-        window.unpinMessage = function() { db.ref('pinned_message').remove(); };
-        const adminHeaderBtn = document.getElementById('adminHeaderBtn');
-        const adminModal = document.getElementById('adminModal');
-        adminHeaderBtn.style.display = 'inline-block';
-        adminHeaderBtn.onclick = () => adminModal.style.display = 'flex';
-        document.getElementById('closeAdminBtn').onclick = () => adminModal.style.display = 'none';
+        function setupChatActions() {
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendMsgBtn');
+            const heartBtn = document.getElementById('sendHeartBtn');
+            
+            function sendTextMessage() {
+                const text = chatInput.value.trim();
+                if (!text) return;
+                db.ref('messages').push({
+                    author: currentUser,
+                    text: text,
+                    type: 'text',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'sent'
+                });
+                chatInput.value = '';
+                db.ref(`typing/${myKey}`).set('idle');
+            }
+            sendBtn.onclick = sendTextMessage;
+            chatInput.onkeypress = (e) => { if (e.key === 'Enter') sendTextMessage(); };
+            heartBtn.onclick = () => {
+                db.ref('messages').push({
+                    author: currentUser,
+                    text: '❤️',
+                    type: 'text',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'sent'
+                });
+                launchHeartsExplosion();
+            };
+        }
+        function setupAdminPanel() {
+            const adminBtn = document.getElementById('adminHeaderBtn');
+            const adminModal = document.getElementById('adminModal');
+            if (isAdmin) adminBtn.style.display = 'block';
+            adminBtn.onclick = () => { adminModal.style.display = 'flex'; };
+            document.getElementById('closeAdminBtn').onclick = () => { adminModal.style.display = 'none'; };
+        }
         
         window.sendVibrationSignal = function() {
-            db.ref('vibration_signals').push({ sender: currentUser, target: partnerUser, timestamp: firebase.database.ServerValue.TIMESTAMP });
-            alert("تم إرسال هزّة تنبيه!");
+            db.ref('vibration_signals').push({ target: partnerUser, timestamp: firebase.database.ServerValue.TIMESTAMP });
+            alert("تم إرسال هزة التنبيه!");
         };
         window.triggerFireworks = function() {
-            db.ref('heart_explosions').push({ sender: currentUser, timestamp: firebase.database.ServerValue.TIMESTAMP });
-            alert("تم إطلاق تأثير القلوب!");
+            db.ref('heart_explosions').push(true);
         };
         window.editDaysCounter = function() {
-            const nd = prompt("أدخل عدد الأيام الجديد:");
-            if (nd !== null && !isNaN(nd)) db.ref('love_days').set(parseInt(nd));
+            const days = prompt("أدخل عدد الأيام الجديد:");
+            if (days !== null && !isNaN(days)) db.ref('love_days').set(parseInt(days));
         };
         window.clearAllChat = function() {
-            if (confirm("مسح جميع الرسائل؟")) db.ref('messages').remove();
+            if (confirm("هل أكتمل مسح كل الرسائل؟")) db.ref('messages').remove();
         };
         window.clearMissHistory = function() {
             if (confirm("مسح سجل النبضات؟")) db.ref('miss_heart_history').remove();
         };
-        function sendMessage(text) {
-            if (!text.trim()) return;
-            db.ref(`typing/${myKey}`).set('idle');
-            db.ref(`status/${partnerKey}`).once('value', (snap) => {
-                const isOnline = snap.val() && snap.val().online;
-                db.ref('messages').push({
-                    author: currentUser,
-                    text: text.trim(),
-                    type: "text",
-                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: isOnline ? 'delivered' : 'sent'
-                });
-            });
-        }
-        document.getElementById('sendMsgBtn').onclick = () => {
-            const input = document.getElementById('chatInput');
-            sendMessage(input.value);
-            input.value = '';
+        window.unpinMessage = function() {
+            db.ref('pinned_message').remove();
         };
-        document.getElementById('sendHeartBtn').onclick = () => {
-            sendMessage('❤️');
-            db.ref('heart_explosions').push({ sender: currentUser, timestamp: firebase.database.ServerValue.TIMESTAMP });
-            triggerSecretNote();
+        window.handleLogout = function() {
+            localStorage.removeItem('love_user');
+            location.reload();
         };
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('sendMsgBtn').click();
-        });
-        document.getElementById('authForm').addEventListener('submit', (e) => {
+
+        const authForm = document.getElementById('authForm');
+        authForm.onsubmit = async (e) => {
             e.preventDefault();
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-            const cleanUserKey = user.replace(/[^a-zA-Z0-9_\u0600-\u06FF]/g, "_");
-            db.ref(`users/${cleanUserKey}`).once('value', (snapshot) => {
-                const userData = snapshot.val();
-                if (isRegistering) {
-                    if (userData) {
-                        alert("⚠️ هذا الاسم مستخدم بالفعل، جرب اسمًا آخر أو قم بتسجيل الدخول.");
-                        return;
-                    }
-                    db.ref('users').once('value', (allUsersSnap) => {
-                        const allUsers = allUsersSnap.val() || {};
-                        const existingKeys = Object.keys(allUsers);
-                        
-                        let assignedPartner = "الطرف الآخر";
-                        let assignedPartnerKey = "partner";
-                        
-                        if (existingKeys.length > 0) {
-                            const firstUserKey = existingKeys[0];
-                            assignedPartner = allUsers[firstUserKey].name;
-                            assignedPartnerKey = firstUserKey;
-                            
-                            db.ref(`users/${firstUserKey}`).update({
-                                partner: user,
-                                partnerKey: cleanUserKey
-                            });
-                        }
-                        const newAccount = {
-                            name: user,
-                            pass: pass,
-                            partner: assignedPartner,
-                            partnerKey: assignedPartnerKey
-                        };
-                        db.ref(`users/${cleanUserKey}`).set(newAccount).then(() => {
-                            initUserSession(user, cleanUserKey, assignedPartner, assignedPartnerKey);
-                        });
-                    });
-                } else {
-                    if (!userData || userData.pass !== pass) {
-                        alert("❌ اسم المستخدم أو كلمة السر غير صحيحة!");
-                        return;
-                    }
-                    initUserSession(userData.name, cleanUserKey, userData.partner || "الطرف الآخر", userData.partnerKey || "partner");
-                }
-            });
-        });
-        function initUserSession(name, key, pName, pKey) {
-            currentUser = name;
-            myKey = key;
-            partnerUser = pName;
-            partnerKey = pKey;
-            loginContainer.style.display = 'none';
-            mainPage.style.display = 'flex';
-            document.getElementById('typingTitle').innerText = `أهلاً بك يا ${name} ❤️`;
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value;
+            const hashedPassword = await hashPassword(passwordInput);
             
-            setTimeout(() => {
-                launchHeartsExplosion();
-                setupPresenceAndTypingSystem();
-                setupBatterySync();
+            if (isRegistering) {
+                db.ref(`users/${usernameInput.toLowerCase()}`).once('value', (snap) => {
+                    if (snap.exists()) {
+                        alert("اسم المستخدم موجود مسبقاً!");
+                    } else {
+                        db.ref(`users/${usernameInput.toLowerCase()}`).set({ name: usernameInput, pass: hashedPassword }, (err) => {
+                            if(!err) {
+                                alert("تم إنشاء الحساب بنجاح!");
+                                startSession(usernameInput);
+                            }
+                        });
+                    }
+                });
+            } else {
+                db.ref(`users/${usernameInput.toLowerCase()}`).once('value', (snap) => {
+                    const data = snap.val();
+                    if (data && data.pass === hashedPassword) {
+                        startSession(data.name);
+                    } else {
+                        alert("اسم المستخدم أو كلمة السر غير صحيحة!");
+                    }
+                });
+            }
+        };
+
+        function startSession(username) {
+            currentUser = username;
+            myKey = username.toLowerCase();
+            localStorage.setItem('love_user', currentUser);
+            
+            db.ref('users').once('value', (snap) => {
+                const users = snap.val() || {};
+                const keys = Object.keys(users);
+                const pKey = keys.find(k => k !== myKey);
+                partnerKey = pKey || "partner";
+                partnerUser = users[partnerKey] ? users[partnerKey].name : "الشريك";
+                
+                loginContainer.style.display = 'none';
+                mainPage.style.display = 'flex';
+                document.getElementById('typingTitle').innerText = `أهلاً ${currentUser} ❤️`;
+                
                 setupSharedFingerprint();
+                setupBatterySync();
+                setupPresenceAndTypingSystem();
                 setupLiveClockAndCounter();
                 setupMissYouSystem();
                 setupHistoryModal();
                 setupLiveChat();
                 setupVoiceRecording();
-            }, 300);
+                setupVoiceIslandSync();
+                setupChatActions();
+                setupAdminPanel();
+            });
         }
-        function handleLogout() {
-            if (myKey) {
-                db.ref(`status/${myKey}`).set({ online: false, last_seen: firebase.database.ServerValue.TIMESTAMP });
-                db.ref(`typing/${myKey}`).set('idle');
-                db.ref(`shared_touch/${myKey}`).set(false);
-            }
-            mainPage.style.display = 'none';
-            loginContainer.style.display = 'flex';
-        }
+        
+        const autoUser = localStorage.getItem('love_user');
+        if (autoUser) startSession(autoUser);
     </script>
 </body>
 </html>
