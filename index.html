@@ -440,6 +440,66 @@
         }
         @keyframes pulseRecord { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
         
+        /* Snapchat-style chat avatar */
+        .snap-chat-presence {
+            position: absolute;
+            right: 12px;
+            bottom: 48px;
+            width: 54px;
+            height: 54px;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 20;
+            pointer-events: none;
+            animation: snapAvatarIn .28s ease-out;
+        }
+        .snap-chat-presence.show { display: flex; }
+        .snap-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            background: rgba(255,255,255,.12);
+            border: 2px solid rgba(255,182,193,.5);
+            box-shadow: 0 4px 18px rgba(0,0,0,.35), 0 0 12px var(--glow-color);
+            backdrop-filter: blur(8px);
+            transform-origin: bottom center;
+        }
+        .snap-chat-presence.typing .snap-avatar {
+            animation: snapTypingAvatar .9s ease-in-out infinite;
+        }
+        .snap-avatar-dots {
+            position: absolute;
+            right: -2px;
+            bottom: 3px;
+            min-width: 24px;
+            height: 16px;
+            padding: 0 5px;
+            border-radius: 10px;
+            background: rgba(20,12,18,.92);
+            border: 1px solid rgba(255,182,193,.3);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .snap-chat-presence.typing .snap-avatar-dots { display: flex; }
+        .snap-avatar-dots i {
+            width: 3px; height: 3px; border-radius: 50%;
+            background: #fff; display: block;
+            animation: snapDots 1s infinite ease-in-out;
+        }
+        .snap-avatar-dots i:nth-child(2) { animation-delay: .15s; }
+        .snap-avatar-dots i:nth-child(3) { animation-delay: .3s; }
+        @keyframes snapAvatarIn { from { opacity: 0; transform: translateY(10px) scale(.8); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes snapTypingAvatar { 0%,100% { transform: translateY(0) rotate(0deg); } 35% { transform: translateY(-5px) rotate(-3deg); } 70% { transform: translateY(-2px) rotate(3deg); } }
+        @keyframes snapDots { 0%,80%,100% { transform: translateY(0); opacity: .45; } 40% { transform: translateY(-3px); opacity: 1; } }
+        .chat-container { position: relative; }
+
         .input-status-indicator {
             display: none;
             align-items: center;
@@ -700,12 +760,12 @@
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
                     <div class="island-collapsed-content">
                         <span>❤️ عالمنا الخاص</span>
-                        <span id="islandIndicatorText" style="font-size: 10px; color: #dda0dd;">اضغط ✨</span>
+                        <span id="islandIndicatorText" style="font-size: 10px; color: #dda0dd;">اضغط للتفاصيل ✨</span>
                     </div>
                     <div class="island-expanded-content" id="islandExpandedContent">
                         <div class="counter-card">
                             <div class="counter-card-header">
-                                <h2 id="typingTitle">حياك الله ❤️</h2>
+                                <h2 id="typingTitle">أهلاً بك ❤️</h2>
                                 <div class="menu-slide-container">
                                     <div class="menu-trigger-icon" id="menuTriggerIcon" onclick="toggleSlideMenu(event)" title="الإعدادات">⚙️</div>
                                     <div class="slide-dropdown-menu" id="slideDropdownMenu">
@@ -719,7 +779,7 @@
                             <button class="day-btn" id="markDayBtn">حضور 🌹</button>
                         </div>
                         <div class="touch-card">
-                            <h2 style="font-size: 9px; color: var(--primary-color);">البصمة نبصم</h2>
+                            <h2 style="font-size: 9px; color: var(--primary-color);">البصمة المشتركة</h2>
                             <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
                             <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
                         </div>
@@ -744,7 +804,7 @@
             <!-- صندوق المحادثة الشامل -->
             <div class="chat-container">
                 <div class="chat-header">
-                    <span>💌 سواليف</span>
+                    <span>💌 المحادثة المباشرة</span>
                     <div class="partner-info">
                         <span id="partnerName">انتظار الطرف الآخر...</span>
                         <div style="display: flex; align-items: center; gap: 4px;">
@@ -761,11 +821,15 @@
                 
                 <div class="input-status-indicator" id="inputStatusIndicator"></div>
                 <div class="chat-messages" id="chatMessages"></div>
+                <div class="snap-chat-presence" id="snapChatPresence" aria-hidden="true">
+                    <div class="snap-avatar" id="snapAvatar">👩🏻</div>
+                    <div class="snap-avatar-dots"><i></i><i></i><i></i></div>
+                </div>
                 
                 <div class="chat-input-area">
                     <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
                     <div class="input-wrapper">
-                        <input type="text" id="chatInput" placeholder="اكتب رسالة ..." autocomplete="off">
+                        <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
                     </div>
                     <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
                     <button class="send-btn" id="sendMsgBtn" title="إرسال">
@@ -1088,15 +1152,24 @@
             db.ref(`typing/${partnerKey}`).on('value', (snapshot) => {
                 const typingState = snapshot.val();
                 const indicator = document.getElementById('inputStatusIndicator');
+                const snapPresence = document.getElementById('snapChatPresence');
                 if (typingState === 'text') {
-                    indicator.className = "input-status-indicator typing";
-                    indicator.innerHTML = `<span>${partnerUser} يكتب الان</span> <span class="typing-dots"><span></span><span></span><span></span></span>`;
+                    // Snapchat-style: avatar pops up and moves while the partner types.
+                    snapPresence.className = "snap-chat-presence show typing";
+                    snapPresence.setAttribute('aria-label', `${partnerUser} يكتب الآن`);
+                    indicator.className = "input-status-indicator";
+                    indicator.innerHTML = "";
                     scrollToBottom(true);
                 } else if (typingState === 'voice') {
-                    indicator.className = "input-status-indicator recording";
-                    indicator.innerHTML = `<span>🎙️ ${partnerUser} يسجل مقطعاً صوتياً</span>`;
+                    snapPresence.className = "snap-chat-presence show typing";
+                    snapPresence.setAttribute('aria-label', `${partnerUser} يسجل الآن`);
+                    indicator.className = "input-status-indicator";
+                    indicator.innerHTML = "";
                     scrollToBottom(true);
                 } else {
+                    // Stay visible while the partner is actually online/in the chat.
+                    snapPresence.className = "snap-chat-presence";
+                    snapPresence.setAttribute('aria-hidden', 'true');
                     indicator.className = "input-status-indicator";
                     indicator.innerHTML = "";
                 }
@@ -1106,12 +1179,19 @@
                 const data = snap.val();
                 const dot = document.getElementById('partnerStatusDot');
                 const statusText = document.getElementById('partnerStatusText');
+                const snapPresence = document.getElementById('snapChatPresence');
                 if (data && data.online) {
                     dot.className = "status-dot online";
                     statusText.innerText = "متصل الآن";
                     statusText.style.color = "#2ecc71";
+                    if (!snapPresence.classList.contains('typing')) {
+                        snapPresence.className = "snap-chat-presence show";
+                        snapPresence.setAttribute('aria-hidden', 'false');
+                    }
                 } else {
                     dot.className = "status-dot offline";
+                    snapPresence.className = "snap-chat-presence";
+                    snapPresence.setAttribute('aria-hidden', 'true');
                     if (data && data.last_seen) {
                         const date = new Date(data.last_seen);
                         const timeStr = date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
@@ -1303,7 +1383,7 @@
             document.getElementById('msgActionsSheet').style.display = 'none';
             const newText = prompt("تعديل الرسالة:", activeMsgData.text);
             if (newText !== null && newText.trim() !== "") {
-                db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " (بعرها ✏️)" });
+                db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " (معدلة ✏️)" });
             }
         };
         window.actionDelete = function() {
@@ -1545,7 +1625,7 @@
             partnerKey = pKey;
             loginContainer.style.display = 'none';
             mainPage.style.display = 'flex';
-            document.getElementById('typingTitle').innerText = `حياك الله يا ${name} ❤️`;
+            document.getElementById('typingTitle').innerText = `أهلاً بك يا ${name} ❤️`;
             
             setTimeout(() => {
                 launchHeartsExplosion();
