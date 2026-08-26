@@ -1,107 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الموقع تحت الصيانة</title>
-    <style>
-        /* كود الصيانة الذي يغطي الشاشة بالكامل ويخفي الموقع الأصلي */
-        #maintenance-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #0b070c;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999999;
-        }
-        .maintenance-card {
-            background: #ffffff;
-            color: #333;
-            width: 85%;
-            max-width: 380px;
-            padding: 25px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            font-family: Tahoma, sans-serif;
-        }
-        .maintenance-card h1 {
-            color: #d9534f;
-            font-size: 20px;
-            margin-top: 0;
-            margin-bottom: 12px;
-        }
-        .maintenance-card p {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #444;
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- شاشة الصيانة التي ستظهر للزوار -->
-    <div id="maintenance-screen">
-        <div class="maintenance-card">
-            <h1>الموقع تحت الصيانة حالياً 🛠️</h1>
-            <p>نقوم حالياً بإجراء بعض التحديثات والتعديلات، سنعود للعمل قريباً جداً.</p>
-        </div>
-    </div>
-
-    <!-- 🛑 ضع موقعك الأصلي هنا بالأسفل (تحت هذا التعليق) -->
-    <div id="original-website-content" style="display: none;">
-        
-        <!-- هنا ضع كل أكواد موقعك القديمة -->
-        <h1>هذا موقعك الأصلي</h1>
-
-    </div>
-
-    <script>
-        // 1. حالة الصيانة العامة (true تعني أن الموقع مغلق للطرف الثاني ويظهر لهم شاشة الصيانة)
-        const isMaintenanceMode = true; 
-
-        // 2. التحقق مما إذا كنت قد فتحت الموقع مسبقاً من جهازك (محفوظ في المتصفح)
-        const isUnlockedLocally = localStorage.getItem('admin_unlocked') === 'true';
-
-        // 3. التحقق من الرابط السري (يبقى كخيار احتياطي إذا أردت فتحه من متصفح الهاتف مثلاً)
-        const urlParams = new URLSearchParams(window.location.search);
-        const hasSecretAccess = urlParams.get('admin') === 'mysecret123';
-
-        if (hasSecretAccess) {
-            // إذا دخلت بالرابط السري، احفظ الوصول في المتصفح تلقائياً
-            localStorage.setItem('admin_unlocked', 'true');
-        }
-
-        // دالة إظهار الموقع وإخفاء شاشة الصيانة
-        function showWebsite() {
-            document.getElementById('maintenance-screen').style.display = 'none';
-            document.getElementById('original-website-content').style.display = 'block';
-        }
-
-        // إذا كانت الصيانة معطلة، أو معك صلاحية محفوظة، أو دخلت بالرابط السري افتح الموقع فوراً
-        if (!isMaintenanceMode || isUnlockedLocally || hasSecretAccess) {
-            showWebsite();
-        }
-
-        // 4. مفتاح الكيبورد السري: عندما تضغط على زر F4 في لوحة المفاتيح، سيفتح الموقع ويحفظ دخولك للأبد!
-        window.addEventListener('keydown', function(event) {
-            if (event.key === 'F4') { // يمكنك تغيير 'F4' إلى أي زر آخر مثل 'Enter' أو حرف 'm' مثلاً
-                localStorage.setItem('admin_unlocked', 'true');
-                showWebsite();
-                alert('تم فتح الموقع بنجاح وصلاحيات المدير مفعلة!');
-            }
-        });
-    </script>
-</body>
-</html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>عالمنا الخاص ❤️</title>
@@ -119,7 +18,6 @@
             --text-sub: #dda0dd;
             --card-bg: rgba(255, 182, 193, 0.06);
             --card-border: rgba(255, 182, 193, 0.2);
-            /* تم تصغير حجم الجزيرة وتغيير لونها ليكون مختلفاً بشكل أنيق جداً عن الثيم */
             --island-bg: linear-gradient(135deg, #1b0f1a, #2a1224);
             --island-exp-bg: rgba(18, 8, 15, 0.97);
             --chat-bg: rgba(20, 8, 14, 0.85);
@@ -132,7 +30,6 @@
             --text-sub: #6c757d;
             --card-bg: rgba(255, 255, 255, 0.75);
             --card-border: rgba(0, 0, 0, 0.08);
-            /* لون مختلف وجميل للجزيرة في الوضع الفاتح لتمييزها عن الثيم */
             --island-bg: linear-gradient(135deg, #fff0f5, #ffe4e1);
             --island-exp-bg: rgba(255, 250, 252, 0.97);
             --chat-bg: rgba(255, 255, 255, 0.8);
@@ -141,6 +38,13 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; user-select: none; }
         input, textarea { user-select: text !important; -webkit-user-select: text !important; }
+        
+        /* تخصيص شريط التمرير بانسيابية تامة */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.25); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 105, 180, 0.45); }
+
         body { 
             background-color: var(--bg-dark); 
             color: var(--text-main); 
@@ -153,6 +57,27 @@
             position: relative; 
             transition: background-color 0.6s ease, color 0.4s ease;
         }
+        
+        #netStatusBanner {
+            position: fixed;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #netStatusBanner.show { top: 15px; }
+
         .screen-overlay { 
             position: fixed; 
             top: 0; left: 0; width: 100%; height: 100%; 
@@ -282,7 +207,6 @@
             background: var(--island-bg);
             border: 1px solid rgba(255, 182, 193, 0.35);
             border-radius: 22px;
-            /* تم تصغير الحجم قليلاً بالعرض والارتفاع */
             width: 175px;
             height: 31px;
             display: flex;
@@ -301,9 +225,7 @@
             transform-origin: top center;
             will-change: width, height, border-radius, background;
         }
-        .dynamic-island:active {
-            transform: scale(0.97);
-        }
+        .dynamic-island:active { transform: scale(0.97); }
         
         .dynamic-island.expanded {
             width: 92%;
@@ -332,10 +254,7 @@
             transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s ease;
             pointer-events: none;
         }
-        .dynamic-island.expanded .island-collapsed-content {
-            opacity: 0;
-            transform: scale(0.92);
-        }
+        .dynamic-island.expanded .island-collapsed-content { opacity: 0; transform: scale(0.92); }
         
         .island-voice-wave {
             display: none;
@@ -345,9 +264,7 @@
             font-size: 11px;
             font-weight: bold;
         }
-        .island-voice-wave.active {
-            display: flex;
-        }
+        .island-voice-wave.active { display: flex; }
         
         .island-recording-dot {
             display: none;
@@ -357,9 +274,7 @@
             font-size: 11px;
             font-weight: bold;
         }
-        .island-recording-dot.active {
-            display: flex;
-        }
+        .island-recording-dot.active { display: flex; }
         .rec-dot-pulse {
             width: 8px; height: 8px;
             background: #ff4d4d;
@@ -380,12 +295,7 @@
             transition: opacity 0.3s ease 0.1s, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) 0.1s;
             pointer-events: none;
         }
-        
-        .dynamic-island.expanded .island-expanded-content {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto;
-        }
+        .dynamic-island.expanded .island-expanded-content { opacity: 1; transform: scale(1); pointer-events: auto; }
         
         .island-bottom-split {
             display: grid;
@@ -406,6 +316,8 @@
             justify-content: space-between; 
             align-items: center; 
             text-align: center;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
         }
         
         .counter-card { width: 100%; }
@@ -414,7 +326,7 @@
         
         .menu-slide-container { position: relative; display: inline-block; }
         .menu-trigger-icon { background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); color: var(--primary-color); width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        .menu-trigger-icon:hover { background: rgba(255, 105, 180, 0.2); }
+        .menu-trigger-icon:hover { background: rgba(255, 105, 180, 0.2); transform: scale(1.05); }
         
         .slide-dropdown-menu {
             position: absolute;
@@ -436,11 +348,9 @@
             white-space: nowrap;
             transition: max-width 0.3s ease, opacity 0.3s ease;
         }
-        .slide-dropdown-menu.open {
-            max-width: 220px;
-            opacity: 1;
-        }
-        .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 9px; cursor: pointer; }
+        .slide-dropdown-menu.open { max-width: 220px; opacity: 1; }
+        .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 9px; cursor: pointer; transition: 0.2s; }
+        .mini-logout-btn:hover { background: rgba(255, 77, 77, 0.3); }
         
         .admin-header-btn { 
             background: linear-gradient(135deg, #f39c12, #d35400); 
@@ -452,11 +362,14 @@
             font-weight: bold; 
             cursor: pointer; 
             display: none; 
+            transition: 0.2s;
         }
+        .admin-header-btn:hover { opacity: 0.9; }
         
         .live-clock-box { font-size: 9px; color: var(--text-sub); margin-bottom: 2px; direction: ltr; }
         .days-box { font-size: 13px; font-weight: bold; color: var(--primary-color); margin: 2px 0; }
-        .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 14px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px var(--glow-color); }
+        .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 14px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px var(--glow-color); transition: 0.2s; }
+        .day-btn:active { transform: scale(0.95); }
         
         .touch-card { width: 100%; height: 100%; }
         .fingerprint-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 105, 180, 0.12); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.3s; margin: 4px 0; }
@@ -465,7 +378,9 @@
         .touch-status { font-size: 8px; color: var(--text-sub); }
         
         .miss-card { width: 100%; height: 100%; gap: 3px; }
-        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 12px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.3); }
+        .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 12px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px rgba(255, 65, 108, 0.3); transition: 0.2s; }
+        .miss-btn:active { transform: scale(0.95); }
+        
         .last-pulse-box {
             font-size: 7.5px;
             color: var(--primary-color);
@@ -478,7 +393,8 @@
             justify-content: space-between;
             align-items: center;
         }
-        .history-btn { padding: 2px 4px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
+        .history-btn { padding: 2px 4px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; transition: 0.2s; }
+        .history-btn:hover { background: rgba(255, 105, 180, 0.15); }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(5px); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--island-exp-bg); border: 1px solid var(--card-border); border-radius: 18px; width: 90%; max-width: 400px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; box-shadow: 0 10px 30px rgba(0,0,0,0.2); color: var(--text-main); }
@@ -486,7 +402,7 @@
         .modal-header h3 { font-size: 15px; color: var(--primary-color); }
         .close-modal-btn { background: none; border: none; color: var(--primary-color); font-size: 18px; cursor: pointer; }
         .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; max-height: 50vh; padding-left: 5px; }
-        .history-item { background: var(--card-bg); padding: 8px 12px; border-radius: 10px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid #ff416c; }
+        .history-item { background: var(--card-bg); padding: 8px 12px; border-radius: 10px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-right: 3px solid #ff416c; backdrop-filter: blur(5px); }
         .history-user { font-weight: bold; color: var(--primary-color); }
         .history-time { font-size: 10px; color: var(--text-sub); direction: ltr; }
         
@@ -498,7 +414,7 @@
             background: var(--chat-bg); 
             border: 1px solid var(--card-border); 
             border-radius: 16px; 
-            backdrop-filter: blur(10px); 
+            backdrop-filter: blur(12px); 
             overflow: hidden; 
             min-height: 0;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
@@ -506,10 +422,8 @@
             position: relative;
             transition: background 0.4s ease, border-color 0.4s ease;
         }
-        body.lights-off .chat-container {
-            background: #000000 !important;
-            border-color: rgba(255, 255, 255, 0.05) !important;
-        }
+        body.lights-off .chat-container { background: #000000 !important; border-color: rgba(255, 255, 255, 0.05) !important; }
+        
         .chat-header { padding: 6px 12px; background: rgba(255, 105, 180, 0.06); color: var(--primary-color); font-weight: bold; font-size: 10.5px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         body.lights-off .chat-header { opacity: 0; pointer-events: none; height: 0; padding: 0; overflow: hidden; }
         .partner-info { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--primary-color); }
@@ -527,16 +441,31 @@
             align-items: center;
             gap: 6px; 
             background: var(--chat-input-bg); 
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
             box-sizing: border-box; 
             z-index: 100;
             flex-shrink: 0;
             position: relative;
+            flex-direction: column;
         }
-        body.lights-off .chat-input-area {
-            background: #000000 !important;
-            border-top: 1px solid rgba(255, 105, 180, 0.3) !important;
+        body.lights-off .chat-input-area { background: #000000 !important; border-top: 1px solid rgba(255, 105, 180, 0.3) !important; }
+
+        .reply-preview-box {
+            display: none;
+            width: 100%;
+            background: rgba(255, 105, 180, 0.08);
+            border-right: 3px solid var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
         }
+        .reply-preview-box.active { display: flex; }
+
+        .chat-input-row { display: flex; align-items: center; gap: 6px; width: 100%; }
+
         .input-wrapper {
             flex: 1;
             position: relative;
@@ -547,22 +476,13 @@
             border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 2px 6px;
+            transition: border-color 0.3s;
         }
-        .input-wrapper:focus-within {
-            border-color: var(--primary-color);
-        }
-        .chat-input-area input { 
-            width: 100%; 
-            height: 34px; 
-            padding: 0 10px; 
-            background: transparent; 
-            border: none; 
-            color: var(--text-main); 
-            outline: none; 
-            font-size: 13px; 
-        }
+        .input-wrapper:focus-within { border-color: var(--primary-color); }
+        .chat-input-area input { width: 100%; height: 34px; padding: 0 10px; background: transparent; border: none; color: var(--text-main); outline: none; font-size: 13px; }
         .chat-input-area input::placeholder { color: var(--text-sub); opacity: 0.7; }
-        .send-btn, .heart-quick-btn, .voice-record-btn, .cancel-voice-btn { 
+        
+        .send-btn, .heart-quick-btn, .voice-record-btn { 
             width: 34px; 
             height: 34px; 
             border-radius: 50%; 
@@ -572,19 +492,30 @@
             border: none; 
             cursor: pointer; 
             flex-shrink: 0;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-size: 13px;
         }
+        .send-btn:active, .heart-quick-btn:active, .voice-record-btn:active { transform: scale(0.9); }
+        
         .send-btn { 
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); 
             color: #fff; 
             box-shadow: 0 2px 8px var(--glow-color);
         }
+        
+        /* نبض تلقائي خفيف لزر قلب الحب السريع لجذب الانتباه */
+        @keyframes heartPulseSoft {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
         .heart-quick-btn { 
             background: rgba(255, 105, 180, 0.1); 
             border: 1px solid var(--card-border);
             font-size: 14px;
+            animation: heartPulseSoft 2.5s infinite ease-in-out;
         }
+        
         .voice-record-btn { 
             background: rgba(0, 0, 0, 0.03); 
             border: 1px solid var(--card-border); 
@@ -631,7 +562,19 @@
         }
         body.lights-off .chat-messages { opacity: 0; visibility: hidden; pointer-events: none; }
         
-        .message-wrapper { display: flex; align-items: flex-end; gap: 4px; width: 100%; margin-bottom: 1px; }
+        /* حركة دخول سلسة واحترافية للرسائل */
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .message-wrapper { 
+            display: flex; 
+            align-items: flex-end; 
+            gap: 4px; 
+            width: 100%; 
+            margin-bottom: 1px; 
+            animation: messageIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
         .message-wrapper.mine { justify-content: flex-start; }
         .message-wrapper.other { justify-content: flex-end; }
         
@@ -647,7 +590,7 @@
             display: flex; 
             flex-direction: column; 
             line-height: 1.35; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06); 
             position: relative;
             cursor: pointer;
         }
@@ -658,7 +601,7 @@
         }
         .message-bubble.other { 
             background: var(--card-bg); 
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
             color: var(--text-main); 
             border-bottom-left-radius: 3px; 
             border: 1px solid var(--card-border);
@@ -673,6 +616,20 @@
         .message-bubble.mine .msg-author { color: rgba(255, 255, 255, 0.9); }
         .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 2px; align-self: flex-end; }
         .msg-time { font-size: 8px; opacity: 0.75; direction: ltr; }
+
+        .msg-reply-quote {
+            background: rgba(0,0,0,0.1);
+            border-right: 2px solid #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-bottom: 3px;
+            opacity: 0.9;
+        }
+        .message-bubble.other .msg-reply-quote {
+            border-right-color: var(--primary-color);
+            background: rgba(255,105,180,0.1);
+        }
         
         .msg-reactions {
             display: flex;
@@ -722,7 +679,9 @@
             border-radius: 12px;
             margin-bottom: 4px;
         }
-        .reaction-btn { font-size: 18px; cursor: pointer; }
+        .reaction-btn { font-size: 18px; cursor: pointer; transition: transform 0.2s; }
+        .reaction-btn:hover { transform: scale(1.2); }
+        
         .msg-action-btn {
             background: rgba(0, 0, 0, 0.03);
             border: 1px solid var(--card-border);
@@ -736,20 +695,34 @@
             align-items: center;
             gap: 10px;
             text-align: right;
+            transition: background 0.2s;
         }
+        .msg-action-btn:hover { background: rgba(255, 105, 180, 0.1); }
         .msg-action-btn.danger { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.3); background: rgba(255, 107, 107, 0.1); }
-        .tg-voice-player { display: flex; align-items: center; gap: 8px; padding: 4px 0; min-width: 170px; }
+
+        .tg-voice-player { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 2px 0; 
+            min-width: 190px; 
+        }
         .tg-play-btn {
             width: 32px; height: 32px; border-radius: 50%;
             background: rgba(0, 0, 0, 0.1); border: none; color: var(--text-main);
             display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; flex-shrink: 0;
+            transition: transform 0.2s;
         }
+        .tg-play-btn:active { transform: scale(0.9); }
         .message-bubble.mine .tg-play-btn { background: rgba(255, 255, 255, 0.25); color: #fff; }
-        .tg-voice-info { display: flex; flex-direction: column; flex: 1; gap: 2px; }
-        .tg-voice-waves { display: flex; align-items: center; gap: 2px; height: 16px; }
-        .tg-voice-waves i { width: 2.5px; background: var(--primary-color); border-radius: 2px; display: inline-block; }
+        .tg-voice-info { display: flex; flex-direction: column; flex: 1; gap: 3px; }
+        .tg-voice-waves { display: flex; align-items: center; gap: 2px; height: 18px; cursor: pointer; }
+        .tg-voice-waves i { width: 2.5px; background: var(--text-sub); border-radius: 2px; display: inline-block; transition: background 0.2s; }
+        .message-bubble.mine .tg-voice-waves i { background: rgba(255, 255, 255, 0.6); }
+        .tg-voice-meta { display: flex; justify-content: space-between; font-size: 8.5px; opacity: 0.9; }
         
-        .admin-opt-btn { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.03); border: 1px solid var(--card-border); color: var(--primary-color); border-radius: 10px; font-size: 12px; cursor: pointer; text-align: right; display: flex; align-items: center; gap: 8px; }
+        .admin-opt-btn { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.03); border: 1px solid var(--card-border); color: var(--primary-color); border-radius: 10px; font-size: 12px; cursor: pointer; text-align: right; display: flex; align-items: center; gap: 8px; transition: background 0.2s; }
+        .admin-opt-btn:hover { background: rgba(255, 105, 180, 0.1); }
         
         .secret-popup {
             position: fixed; top: 50%; left: 50%;
@@ -757,17 +730,20 @@
             background: var(--island-exp-bg); border: 2px solid var(--primary-color);
             padding: 20px 30px; border-radius: 20px; z-index: 500; text-align: center;
             box-shadow: 0 0 30px var(--glow-color); opacity: 0; pointer-events: none;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .secret-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
         .secret-popup h3 { color: var(--primary-color); font-size: 18px; margin-bottom: 6px; }
         .secret-popup p { font-size: 13px; color: var(--text-main); }
         
         .theme-selector { display: flex; gap: 6px; margin-top: 8px; justify-content: center; flex-wrap: wrap; }
-        .theme-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.15); }
+        .theme-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.15); transition: transform 0.2s; }
+        .theme-dot:hover { transform: scale(1.15); }
     </style>
 </head>
 <body>
+    <div id="netStatusBanner">⚠️ انقطع الاتصال بالإنترنت! جاري إعادة المحاولة...</div>
+
     <div class="screen-overlay"></div>
     <div class="hearts-bg" id="heartsBg"></div>
     <div class="secret-popup" id="secretPopup">
@@ -784,6 +760,7 @@
                 <span class="reaction-btn" onclick="addReaction('😮')">😮</span>
                 <span class="reaction-btn" onclick="addReaction('😢')">😢</span>
             </div>
+            <button class="msg-action-btn" onclick="actionReply()">↩️ رد على الرسالة</button>
             <button class="msg-action-btn" id="actionStarBtn" onclick="actionStar()">⭐ إضافة إلى المفضلة</button>
             <button class="msg-action-btn" id="actionPinBtn" onclick="actionPin()">📌 تثبيت الرسالة بالأعلى</button>
             <button class="msg-action-btn" id="actionEditBtn" onclick="actionEdit()" style="display:none; color: #f39c12; border-color: rgba(243,156,18,0.3); background: rgba(243,156,18,0.1);">✏️ تعديل الرسالة</button>
@@ -912,31 +889,42 @@
                 <div class="chat-messages" id="chatMessages"></div>
                 
                 <div class="chat-input-area">
-                    <div class="tg-voice-overlay" id="tgVoiceOverlay">
-                        <div class="tg-rec-timer">
-                            <div class="tg-rec-dot"></div>
-                            <span id="tgVoiceTimer">00:00</span>
+                    <div class="reply-preview-box" id="replyPreviewBox">
+                        <div>
+                            <span style="font-size: 9px; color: var(--primary-color); font-weight: bold; display: block;" id="replyingToAuthor">رد على</span>
+                            <span style="font-size: 10px; opacity: 0.85;" id="replyingToText">النص...</span>
                         </div>
-                        <div class="tg-voice-actions">
-                            <div class="tg-cancel-text" id="cancelVoiceBtn">إلغاء ✖</div>
-                            <button class="tg-send-voice-btn" id="sendVoiceBtn">إرسال ✓</button>
+                        <button onclick="cancelReply()" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size:12px;">✖</button>
+                    </div>
+
+                    <div class="chat-input-row">
+                        <div class="tg-voice-overlay" id="tgVoiceOverlay">
+                            <div class="tg-rec-timer">
+                                <div class="tg-rec-dot"></div>
+                                <span id="tgVoiceTimer">00:00</span>
+                            </div>
+                            <div class="tg-voice-actions">
+                                <div class="tg-cancel-text" id="cancelVoiceBtn">إلغاء ✖</div>
+                                <button class="tg-send-voice-btn" id="sendVoiceBtn">إرسال ✓</button>
+                            </div>
                         </div>
+                        <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
+                        <div class="input-wrapper">
+                            <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
+                        </div>
+                        <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
+                        <button class="send-btn" id="sendMsgBtn" title="إرسال">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
                     </div>
-                    <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
-                    <div class="input-wrapper">
-                        <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
-                    </div>
-                    <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
-                    <button class="send-btn" id="sendMsgBtn" title="إرسال">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                    </button>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="modal-overlay" id="historyModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -948,6 +936,7 @@
             </div>
         </div>
     </div>
+    
     <div class="modal-overlay" id="favsModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -959,6 +948,7 @@
             </div>
         </div>
     </div>
+    
     <div class="modal-overlay" id="adminModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -984,6 +974,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDyq2aIYtFdTzQEWCPILFhDQNhw7rSCnbU",
@@ -1021,6 +1012,20 @@
         let activeMsgData = null;
         let voiceTimerInterval = null;
         let voiceSeconds = 0;
+        let replyingToData = null;
+
+        window.addEventListener('online', () => {
+            const banner = document.getElementById('netStatusBanner');
+            banner.innerHTML = "✨ عاد الاتصال بالإنترنت بنجاح!";
+            banner.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)";
+            setTimeout(() => banner.classList.remove('show'), 3500);
+        });
+        window.addEventListener('offline', () => {
+            const banner = document.getElementById('netStatusBanner');
+            banner.innerHTML = "⚠️ انقطع الاتصال بالإنترنت! جاري إعادة المحاولة...";
+            banner.style.background = "linear-gradient(135deg, #ff416c, #ff4b2b)";
+            banner.classList.add('show');
+        });
         
         async function hashPassword(str) {
             const encoder = new TextEncoder();
@@ -1066,6 +1071,7 @@
                 island.classList.remove('expanded');
             }
         });
+        
         function setTheme(primary, secondary, glow, bgDark = '#050203', isLight = false, saveToCloud = true) {
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--secondary-color', secondary);
@@ -1093,6 +1099,7 @@
                 setTheme(t.primary, t.secondary, t.glow, t.bgDark || '#050203', t.isLight || false, false);
             }catch(e){}
         }
+        
         function triggerSecretNote() {
             heartClickCount++;
             clearTimeout(heartClickTimer);
@@ -1113,6 +1120,7 @@
                 heartClickTimer = setTimeout(() => { heartClickCount = 0; }, 800);
             }
         }
+        
         function playClickSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1129,9 +1137,11 @@
                 osc.stop(ctx.currentTime + 0.1);
             } catch(e) {}
         }
+        
         function triggerVibration() {
             if ("vibrate" in navigator) navigator.vibrate([200, 100, 200, 100, 300]);
         }
+        
         function launchHeartsExplosion() {
             confetti({
                 particleCount: 60,
@@ -1141,6 +1151,7 @@
                 disableForReducedMotion: true
             });
         }
+        
         const heartsBg = document.getElementById('heartsBg');
         for (let i = 0; i < 15; i++) {
             const heart = document.createElement('div');
@@ -1150,6 +1161,7 @@
             heart.style.animationDuration = `${6 + Math.random() * 6}s`;
             heartsBg.appendChild(heart);
         }
+        
         function toggleMainLamp() {
             db.ref('lights_on').once('value', (snap) => {
                 const currentState = snap.val() !== null ? snap.val() : true;
@@ -1167,9 +1179,12 @@
                 document.body.classList.add('lights-off');
             }
         });
+
         function setupSharedFingerprint() {
             const btn = document.getElementById('fingerprintBtn');
             const statusText = document.getElementById('touchStatus');
+            const counterNum = document.getElementById('islandMainTitle');
+            const recDot = document.getElementById('islandRecordingDot');
             const touchRef = db.ref('shared_touch');
             
             function startTouch(e) {
@@ -1193,24 +1208,37 @@
                 const data = snapshot.val() || {};
                 const myTouch = data[myKey];
                 const partnerTouch = data[partnerKey];
+                
                 if (myTouch && partnerTouch) {
                     btn.classList.add('synced');
                     statusText.innerHTML = "<b style='color:#2ecc71;'>✨ تلامس الأيدي! ✨</b>";
+                    counterNum.style.display = 'none';
+                    recDot.classList.add('active');
+                    recDot.querySelector('span').innerText = "✨ تلامس الأيدي!";
                     triggerVibration();
                     launchHeartsExplosion();
                 } else if (myTouch) {
                     btn.classList.remove('synced');
                     statusText.innerText = `بانتظار ${partnerUser}...`;
+                    counterNum.style.display = 'none';
+                    recDot.classList.add('active');
+                    recDot.querySelector('span').innerText = `بانتظار ${partnerUser}...`;
                 } else if (partnerTouch) {
                     btn.classList.remove('synced');
                     statusText.innerHTML = `<span style='color:var(--primary-color);'>${partnerUser} يضع أصبعه!</span>`;
+                    counterNum.style.display = 'none';
+                    recDot.classList.add('active');
+                    recDot.querySelector('span').innerText = `${partnerUser} يضع أصبعه 🖐️`;
                     triggerVibration();
                 } else {
                     btn.classList.remove('synced');
                     statusText.innerText = "اضغط باستمرار...";
+                    counterNum.style.display = 'inline';
+                    recDot.classList.remove('active');
                 }
             });
         }
+
         function setupBatterySync() {
             if ('getBattery' in navigator) {
                 navigator.getBattery().then((battery) => {
@@ -1234,10 +1262,12 @@
                 }
             });
         }
+
         function scrollToBottom(smooth = true) {
             const chatBox = document.getElementById('chatMessages');
             chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
         }
+
         function setupPresenceAndTypingSystem() {
             const myStatusRef = db.ref(`status/${myKey}`);
             const myTypingRef = db.ref(`typing/${myKey}`);
@@ -1261,13 +1291,11 @@
                     counterNum.style.display = 'none';
                     recDot.classList.add('active');
                     recDot.querySelector('span').innerText = "يكتب الان...";
-                    
                     scrollToBottom(true);
                 } else if (typingState === 'voice') {
                     counterNum.style.display = 'none';
                     recDot.classList.add('active');
                     recDot.querySelector('span').innerText = "يسجل فويس...";
-                    
                     scrollToBottom(true);
                 } else {
                     counterNum.style.display = 'inline';
@@ -1313,11 +1341,13 @@
                 }
             });
         }
+
         function formatFullDateTime(timestamp) {
             if (!timestamp) return "";
             const date = new Date(timestamp);
             return `${date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })} - ${date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`;
         }
+
         function setupLiveClockAndCounter() {
             const markBtn = document.getElementById('markDayBtn');
             const daysCounter = document.getElementById('daysCounter');
@@ -1361,6 +1391,7 @@
                 });
             };
         }
+
         function setupMissYouSystem() {
             const missBtn = document.getElementById('missBtn');
             const lastPulseSender = document.getElementById('lastPulseSender');
@@ -1387,6 +1418,7 @@
                 isInitialLoad = false;
             });
         }
+
         function setupHistoryModal() {
             const historyModal = document.getElementById('historyModal');
             document.getElementById('openHistoryBtn').onclick = () => {
@@ -1439,11 +1471,13 @@
             };
             document.getElementById('closeFavsBtn').onclick = () => { favsModal.style.display = 'none'; };
         }
+
         function renderStatusTicks(status) {
             if (status === 'read') return `<span class="read-status read">✓✓</span>`;
             if (status === 'delivered') return `<span class="read-status delivered">✓✓</span>`;
             return `<span class="read-status sent">✓</span>`;
         }
+
         function openMsgActionsModal(msgKey, msgData, author) {
             activeMsgKey = msgKey;
             activeMsgData = msgData;
@@ -1462,6 +1496,7 @@
             }
             sheet.style.display = 'flex';
         }
+
         window.closeMsgActions = function(e) {
             if (!e || e.target.id === 'msgActionsSheet') document.getElementById('msgActionsSheet').style.display = 'none';
         };
@@ -1479,12 +1514,24 @@
             document.getElementById('msgActionsSheet').style.display = 'none';
         };
         
-        window.toggleReactionDirect = function(msgKey, currentReaction) {
-            const reactionRef = db.ref(`messages/${msgKey}/reactions/${currentUser}`);
-            if (currentReaction.includes(currentUser)) {
-                reactionRef.remove();
-            }
+        window.actionReply = function() {
+            if (!activeMsgData) return;
+            replyingToData = {
+                author: activeMsgData.author,
+                text: activeMsgData.type === 'voice' ? 'ملاحظة صوتية 🎙️' : activeMsgData.text
+            };
+            document.getElementById('replyingToAuthor').innerText = `رد على: ${replyingToData.author}`;
+            document.getElementById('replyingToText').innerText = replyingToData.text;
+            document.getElementById('replyPreviewBox').classList.add('active');
+            document.getElementById('chatInput').focus();
+            document.getElementById('msgActionsSheet').style.display = 'none';
         };
+
+        window.cancelReply = function() {
+            replyingToData = null;
+            document.getElementById('replyPreviewBox').classList.remove('active');
+        };
+
         window.actionStar = function() {
             if (!activeMsgKey) return;
             db.ref(`starred_messages/${activeMsgKey}`).once('value', (snap) => {
@@ -1498,11 +1545,13 @@
             });
             document.getElementById('msgActionsSheet').style.display = 'none';
         };
+
         window.actionPin = function() {
             if (!activeMsgData) return;
             db.ref('pinned_message').set(activeMsgData.text || 'ملاحظة صوتية');
             document.getElementById('msgActionsSheet').style.display = 'none';
         };
+
         window.actionEdit = function() {
             document.getElementById('msgActionsSheet').style.display = 'none';
             const newText = prompt("تعديل الرسالة:", activeMsgData.text);
@@ -1510,30 +1559,52 @@
                 db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " (معدلة ✏️)" });
             }
         };
+
         window.actionDelete = function() {
             document.getElementById('msgActionsSheet').style.display = 'none';
             if (confirm("هل تريد حذف هذه الرسالة؟")) db.ref(`messages/${activeMsgKey}`).remove();
         };
+
         window.removeStarFavorite = function(key) {
             db.ref(`starred_messages/${key}`).remove();
             document.getElementById('openFavsBtn').click();
         };
         
         window.playTgVoice = function(btn, audioUrl) {
-            let audio = btn.nextElementSibling;
-            if (!audio || audio.tagName !== 'AUDIO') {
+            let playerContainer = btn.closest('.tg-voice-player');
+            let audio = playerContainer.querySelector('audio');
+            let timeSpan = playerContainer.querySelector('.tg-voice-time');
+            let waves = playerContainer.querySelectorAll('.tg-voice-waves i');
+
+            if (!audio) {
                 audio = new Audio(audioUrl);
-                btn.after(audio);
+                playerContainer.appendChild(audio);
+
+                audio.ontimeupdate = () => {
+                    const currentSecs = Math.floor(audio.currentTime);
+                    const cM = String(Math.floor(currentSecs / 60)).padStart(2, '0');
+                    const cS = String(currentSecs % 60).padStart(2, '0');
+                    timeSpan.innerText = `${cM}:${cS}`;
+
+                    if (audio.duration) {
+                        const progressPercent = audio.currentTime / audio.duration;
+                        const activeCount = Math.floor(waves.length * progressPercent);
+                        waves.forEach((w, idx) => {
+                            w.style.background = idx <= activeCount ? '#ff69b4' : 'var(--text-sub)';
+                        });
+                    }
+                };
+
+                audio.onended = () => { 
+                    btn.innerText = "▶"; 
+                    db.ref(`voice_playing/${myKey}`).set(false);
+                    timeSpan.innerText = "00:00";
+                    waves.forEach(w => w.style.background = 'var(--text-sub)');
+                };
             }
-            audio.onended = () => { 
-                btn.innerText = "▶"; 
-                db.ref(`voice_playing/${myKey}`).set(false);
-            };
-            audio.onpause = () => {
-                db.ref(`voice_playing/${myKey}`).set(false);
-            };
+
             if (audio.paused) {
-                document.querySelectorAll('audio').forEach(a => a.pause());
+                document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
                 document.querySelectorAll('.tg-play-btn').forEach(b => b.innerText = "▶");
                 audio.play();
                 btn.innerText = "⏸";
@@ -1579,16 +1650,25 @@
                     db.ref(`messages/${msgKey}/status`).set('read');
                 }
                 
-                let contentHtml = `<span>${msg.text}</span>`;
+                let replyQuoteHtml = '';
+                if (msg.replyTo) {
+                    replyQuoteHtml = `<div class="msg-reply-quote"><b>${msg.replyTo.author}:</b> ${msg.replyTo.text}</div>`;
+                }
+
+                let contentHtml = `${replyQuoteHtml}<span>${msg.text}</span>`;
                 if (msg.type === 'voice') {
                     contentHtml = `
+                        ${replyQuoteHtml}
                         <div class="tg-voice-player">
                             <button class="tg-play-btn" onclick="playTgVoice(this, '${msg.audioData}')">▶</button>
                             <div class="tg-voice-info">
                                 <div class="tg-voice-waves">
-                                    <i style="height: 8px;"></i><i style="height: 14px;"></i><i style="height: 6px;"></i><i style="height: 12px;"></i><i style="height: 16px;"></i><i style="height: 9px;"></i><i style="height: 5px;"></i><i style="height: 11px;"></i><i style="height: 15px;"></i><i style="height: 7px;"></i>
+                                    <i style="height: 8px;"></i><i style="height: 14px;"></i><i style="height: 6px;"></i><i style="height: 12px;"></i><i style="height: 16px;"></i><i style="height: 9px;"></i><i style="height: 5px;"></i><i style="height: 11px;"></i><i style="height: 15px;"></i><i style="height: 7px;"></i><i style="height: 13px;"></i><i style="height: 8px;"></i>
                                 </div>
-                                <span style="font-size: 8px; opacity:0.8;">🎙️ صوتية</span>
+                                <div class="tg-voice-meta">
+                                    <span class="tg-voice-time">00:00</span>
+                                    <span>🎙️ فويس تليجرام</span>
+                                </div>
                             </div>
                         </div>`;
                 }
@@ -1613,12 +1693,13 @@
                 chatBox.appendChild(wrapper);
                 scrollToBottom(true);
             });
+            
             db.ref('messages').on('child_changed', (snapshot) => {
                 const msgKey = snapshot.key;
                 const msg = snapshot.val();
                 const wrapper = document.getElementById(`msg-${msgKey}`);
                 if (wrapper) {
-                    const textSpan = wrapper.querySelector('.message-bubble span:not(.msg-author):not(.msg-time)');
+                    const textSpan = wrapper.querySelector('.message-bubble span:not(.msg-author):not(.msg-time):not(.tg-voice-time)');
                     if (textSpan && msg.type !== 'voice') textSpan.innerText = msg.text;
                     const ticksSpan = document.getElementById(`ticks-${msgKey}`);
                     if (ticksSpan && msg.author.toLowerCase() === currentUser.toLowerCase()) ticksSpan.innerHTML = renderStatusTicks(msg.status);
@@ -1638,10 +1719,12 @@
                     }
                 }
             });
+            
             db.ref('messages').on('child_removed', (snapshot) => {
                 const removedMsg = document.getElementById(`msg-${snapshot.key}`);
                 if (removedMsg) removedMsg.remove();
             });
+            
             db.ref('pinned_message').on('value', (snapshot) => {
                 const pinnedBar = document.getElementById('pinnedBar');
                 const val = snapshot.val();
@@ -1653,12 +1736,14 @@
                     pinnedBar.style.display = 'none';
                 }
             });
+            
             db.ref('heart_explosions').on('child_added', (snapshot) => {
                 if (snapshot.val() && !isInitialLoad) {
                     launchHeartsExplosion();
                     triggerVibration();
                 }
             });
+            
             db.ref('vibration_signals').on('child_added', (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.target === currentUser && !isInitialLoad) triggerVibration();
@@ -1757,13 +1842,18 @@
             reader.readAsDataURL(blob);
             reader.onloadend = () => {
                 const base64Audio = reader.result;
-                db.ref('messages').push({
+                let msgData = {
                     author: currentUser,
                     type: 'voice',
                     audioData: base64Audio,
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
-                });
+                };
+                if (replyingToData) {
+                    msgData.replyTo = replyingToData;
+                    cancelReply();
+                }
+                db.ref('messages').push(msgData);
             };
         }
         
@@ -1775,26 +1865,36 @@
             function sendTextMessage() {
                 const text = chatInput.value.trim();
                 if (!text) return;
-                db.ref('messages').push({
+                let msgData = {
                     author: currentUser,
                     text: text,
                     type: 'text',
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
-                });
+                };
+                if (replyingToData) {
+                    msgData.replyTo = replyingToData;
+                    cancelReply();
+                }
+                db.ref('messages').push(msgData);
                 chatInput.value = '';
                 db.ref(`typing/${myKey}`).set('idle');
             }
             sendBtn.onclick = sendTextMessage;
             chatInput.onkeypress = (e) => { if (e.key === 'Enter') sendTextMessage(); };
             heartBtn.onclick = () => {
-                db.ref('messages').push({
+                let msgData = {
                     author: currentUser,
                     text: '❤️',
                     type: 'text',
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
-                });
+                };
+                if (replyingToData) {
+                    msgData.replyTo = replyingToData;
+                    cancelReply();
+                }
+                db.ref('messages').push(msgData);
                 launchHeartsExplosion();
             };
         }
@@ -1899,3 +1999,4 @@
     </script>
 </body>
 </html>
+
