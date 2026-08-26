@@ -739,6 +739,29 @@
         .theme-selector { display: flex; gap: 6px; margin-top: 8px; justify-content: center; flex-wrap: wrap; }
         .theme-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.15); transition: transform 0.2s; }
         .theme-dot:hover { transform: scale(1.15); }
+    
+        /* ===== Chat UX upgrade 1-5 ===== */
+        .island-recording-dot.active{display:flex!important;animation:islandPulse 1.2s ease-in-out infinite}
+        @keyframes islandPulse{0%,100%{transform:scale(1);opacity:.82}50%{transform:scale(1.035);opacity:1}}
+        .island-typing-name{font-size:10px;opacity:.82;margin-right:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+        .typing-dots{display:inline-flex;gap:3px;align-items:center;margin-right:4px;direction:ltr}
+        .typing-dots i{width:4px;height:4px;border-radius:50%;background:currentColor;animation:typingDot 1s infinite ease-in-out;display:block}
+        .typing-dots i:nth-child(2){animation-delay:.15s}.typing-dots i:nth-child(3){animation-delay:.3s}
+        @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-3px);opacity:1}}
+        .message-bubble{transition:transform .18s ease,box-shadow .18s ease}
+        .message-bubble.long-pressed{transform:scale(1.025);box-shadow:0 8px 30px rgba(255,105,180,.22)}
+        .msg-reactions{animation:reactionPop .22s ease-out;display:flex;gap:3px;flex-wrap:wrap}
+        .react-item{display:inline-flex;animation:reactionItem .35s cubic-bezier(.17,.67,.32,1.4)}
+        @keyframes reactionPop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+        @keyframes reactionItem{from{transform:translateY(5px) scale(.5);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+        .floating-reaction{position:fixed;z-index:10000;pointer-events:none;font-size:24px;animation:floatReaction 900ms cubic-bezier(.2,.8,.2,1) forwards;filter:drop-shadow(0 3px 8px rgba(0,0,0,.25))}
+        @keyframes floatReaction{0%{opacity:0;transform:translate(-50%,10px) scale(.4)}15%{opacity:1;transform:translate(-50%,0) scale(1.2)}100%{opacity:0;transform:translate(-50%,-90px) scale(1)}}
+        .island-event{animation:islandEvent .35s ease-out}
+        @keyframes islandEvent{0%{transform:scale(.94)}100%{transform:scale(1)}}
+        .msg-footer{display:flex;align-items:center;justify-content:flex-end;gap:5px}
+        .read-status{font-size:10px;font-weight:800;letter-spacing:-2px;display:inline-block;min-width:12px}
+        .read-status.sent{opacity:.55}.read-status.delivered{opacity:.85}.read-status.read{color:#35a7ff;text-shadow:0 0 7px rgba(53,167,255,.35)}
+        @media (max-width:600px){.floating-reaction{font-size:22px}.island-typing-name{max-width:65px}}
     </style>
 </head>
 <body>
@@ -910,7 +933,7 @@
                         </div>
                         <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
                         <div class="input-wrapper">
-                            <input type="text" id="chatInput" placeholder="اكتب رسالة ..." autocomplete="off">
+                            <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
                         </div>
                         <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
                         <button class="send-btn" id="sendMsgBtn" title="إرسال">
@@ -1287,19 +1310,23 @@
                 const counterNum = document.getElementById('islandMainTitle');
                 const recDot = document.getElementById('islandRecordingDot');
                 
+                const island = document.getElementById('dynamicIsland');
                 if (typingState === 'text') {
                     counterNum.style.display = 'none';
                     recDot.classList.add('active');
-                    recDot.querySelector('span').innerText = "يكتب الان...";
-                    scrollToBottom(true);
+                    recDot.innerHTML = `<span class="island-typing-name">${partnerUser}</span><span class="typing-dots"><i></i><i></i><i></i></span><span>يكتب...</span>`;
+                    island.classList.add('island-event');
+                    setTimeout(() => island.classList.remove('island-event'), 400);
                 } else if (typingState === 'voice') {
                     counterNum.style.display = 'none';
                     recDot.classList.add('active');
-                    recDot.querySelector('span').innerText = "يسجل فويس...";
-                    scrollToBottom(true);
+                    recDot.innerHTML = `<span class="island-typing-name">${partnerUser}</span>🎙️ <span>يسجل فويس...</span>`;
+                    island.classList.add('island-event');
+                    setTimeout(() => island.classList.remove('island-event'), 400);
                 } else {
                     counterNum.style.display = 'inline';
                     recDot.classList.remove('active');
+                    recDot.innerHTML = '<div class="rec-dot-pulse"></div><span>جاي يكتب...</span>';
                 }
             });
             
@@ -1502,13 +1529,25 @@
         };
         
         window.addReaction = function(emoji) {
-            if (!activeMsgKey) return;
+            if (!activeMsgKey || !emoji) return;
             const reactionRef = db.ref(`messages/${activeMsgKey}/reactions/${currentUser}`);
             reactionRef.once('value', (snap) => {
                 if (snap.val() === emoji) {
                     reactionRef.remove();
                 } else {
                     reactionRef.set(emoji);
+                    const bubble = document.querySelector(`#msg-${activeMsgKey} .message-bubble`);
+                    if (bubble) {
+                        const rect = bubble.getBoundingClientRect();
+                        const el = document.createElement('span');
+                        el.className = 'floating-reaction';
+                        el.textContent = emoji;
+                        el.style.left = `${rect.left + rect.width / 2}px`;
+                        el.style.top = `${rect.top + rect.height / 2}px`;
+                        document.body.appendChild(el);
+                        setTimeout(() => el.remove(), 950);
+                    }
+                    if (navigator.vibrate) navigator.vibrate(10);
                 }
             });
             document.getElementById('msgActionsSheet').style.display = 'none';
@@ -1633,6 +1672,24 @@
             });
         }
         
+        function showIslandEvent(icon, text) {
+            const island = document.getElementById('dynamicIsland');
+            const title = document.getElementById('islandMainTitle');
+            const recDot = document.getElementById('islandRecordingDot');
+            if (!island || !title || !recDot) return;
+            title.style.display = 'none';
+            recDot.classList.add('active');
+            recDot.innerHTML = `<span style="font-size:12px">${icon}</span><span>${text}</span>`;
+            island.classList.add('island-event');
+            clearTimeout(window.__islandEventTimer);
+            window.__islandEventTimer = setTimeout(() => {
+                recDot.classList.remove('active');
+                recDot.innerHTML = '<div class="rec-dot-pulse"></div><span>جاي يكتب...</span>';
+                if (!document.getElementById('islandRecordingDot').classList.contains('active')) title.style.display = 'inline';
+                island.classList.remove('island-event');
+            }, 2200);
+        }
+
         function setupLiveChat() {
             const chatBox = document.getElementById('chatMessages');
             chatBox.innerHTML = '';
@@ -1647,7 +1704,9 @@
                 wrapper.id = `msg-${msgKey}`;
                 
                 if (!isMine && msg.status !== 'read') {
-                    db.ref(`messages/${msgKey}/status`).set('read');
+                    db.ref(`messages/${msgKey}/status`).set('delivered');
+                    setTimeout(() => db.ref(`messages/${msgKey}/status`).set('read'), 650);
+                    showIslandEvent('💬', `${msg.author}: ${msg.type === 'voice' ? 'أرسل فويس' : 'أرسل رسالة'}`);
                 }
                 
                 let replyQuoteHtml = '';
@@ -1683,11 +1742,24 @@
                 bubble.className = `message-bubble ${isMine ? 'mine' : 'other'}`;
                 bubble.innerHTML = `<span class="msg-author">${msg.author}</span>${contentHtml}${reactionsHtml}<div class="msg-footer"><span class="msg-time">${formatFullDateTime(msg.timestamp)}</span><span id="ticks-${msgKey}">${isMine ? renderStatusTicks(msg.status || 'sent') : ''}</span></div>`;
                 
-                let pressTimer;
-                bubble.addEventListener('touchstart', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 500); });
-                bubble.addEventListener('touchend', () => clearTimeout(pressTimer));
-                bubble.addEventListener('mousedown', () => { pressTimer = setTimeout(() => openMsgActionsModal(msgKey, msg, msg.author), 500); });
-                bubble.addEventListener('mouseup', () => clearTimeout(pressTimer));
+                let pressTimer, longPressed = false;
+                const startPress = () => {
+                    longPressed = false;
+                    pressTimer = setTimeout(() => {
+                        longPressed = true;
+                        bubble.classList.add('long-pressed');
+                        if (navigator.vibrate) navigator.vibrate(18);
+                        openMsgActionsModal(msgKey, msg, msg.author);
+                    }, 500);
+                };
+                const endPress = () => { clearTimeout(pressTimer); setTimeout(() => bubble.classList.remove('long-pressed'), 220); };
+                bubble.addEventListener('touchstart', startPress, {passive:true});
+                bubble.addEventListener('touchend', endPress);
+                bubble.addEventListener('touchmove', () => clearTimeout(pressTimer), {passive:true});
+                bubble.addEventListener('contextmenu', e => e.preventDefault());
+                bubble.addEventListener('mousedown', startPress);
+                bubble.addEventListener('mouseup', endPress);
+                bubble.addEventListener('mouseleave', () => clearTimeout(pressTimer));
                 
                 wrapper.appendChild(bubble);
                 chatBox.appendChild(wrapper);
@@ -1877,6 +1949,7 @@
                     cancelReply();
                 }
                 db.ref('messages').push(msgData);
+                showIslandEvent('✉️', 'تم إرسال الرسالة');
                 chatInput.value = '';
                 db.ref(`typing/${myKey}`).set('idle');
             }
