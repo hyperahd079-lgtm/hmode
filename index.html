@@ -18,8 +18,9 @@
             --text-sub: #dda0dd;
             --card-bg: rgba(255, 182, 193, 0.06);
             --card-border: rgba(255, 182, 193, 0.2);
-            --island-bg: #000000;
-            --island-exp-bg: rgba(12, 6, 10, 0.96);
+            /* تم تصغير حجم الجزيرة وتغيير لونها ليكون مختلفاً بشكل أنيق جداً عن الثيم */
+            --island-bg: linear-gradient(135deg, #1b0f1a, #2a1224);
+            --island-exp-bg: rgba(18, 8, 15, 0.97);
             --chat-bg: rgba(20, 8, 14, 0.85);
             --chat-input-bg: rgba(15, 5, 10, 0.95);
         }
@@ -30,8 +31,9 @@
             --text-sub: #6c757d;
             --card-bg: rgba(255, 255, 255, 0.75);
             --card-border: rgba(0, 0, 0, 0.08);
-            --island-bg: #e2e8f0;
-            --island-exp-bg: rgba(245, 247, 250, 0.96);
+            /* لون مختلف وجميل للجزيرة في الوضع الفاتح لتمييزها عن الثيم */
+            --island-bg: linear-gradient(135deg, #fff0f5, #ffe4e1);
+            --island-exp-bg: rgba(255, 250, 252, 0.97);
             --chat-bg: rgba(255, 255, 255, 0.8);
             --chat-input-bg: #f8f9fa;
         }
@@ -177,25 +179,26 @@
         }
         .dynamic-island {
             background: var(--island-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 28px;
-            width: 210px;
-            height: 36px;
+            border: 1px solid rgba(255, 182, 193, 0.35);
+            border-radius: 22px;
+            /* تم تصغير الحجم قليلاً بالعرض والارتفاع */
+            width: 175px;
+            height: 31px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
+            justify-content: center;
+            padding: 0 12px;
             cursor: pointer;
             position: relative;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.18);
             overflow: hidden;
             transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1), 
                         height 0.45s cubic-bezier(0.32, 0.72, 0, 1), 
                         border-radius 0.45s cubic-bezier(0.32, 0.72, 0, 1), 
-                        background-color 0.45s ease, 
+                        background 0.45s ease, 
                         transform 0.25s ease;
             transform-origin: top center;
-            will-change: width, height, border-radius, background-color;
+            will-change: width, height, border-radius, background;
         }
         .dynamic-island:active {
             transform: scale(0.97);
@@ -219,11 +222,11 @@
             left: 0; top: 0; width: 100%; height: 100%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             padding: 0 14px;
-            font-size: 11px;
+            font-size: 13px;
             color: var(--primary-color);
-            font-weight: 600;
+            font-weight: bold;
             white-space: nowrap;
             transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s ease;
             pointer-events: none;
@@ -236,27 +239,22 @@
         .island-voice-wave {
             display: none;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
+            color: #ffd700;
+            font-size: 11px;
+            font-weight: bold;
         }
         .island-voice-wave.active {
             display: flex;
         }
-        .island-voice-wave span {
-            width: 3px;
-            height: 10px;
-            background: #ffd700;
-            border-radius: 3px;
-            animation: islandWave 0.6s infinite ease-in-out alternate;
-        }
-        .island-voice-wave span:nth-child(2) { animation-delay: 0.15s; }
-        .island-voice-wave span:nth-child(3) { animation-delay: 0.3s; }
         
         .island-recording-dot {
             display: none;
             align-items: center;
             gap: 5px;
             color: #ff4d4d;
-            font-size: 10px;
+            font-size: 11px;
+            font-weight: bold;
         }
         .island-recording-dot.active {
             display: flex;
@@ -269,7 +267,6 @@
             animation: recPulse 1s infinite alternate;
         }
         @keyframes recPulse { 0% { opacity: 0.3; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
-        @keyframes islandWave { 0% { height: 4px; } 100% { height: 14px; } }
         
         .island-expanded-content {
             display: flex;
@@ -753,19 +750,17 @@
             <div class="dynamic-island-container">
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
                     <div class="island-collapsed-content" id="islandCollapsedContent">
-                        <span id="islandMainTitle">❤️ عالمنا الخاص</span>
+                        <span id="islandMainTitle" style="font-size: 13px; font-weight: bold; color: var(--primary-color);">0</span>
                         
                         <div class="island-recording-dot" id="islandRecordingDot">
                             <div class="rec-dot-pulse"></div>
-                            <span>تسجيل صوتي...</span>
+                            <span>يكتب الان...</span>
                         </div>
                         
                         <div class="island-voice-wave" id="islandVoiceWave">
-                            <span></span><span></span><span></span>
-                            <span style="font-size: 10px; color: #ffd700; margin-right: 4px;">يستمع للفويس...</span>
+                            <span>🎙️</span>
+                            <span>جاي يستمع للفويس...</span>
                         </div>
-                        
-                        <span id="islandIndicatorText" style="font-size: 10px; color: var(--text-sub);">اضغط للتفاصيل ✨</span>
                     </div>
                     
                     <div class="island-expanded-content" id="islandExpandedContent">
@@ -1090,7 +1085,6 @@
         function setupSharedFingerprint() {
             const btn = document.getElementById('fingerprintBtn');
             const statusText = document.getElementById('touchStatus');
-            const islandText = document.getElementById('islandIndicatorText');
             const touchRef = db.ref('shared_touch');
             
             function startTouch(e) {
@@ -1117,25 +1111,18 @@
                 if (myTouch && partnerTouch) {
                     btn.classList.add('synced');
                     statusText.innerHTML = "<b style='color:#2ecc71;'>✨ تلامس الأيدي! ✨</b>";
-                    islandText.innerHTML = "✨ تلامس الأيدي نشط!";
-                    islandText.style.color = "#2ecc71";
                     triggerVibration();
                     launchHeartsExplosion();
                 } else if (myTouch) {
                     btn.classList.remove('synced');
                     statusText.innerText = `بانتظار ${partnerUser}...`;
-                    islandText.innerText = `بانتظار ${partnerUser}...`;
-                    islandText.style.color = "var(--primary-color)";
                 } else if (partnerTouch) {
                     btn.classList.remove('synced');
                     statusText.innerHTML = `<span style='color:var(--primary-color);'>${partnerUser} يضع أصبعه!</span>`;
-                    islandText.innerHTML = `<span style='color:var(--primary-color);'>👆 ${partnerUser} يضع أصبعه!</span>`;
                     triggerVibration();
                 } else {
                     btn.classList.remove('synced');
                     statusText.innerText = "اضغط باستمرار...";
-                    islandText.innerText = "اضغط للتفاصيل ✨";
-                    islandText.style.color = "var(--text-sub)";
                 }
             });
         }
@@ -1183,37 +1170,33 @@
             db.ref(`typing/${partnerKey}`).on('value', (snapshot) => {
                 const typingState = snapshot.val();
                 const indicator = document.getElementById('inputStatusIndicator');
-                const mainTitle = document.getElementById('islandMainTitle');
-                const indicatorText = document.getElementById('islandIndicatorText');
+                const counterNum = document.getElementById('islandMainTitle');
+                const recDot = document.getElementById('islandRecordingDot');
                 
                 if (typingState === 'text') {
                     indicator.classList.add('active');
                     indicator.innerHTML = `✍️ <span>${partnerUser} يكتب...</span>`;
                     
-                    mainTitle.style.display = 'none';
-                    indicatorText.style.display = 'inline';
-                    indicatorText.innerHTML = `✍️ ${partnerUser} يكتب...`;
-                    indicatorText.style.color = "var(--primary-color)";
+                    counterNum.style.display = 'none';
+                    recDot.classList.add('active');
+                    recDot.querySelector('span').innerText = "يكتب الان...";
                     
                     scrollToBottom(true);
                 } else if (typingState === 'voice') {
                     indicator.classList.add('active');
                     indicator.innerHTML = `🎙️ <span>${partnerUser} يسجل فويس...</span>`;
                     
-                    mainTitle.style.display = 'none';
-                    indicatorText.style.display = 'inline';
-                    indicatorText.innerHTML = `🎙️ ${partnerUser} يسجل فويس...`;
-                    indicatorText.style.color = "#ff4d4d";
+                    counterNum.style.display = 'none';
+                    recDot.classList.add('active');
+                    recDot.querySelector('span').innerText = "يسجل فويس...";
                     
                     scrollToBottom(true);
                 } else {
                     indicator.classList.remove('active');
                     indicator.innerHTML = "";
                     
-                    mainTitle.style.display = 'inline';
-                    indicatorText.style.display = 'inline';
-                    indicatorText.innerHTML = "اضغط للتفاصيل ✨";
-                    indicatorText.style.color = "var(--text-sub)";
+                    counterNum.style.display = 'inline';
+                    recDot.classList.remove('active');
                 }
             });
             
@@ -1264,6 +1247,7 @@
             const markBtn = document.getElementById('markDayBtn');
             const daysCounter = document.getElementById('daysCounter');
             const clockBox = document.getElementById('liveClock');
+            const counterNum = document.getElementById('islandMainTitle');
             
             function updateClockAndCheckDate() {
                 const now = new Date();
@@ -1284,7 +1268,9 @@
             updateClockAndCheckDate();
             
             db.ref('love_days').on('value', (snapshot) => {
-                daysCounter.innerText = `${snapshot.val() || 0} أيام`;
+                const daysVal = snapshot.val() || 0;
+                daysCounter.innerText = `${daysVal} أيام`;
+                counterNum.innerText = daysVal;
             });
             
             markBtn.onclick = () => {
@@ -1486,22 +1472,16 @@
         
         function setupVoiceIslandSync() {
             const waveElem = document.getElementById('islandVoiceWave');
-            const mainTitle = document.getElementById('islandMainTitle');
-            const indicatorText = document.getElementById('islandIndicatorText');
+            const counterNum = document.getElementById('islandMainTitle');
             db.ref(`voice_playing/${partnerKey}`).on('value', (snap) => {
                 const isPlaying = snap.val();
                 if (isPlaying) {
                     waveElem.classList.add('active');
-                    mainTitle.style.display = 'none';
-                    indicatorText.style.display = 'inline';
-                    indicatorText.innerHTML = `<span style="color: #ffd700;">يستمع للفويس...</span>`;
+                    counterNum.style.display = 'none';
                 } else {
                     waveElem.classList.remove('active');
-                    if (!isRecording) {
-                        mainTitle.style.display = 'inline';
-                        indicatorText.style.display = 'inline';
-                        indicatorText.innerHTML = "اضغط للتفاصيل ✨";
-                        indicatorText.style.color = "var(--text-sub)";
+                    if (!document.getElementById('islandRecordingDot').classList.contains('active')) {
+                        counterNum.style.display = 'inline';
                     }
                 }
             });
@@ -1617,8 +1597,7 @@
             const overlay = document.getElementById('tgVoiceOverlay');
             const timerElem = document.getElementById('tgVoiceTimer');
             const recDot = document.getElementById('islandRecordingDot');
-            const mainTitle = document.getElementById('islandMainTitle');
-            const indicatorText = document.getElementById('islandIndicatorText');
+            const counterNum = document.getElementById('islandMainTitle');
             
             function startTimer() {
                 voiceSeconds = 0;
@@ -1644,7 +1623,6 @@
                     resetRecordingState();
                 }
             };
-
             sendVoiceBtn.onclick = () => {
                 if (isRecording) {
                     cancelRecording = false;
@@ -1652,20 +1630,15 @@
                     resetRecordingState();
                 }
             };
-
             function resetRecordingState() {
                 isRecording = false;
                 db.ref(`typing/${myKey}`).set('idle');
                 voiceBtn.classList.remove('recording');
                 overlay.classList.remove('active');
                 recDot.classList.remove('active');
-                mainTitle.style.display = 'inline';
-                indicatorText.style.display = 'inline';
-                indicatorText.innerHTML = "اضغط للتفاصيل ✨";
-                indicatorText.style.color = "var(--text-sub)";
+                counterNum.style.display = 'inline';
                 stopTimer();
             }
-
             voiceBtn.onclick = async () => {
                 if (!navigator.mediaDevices?.getUserMedia) {
                     alert("⚠️ المتصفح لا يدعم الميكروفون.");
@@ -1691,10 +1664,8 @@
                         voiceBtn.classList.add('recording');
                         overlay.classList.add('active');
                         recDot.classList.add('active');
-                        mainTitle.style.display = 'none';
-                        indicatorText.style.display = 'inline';
-                        indicatorText.innerHTML = "تسجيل صوتي...";
-                        indicatorText.style.color = "#ff4d4d";
+                        recDot.querySelector('span').innerText = "يسجل فويس...";
+                        counterNum.style.display = 'none';
                         startTimer();
                     } catch(e) {
                         alert("⚠️ لم يتم منح إذن المايكروفون.");
