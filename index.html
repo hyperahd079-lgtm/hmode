@@ -166,7 +166,6 @@
             overflow: hidden; 
         }
         
-        /* ------------------ Dynamic Island - انسيابية وسلاسة محسّنة ------------------ */
         .dynamic-island-container {
             width: 100%;
             display: flex;
@@ -190,7 +189,6 @@
             position: relative;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            /* تعديل الانتقال ليصبح أكثر سلاسة وانكماش سلس */
             transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1), 
                         height 0.45s cubic-bezier(0.32, 0.72, 0, 1), 
                         border-radius 0.45s cubic-bezier(0.32, 0.72, 0, 1), 
@@ -235,7 +233,6 @@
             transform: scale(0.92);
         }
         
-        /* موجة الصوت لتشغيل والتسجيل داخل الجزيرة الديناميكية */
         .island-voice-wave {
             display: none;
             align-items: center;
@@ -500,12 +497,6 @@
             box-shadow: 0 0 12px rgba(231, 76, 60, 0.6);
             color: #fff;
         }
-        .cancel-voice-btn {
-            background: rgba(255, 77, 77, 0.2);
-            border: 1px solid rgba(255, 77, 77, 0.4);
-            color: #ff6b6b;
-            display: none;
-        }
         
         .tg-voice-overlay {
             display: none;
@@ -522,7 +513,9 @@
         .tg-voice-overlay.active { display: flex; }
         .tg-rec-timer { font-size: 13px; font-weight: bold; color: #ff6b6b; display: flex; align-items: center; gap: 6px; }
         .tg-rec-dot { width: 8px; height: 8px; background: #ff4d4d; border-radius: 50%; }
+        .tg-voice-actions { display: flex; align-items: center; gap: 8px; }
         .tg-cancel-text { font-size: 12px; color: #ff6b6b; cursor: pointer; border: 1px solid rgba(255, 107, 107, 0.3); padding: 4px 10px; border-radius: 12px; background: rgba(255, 107, 107, 0.1); }
+        .tg-send-voice-btn { font-size: 12px; color: #fff; background: #2ecc71; border: none; padding: 4px 12px; border-radius: 12px; cursor: pointer; font-weight: bold; }
         
         .input-status-indicator {
             display: none;
@@ -758,18 +751,15 @@
         </div>
         <div class="page-content">
             <div class="dynamic-island-container">
-                <!-- Dynamic Island Container - مع انسيابية محسنة وسلاسة في الحركة والتفاعل الصوتي -->
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
                     <div class="island-collapsed-content" id="islandCollapsedContent">
                         <span id="islandMainTitle">❤️ عالمنا الخاص</span>
                         
-                        <!-- مؤشر التسجيل -->
                         <div class="island-recording-dot" id="islandRecordingDot">
                             <div class="rec-dot-pulse"></div>
                             <span>تسجيل صوتي...</span>
                         </div>
                         
-                        <!-- مؤشر الاستماع للفويس -->
                         <div class="island-voice-wave" id="islandVoiceWave">
                             <span></span><span></span><span></span>
                             <span style="font-size: 10px; color: #ffd700; margin-right: 4px;">يستمع للفويس...</span>
@@ -779,7 +769,6 @@
                     </div>
                     
                     <div class="island-expanded-content" id="islandExpandedContent">
-                        <!-- العداد في الأعلى بكامل العرض -->
                         <div class="counter-card">
                             <div class="counter-card-header">
                                 <h2 id="typingTitle">أهلاً بك ❤️</h2>
@@ -796,16 +785,13 @@
                             <button class="day-btn" id="markDayBtn">حضور 🌹</button>
                         </div>
                         
-                        <!-- القسم السفلي مقسوم بنصفين (1 و 2) -->
                         <div class="island-bottom-split">
-                            <!-- رقم 1: البصمة المشتركة -->
                             <div class="touch-card">
                                 <h2 style="font-size: 9px; color: var(--primary-color);">١. البصمة المشتركة</h2>
                                 <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
                                 <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
                             </div>
                             
-                            <!-- رقم 2: أنا مشتاق -->
                             <div class="miss-card">
                                 <h2 style="font-size: 9px; color: var(--primary-color);">٢. أنا مشتاق</h2>
                                 <button class="miss-btn" id="missBtn">
@@ -851,13 +837,15 @@
                             <div class="tg-rec-dot"></div>
                             <span id="tgVoiceTimer">00:00</span>
                         </div>
-                        <div class="tg-cancel-text" id="cancelVoiceBtn">إلغاء ✖</div>
+                        <div class="tg-voice-actions">
+                            <div class="tg-cancel-text" id="cancelVoiceBtn">إلغاء ✖</div>
+                            <button class="tg-send-voice-btn" id="sendVoiceBtn">إرسال ✓</button>
+                        </div>
                     </div>
                     <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
                     <div class="input-wrapper">
                         <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
                     </div>
-                    <!-- زر التسجيل الصوتي ظاهر وجاهز -->
                     <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
                     <button class="send-btn" id="sendMsgBtn" title="إرسال">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1197,9 +1185,8 @@
                 const indicator = document.getElementById('inputStatusIndicator');
                 const mainTitle = document.getElementById('islandMainTitle');
                 const indicatorText = document.getElementById('islandIndicatorText');
-
+                
                 if (typingState === 'text') {
-                    // تم تعديل النص ليصبح "يكتب..." بدلاً من "يكتب الان" ومكانها في الجزيرة الديناميكية أيضاً
                     indicator.classList.add('active');
                     indicator.innerHTML = `✍️ <span>${partnerUser} يكتب...</span>`;
                     
@@ -1473,12 +1460,10 @@
         
         window.playTgVoice = function(btn, audioUrl) {
             let audio = btn.nextElementSibling;
-            
             if (!audio || audio.tagName !== 'AUDIO') {
                 audio = new Audio(audioUrl);
                 btn.after(audio);
             }
-            
             audio.onended = () => { 
                 btn.innerText = "▶"; 
                 db.ref(`voice_playing/${myKey}`).set(false);
@@ -1491,7 +1476,6 @@
                 document.querySelectorAll('.tg-play-btn').forEach(b => b.innerText = "▶");
                 audio.play();
                 btn.innerText = "⏸";
-                // يقوم بتنبيه الطرف الآخر أنك تقوم بالاستماع لفويس الآن
                 db.ref(`voice_playing/${myKey}`).set(true);
             } else {
                 audio.pause();
@@ -1500,12 +1484,10 @@
             }
         };
         
-        /* مزامنة الجزيرة الديناميكية مع استماع وتسجيل الصوت وتحديث الحالة الفورية */
         function setupVoiceIslandSync() {
             const waveElem = document.getElementById('islandVoiceWave');
             const mainTitle = document.getElementById('islandMainTitle');
             const indicatorText = document.getElementById('islandIndicatorText');
-
             db.ref(`voice_playing/${partnerKey}`).on('value', (snap) => {
                 const isPlaying = snap.val();
                 if (isPlaying) {
@@ -1631,6 +1613,7 @@
         function setupVoiceRecording() {
             const voiceBtn = document.getElementById('voiceBtn');
             const cancelBtn = document.getElementById('cancelVoiceBtn');
+            const sendVoiceBtn = document.getElementById('sendVoiceBtn');
             const overlay = document.getElementById('tgVoiceOverlay');
             const timerElem = document.getElementById('tgVoiceTimer');
             const recDot = document.getElementById('islandRecordingDot');
@@ -1658,18 +1641,31 @@
                 if (isRecording) {
                     cancelRecording = true;
                     if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    isRecording = false;
-                    db.ref(`typing/${myKey}`).set('idle');
-                    voiceBtn.classList.remove('recording');
-                    overlay.classList.remove('active');
-                    recDot.classList.remove('active');
-                    mainTitle.style.display = 'inline';
-                    indicatorText.style.display = 'inline';
-                    indicatorText.innerHTML = "اضغط للتفاصيل ✨";
-                    indicatorText.style.color = "var(--text-sub)";
-                    stopTimer();
+                    resetRecordingState();
                 }
             };
+
+            sendVoiceBtn.onclick = () => {
+                if (isRecording) {
+                    cancelRecording = false;
+                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+                    resetRecordingState();
+                }
+            };
+
+            function resetRecordingState() {
+                isRecording = false;
+                db.ref(`typing/${myKey}`).set('idle');
+                voiceBtn.classList.remove('recording');
+                overlay.classList.remove('active');
+                recDot.classList.remove('active');
+                mainTitle.style.display = 'inline';
+                indicatorText.style.display = 'inline';
+                indicatorText.innerHTML = "اضغط للتفاصيل ✨";
+                indicatorText.style.color = "var(--text-sub)";
+                stopTimer();
+            }
+
             voiceBtn.onclick = async () => {
                 if (!navigator.mediaDevices?.getUserMedia) {
                     alert("⚠️ المتصفح لا يدعم الميكروفون.");
@@ -1683,13 +1679,6 @@
                         cancelRecording = false;
                         mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                         mediaRecorder.onstop = async () => {
-                            overlay.classList.remove('active');
-                            recDot.classList.remove('active');
-                            mainTitle.style.display = 'inline';
-                            indicatorText.style.display = 'inline';
-                            indicatorText.innerHTML = "اضغط للتفاصيل ✨";
-                            indicatorText.style.color = "var(--text-sub)";
-                            stopTimer();
                             if (!cancelRecording) {
                                 const blob = new Blob(audioChunks, { type: 'audio/webm' });
                                 uploadAndSendVoice(blob);
@@ -1712,14 +1701,7 @@
                     }
                 } else {
                     if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    isRecording = false;
-                    db.ref(`typing/${myKey}`).set('idle');
-                    voiceBtn.classList.remove('recording');
-                    recDot.classList.remove('active');
-                    mainTitle.style.display = 'inline';
-                    indicatorText.style.display = 'inline';
-                    indicatorText.innerHTML = "اضغط للتفاصيل ✨";
-                    indicatorText.style.color = "var(--text-sub)";
+                    resetRecordingState();
                 }
             };
         }
