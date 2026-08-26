@@ -514,21 +514,6 @@
         .tg-cancel-text { font-size: 12px; color: #ff6b6b; cursor: pointer; border: 1px solid rgba(255, 107, 107, 0.3); padding: 4px 10px; border-radius: 12px; background: rgba(255, 107, 107, 0.1); }
         .tg-send-voice-btn { font-size: 12px; color: #fff; background: #2ecc71; border: none; padding: 4px 12px; border-radius: 12px; cursor: pointer; font-weight: bold; }
         
-        .input-status-indicator {
-            display: none;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            padding: 5px 12px;
-            background: rgba(255, 105, 180, 0.1);
-            color: var(--primary-color);
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            margin: 4px 8px 0 8px;
-            width: fit-content;
-            font-weight: 600;
-        }
-        .input-status-indicator.active { display: flex; }
         .pinned-bar { display: none; background: rgba(255, 105, 180, 0.12); border-bottom: 1px solid var(--card-border); padding: 4px 8px; font-size: 10px; color: var(--primary-color); justify-content: space-between; align-items: center; flex-shrink: 0; }
         .pinned-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85%; }
         .unpin-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 10px; }
@@ -823,7 +808,6 @@
                     <button class="unpin-btn" id="unpinBtn" style="display:none;" onclick="unpinMessage()">✖</button>
                 </div>
                 
-                <div class="input-status-indicator" id="inputStatusIndicator"></div>
                 <div class="chat-messages" id="chatMessages"></div>
                 
                 <div class="chat-input-area">
@@ -1169,32 +1153,22 @@
             
             db.ref(`typing/${partnerKey}`).on('value', (snapshot) => {
                 const typingState = snapshot.val();
-                const indicator = document.getElementById('inputStatusIndicator');
                 const counterNum = document.getElementById('islandMainTitle');
                 const recDot = document.getElementById('islandRecordingDot');
                 
                 if (typingState === 'text') {
-                    indicator.classList.add('active');
-                    indicator.innerHTML = `✍️ <span>${partnerUser} يكتب...</span>`;
-                    
                     counterNum.style.display = 'none';
                     recDot.classList.add('active');
                     recDot.querySelector('span').innerText = "يكتب الان...";
                     
                     scrollToBottom(true);
                 } else if (typingState === 'voice') {
-                    indicator.classList.add('active');
-                    indicator.innerHTML = `🎙️ <span>${partnerUser} يسجل فويس...</span>`;
-                    
                     counterNum.style.display = 'none';
                     recDot.classList.add('active');
                     recDot.querySelector('span').innerText = "يسجل فويس...";
                     
                     scrollToBottom(true);
                 } else {
-                    indicator.classList.remove('active');
-                    indicator.innerHTML = "";
-                    
                     counterNum.style.display = 'inline';
                     recDot.classList.remove('active');
                 }
@@ -1824,4 +1798,3 @@
     </script>
 </body>
 </html>
-
