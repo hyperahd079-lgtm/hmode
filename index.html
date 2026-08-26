@@ -99,7 +99,7 @@
         .login-card h2 { margin-bottom: 15px; text-align: center; color: var(--primary-color); font-size: 20px; }
         .input-group { margin-bottom: 12px; }
         .input-group label { display: block; color: var(--text-sub); margin-bottom: 4px; font-size: 13px; }
-        .input-group input { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-main); outline: none; font-size: 14px; transition: all 0.3s ease; }
+        .input-group input { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-main); outline: none; font-size: 14px; transition: all 0.3s ease; user-select: text !important; -webkit-user-select: text !important; }
         
         .login-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 0 10px var(--glow-color); }
         .switch-auth { text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-sub); cursor: pointer; }
@@ -111,20 +111,48 @@
             padding: 4px 6px 6px 6px; position: relative; box-sizing: border-box; overflow: hidden;
         }
         
-        .ceiling-lamps-container { display: flex; justify-content: center; width: 100%; height: 16px; z-index: 100; position: relative; flex-shrink: 0; }
+        .ceiling-lamps-container { display: flex; justify-content: center; width: 100%; height: 26px; z-index: 250; position: relative; flex-shrink: 0; }
         .ceiling-lamp { position: relative; display: flex; flex-direction: column; align-items: center; }
-        .wire { width: 2px; height: 3px; background: #444; }
-        .main-lamp-shade { width: 40px; height: 12px; background: linear-gradient(135deg, #ffb6c1, var(--primary-color), var(--secondary-color)); box-shadow: 0 0 10px var(--primary-color); border-radius: 20px 20px 4px 4px; position: relative; transition: all 0.5s ease; }
+        .wire { width: 2px; height: 8px; background: #444; }
+        .main-lamp-shade { width: 45px; height: 14px; background: linear-gradient(135deg, #ffb6c1, var(--primary-color), var(--secondary-color)); box-shadow: 0 0 12px var(--primary-color); border-radius: 20px 20px 4px 4px; position: relative; transition: all 0.5s ease; }
         body.lights-off .main-lamp-shade { background: #333 !important; box-shadow: none !important; }
         
-        .main-pull-string { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 14px; height: 12px; cursor: pointer; z-index: 250; display: flex; justify-content: center; }
-        .main-pull-line { width: 2px; height: 8px; background: rgba(255, 215, 0, 0.9); transition: transform 0.1s ease; }
-        .main-pull-string:active .main-pull-line { transform: translateY(3px); }
-        .main-pull-handle { position: absolute; bottom: 0; width: 4px; height: 4px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 4px #ffd700; }
+        .main-pull-string { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 14px; height: 14px; cursor: pointer; z-index: 300; display: flex; justify-content: center; }
+        .main-pull-line { width: 2px; height: 10px; background: rgba(255, 215, 0, 0.9); transition: transform 0.1s ease; }
+        .main-pull-string:active .main-pull-line { transform: translateY(4px); }
+        .main-pull-handle { position: absolute; bottom: 0; width: 5px; height: 5px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 5px #ffd700; }
         
-        .page-content { width: 100%; display: flex; flex-direction: column; gap: 4px; flex: 1; height: calc(100% - 16px); justify-content: flex-start; align-items: center; overflow: hidden; }
+        .page-content { width: 100%; display: flex; flex-direction: column; gap: 4px; flex: 1; height: calc(100% - 26px); justify-content: flex-start; align-items: center; overflow: hidden; }
         
         .dynamic-island-container { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; z-index: 120; flex-shrink: 0; position: relative; margin-top: 2px; }
+        
+        /* تعديل شعاع الجزيرة الديناميكية ليظهر فقط عندما تكون مغلقة ويختفي تماماً عند التوسيع */
+        .dynamic-island-container::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: calc(50% - 89px);
+            width: 177px; height: 33px;
+            background: linear-gradient(90deg, var(--primary-color), #ffd700, var(--secondary-color), var(--primary-color));
+            background-size: 300% 300%;
+            border-radius: 25px;
+            z-index: -1;
+            animation: islandGlowRotate 4s linear infinite;
+            filter: blur(2px);
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+        /* إخفاء الشعاع نهائياً عند تكبير الجزيرة */
+        .dynamic-island.expanded ~ .dynamic-island-container::before,
+        .dynamic-island-container:has(.dynamic-island.expanded)::before {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            display: none !important;
+        }
+        @keyframes islandGlowRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         
         .dynamic-island {
             background: var(--island-bg); border: 1px solid rgba(255, 182, 193, 0.35); border-radius: 22px;
@@ -164,46 +192,6 @@
         .island-bottom-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; flex: 1; }
         body.lights-off .dynamic-island-container { opacity: 0; visibility: hidden; pointer-events: none; }
         
-        .daily-mini-island {
-            background: var(--island-bg);
-            border: 1px solid rgba(255, 105, 180, 0.4);
-            border-radius: 50%;
-            width: 31px;
-            height: 31px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.25);
-            position: relative;
-            flex-shrink: 0;
-            transition: transform 0.2s, background 0.3s;
-        }
-        .daily-mini-island:active { transform: scale(0.9); }
-        .daily-mini-island span { font-size: 14px; }
-        
-        .daily-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(5px);
-            z-index: 400; display: none; justify-content: center; align-items: center;
-        }
-        .daily-modal-box {
-            background: var(--island-exp-bg); border: 1px solid var(--card-border);
-            border-radius: 18px; width: 85%; max-width: 320px; padding: 18px;
-            display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; color: var(--text-main);
-        }
-        .daily-modal-box h3 { color: var(--primary-color); font-size: 15px; }
-        .daily-modal-box p { font-size: 12px; color: var(--text-sub); }
-        .daily-modal-box input {
-            width: 100%; padding: 10px; background: rgba(0,0,0,0.05);
-            border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-main);
-            outline: none; text-align: center; font-size: 14px;
-        }
-        .daily-modal-box button {
-            padding: 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
-        }
-        
         .counter-card, .touch-card, .miss-card { 
             background: var(--card-bg); border: 1px solid var(--card-border); padding: 8px 10px; 
             border-radius: 14px; display: flex; flex-direction: column; justify-content: space-between; 
@@ -222,7 +210,7 @@
         }
         .slide-dropdown-menu.open { max-width: 220px; opacity: 1; }
         .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 9px; cursor: pointer; }
-        .admin-header-btn { background: linear-gradient(135deg, #f39c12, #d35400); color: #fff; border: none; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: bold; cursor: pointer; display: none; }
+        .admin-header-btn { background: linear-gradient(135deg, #f39c12, #d35400); color: #fff; border: none; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: bold; cursor: pointer; display: inline-block; }
         
         .live-clock-box { font-size: 9px; color: var(--text-sub); margin-bottom: 2px; direction: ltr; }
         .days-box { font-size: 13px; font-weight: bold; color: var(--primary-color); margin: 2px 0; }
@@ -268,6 +256,12 @@
             width: 100%; padding: 6px 8px; padding-bottom: max(6px, env(safe-area-inset-bottom));
             border-top: 1px solid var(--card-border); display: flex; align-items: center; gap: 6px; 
             background: var(--chat-input-bg); backdrop-filter: blur(14px); box-sizing: border-box; z-index: 100; flex-shrink: 0; position: relative; flex-direction: column;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        body.lights-off .chat-input-area {
+            background: #000000 !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.9);
         }
         
         .reply-preview-box {
@@ -276,8 +270,27 @@
         }
         .reply-preview-box.active { display: flex; }
         .chat-input-row { display: flex; align-items: center; gap: 6px; width: 100%; }
-        .input-wrapper { flex: 1; position: relative; display: flex; align-items: center; min-width: 0; background: rgba(0, 0, 0, 0.03); border: 1px solid var(--card-border); border-radius: 20px; padding: 2px 6px; }
-        .chat-input-area input { width: 100%; height: 34px; padding: 0 10px; background: transparent; border: none; color: var(--text-main); outline: none; font-size: 13px; }
+        
+        .input-wrapper { flex: 1; position: relative; display: flex; align-items: center; min-width: 0; background: rgba(0, 0, 0, 0.03); border: 1px solid var(--card-border); border-radius: 20px; padding: 2px 6px; transition: background 0.3s ease, border-color 0.3s ease; }
+        
+        body.lights-off .input-wrapper {
+            background: #000000 !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
+        }
+        
+        /* ضبط الخط ليكون واضحاً وقابلاً للكتابة والتحديد بجميع الحالات بما فيها إطفاء الأنوار */
+        .chat-input-area input { 
+            width: 100%; height: 34px; padding: 0 10px; background: transparent; border: none; 
+            color: #000000; outline: none; font-size: 13px; font-weight: 500; 
+            user-select: text !important; -webkit-user-select: text !important; 
+        }
+        body.lights-off .chat-input-area input {
+            color: #ffffff !important;
+        }
+        body.lights-off .chat-input-area input::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
         
         .send-btn, .heart-quick-btn, .voice-record-btn { 
             width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
@@ -286,12 +299,20 @@
         .send-btn { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; box-shadow: 0 2px 8px var(--glow-color); }
         .heart-quick-btn { background: rgba(255, 105, 180, 0.1); border: 1px solid var(--card-border); font-size: 14px; }
         .voice-record-btn { background: rgba(0, 0, 0, 0.03); border: 1px solid var(--card-border); color: var(--text-main); }
+        body.lights-off .voice-record-btn, body.lights-off .heart-quick-btn {
+            background: #111111 !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+            color: #fff !important;
+        }
         .voice-record-btn.recording { background: #e74c3c; color: #fff; }
         
         .tg-voice-overlay {
             display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: var(--chat-input-bg); backdrop-filter: blur(10px); z-index: 10;
             align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 20px;
+        }
+        body.lights-off .tg-voice-overlay {
+            background: #000000 !important;
         }
         .tg-voice-overlay.active { display: flex; }
         .tg-rec-timer { font-size: 13px; font-weight: bold; color: #ff6b6b; display: flex; align-items: center; gap: 6px; }
@@ -391,19 +412,9 @@
             <button class="msg-action-btn" onclick="actionReply()">↩️ رد على الرسالة</button>
             <button class="msg-action-btn" id="actionStarBtn" onclick="actionStar()">⭐ إضافة إلى المفضلة</button>
             <button class="msg-action-btn" id="actionPinBtn" onclick="actionPin()">📌 تثبيت الرسالة بالأعلى</button>
-            <button class="msg-action-btn" id="actionEditBtn" onclick="actionEdit()" style="display:none; color: #f39c12; border-color: rgba(243,156,18,0.3); background: rgba(243,156,18,0.1);">✏️ تعديل الرسالة</button>
-            <button class="msg-action-btn danger" id="actionDeleteBtn" onclick="actionDelete()" style="display:none;">🗑️ حذف الرسالة</button>
+            <button class="msg-action-btn" id="actionEditBtn" onclick="actionEdit()" style="color: #f39c12; border-color: rgba(243,156,18,0.3); background: rgba(243,156,18,0.1);">✏️ تعديل الرسالة</button>
+            <button class="msg-action-btn danger" id="actionDeleteBtn" onclick="actionDelete()">🗑️ حذف الرسالة</button>
             <button class="msg-action-btn" onclick="closeMsgActions()" style="justify-content: center; color: var(--text-sub); margin-top: 4px;">إلغاء</button>
-        </div>
-    </div>
-    
-    <div class="daily-modal-overlay" id="dailyModalOverlay">
-        <div class="daily-modal-box">
-            <h3>💌 تحدي الحب اليومي</h3>
-            <p id="dailyModalDesc">اكتب الكلمة المطلوبة (أحبك / أحبج) لإنهاء التحدي اليومي وتسجيل عد جديد:</p>
-            <input type="text" id="dailyInputVal" placeholder="اكتب الكلمة هنا..." autocomplete="off">
-            <button id="submitDailyChallengeBtn">تأكيد وإتمام التحدي ✨</button>
-            <button onclick="document.getElementById('dailyModalOverlay').style.display='none'" style="background:none; border:none; color:var(--text-sub); cursor:pointer; font-size:11px;">إلغاء</button>
         </div>
     </div>
     
@@ -469,7 +480,7 @@
                                 <div class="menu-slide-container">
                                     <div class="menu-trigger-icon" id="menuTriggerIcon" onclick="toggleSlideMenu(event)" title="الإعدادات">⚙️</div>
                                     <div class="slide-dropdown-menu" id="slideDropdownMenu">
-                                        <button class="admin-header-btn" id="adminHeaderBtn">صلاحيات التحكم ⚙️</button>
+                                        <button class="admin-header-btn" id="adminHeaderBtn" onclick="openAdminModal()">صلاحيات التحكم ⚙️</button>
                                         <button class="mini-logout-btn" onclick="handleLogout()">خروج</button>
                                     </div>
                                 </div>
@@ -502,9 +513,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="daily-mini-island" id="dailyMiniIsland" title="تحدي الحب اليومي">
-                    <span id="dailyMiniIcon">💌</span>
                 </div>
             </div>
             
@@ -710,7 +718,14 @@
             }
         });
         
-        function setTheme(primary, secondary, glow, bgDark = '#050203', isLight = false, saveToCloud = true) {
+        window.openAdminModal = function() {
+            document.getElementById('adminModal').style.display = 'flex';
+            document.getElementById('slideDropdownMenu').classList.remove('open');
+        };
+        document.getElementById('closeAdminBtn').onclick = () => {
+            document.getElementById('adminModal').style.display = 'none';
+        };
+        window.setTheme = function(primary, secondary, glow, bgDark = '#050203', isLight = false, saveToCloud = true) {
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--secondary-color', secondary);
             document.documentElement.style.setProperty('--glow-color', glow);
@@ -724,7 +739,7 @@
             if (saveToCloud) {
                 db.ref('site_theme').set({primary, secondary, glow, bgDark, isLight});
             }
-        }
+        };
         
         db.ref('site_theme').on('value', (snap) => {
             const t = snap.val();
@@ -737,6 +752,40 @@
                 setTheme(t.primary, t.secondary, t.glow, t.bgDark || '#050203', t.isLight || false, false);
             }catch(e){}
         }
+        window.sendVibrationSignal = function() {
+            db.ref('vibration_signal').set(firebase.database.ServerValue.TIMESTAMP);
+            alert("تم إرسال هزة التنبيه بنجاح 📳");
+        };
+        db.ref('vibration_signal').on('value', (snap) => {
+            if(!snap.val() || isInitialLoad) return;
+            triggerVibration();
+            launchHeartsExplosion();
+        });
+        window.triggerFireworks = function() {
+            db.ref('fireworks_signal').set(firebase.database.ServerValue.TIMESTAMP);
+            launchHeartsExplosion();
+        };
+        db.ref('fireworks_signal').on('value', (snap) => {
+            if(!snap.val() || isInitialLoad) return;
+            launchHeartsExplosion();
+        });
+        window.editDaysCounter = function() {
+            const val = prompt("أدخل عدد أيام الحب الجديدة:");
+            if(val !== null && !isNaN(val)) {
+                db.ref('love_days').set(parseInt(val));
+            }
+        };
+        window.clearAllChat = function() {
+            if(confirm("هل أنت متأكد من تفريغ كافة المحادثات والرسائل؟")) {
+                db.ref('messages').remove();
+                db.ref('pinned_message').remove();
+            }
+        };
+        window.clearMissHistory = function() {
+            if(confirm("هل أنت متأكد من مسح سجل نبضات الشوق؟")) {
+                db.ref('miss_heart_history').remove();
+            }
+        };
         
         function triggerSecretNote() {
             heartClickCount++;
@@ -800,12 +849,12 @@
             heartsBg.appendChild(heart);
         }
         
-        function toggleMainLamp() {
+        window.toggleMainLamp = function() {
             db.ref('lights_on').once('value', (snap) => {
                 const currentState = snap.val() !== null ? snap.val() : true;
                 db.ref('lights_on').set(!currentState);
             });
-        }
+        };
         loginPullString.onclick = () => { playClickSound(); toggleMainLamp(); };
         mainPullString.onclick = () => { playClickSound(); toggleMainLamp(); };
         
@@ -817,68 +866,6 @@
                 document.body.classList.add('lights-off');
             }
         });
-        
-        function setupDailyChallengeSystem() {
-            const miniIsland = document.getElementById('dailyMiniIsland');
-            const dailyModal = document.getElementById('dailyModalOverlay');
-            const submitBtn = document.getElementById('submitDailyChallengeBtn');
-            const inputField = document.getElementById('dailyInputVal');
-            
-            function getTodayDateStr() {
-                const now = new Date();
-                return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, '0') + "-" + String(now.getDate()).padStart(2, '0');
-            }
-            
-            function checkDailyStatus() {
-                const today = getTodayDateStr();
-                db.ref(`daily_challenge/${today}`).on('value', (snapshot) => {
-                    const data = snapshot.val() || {};
-                    if (data.completed) {
-                        miniIsland.style.display = 'none';
-                    } else {
-                        miniIsland.style.display = 'flex';
-                    }
-                });
-            }
-            
-            miniIsland.onclick = () => {
-                dailyModal.style.display = 'flex';
-                inputField.value = '';
-                inputField.focus();
-            };
-            
-            submitBtn.onclick = () => {
-                const val = inputField.value.trim();
-                if (val !== "أحبك" && val !== "أحبج" && val !== "احبك" && val !== "احبج") {
-                    alert("⚠️ يجب كتابة كلمة (أحبك) أو (أحبج) تماماً لإتمام التحدي!");
-                    return;
-                }
-                
-                const today = getTodayDateStr();
-                db.ref(`daily_challenge/${today}`).transaction((currentData) => {
-                    if (!currentData) {
-                        currentData = { [myKey]: val, date: today };
-                    } else {
-                        currentData[myKey] = val;
-                        const keys = Object.keys(currentData).filter(k => k !== 'date' && k !== 'completed');
-                        if (keys.length >= 2) {
-                            currentData.completed = true;
-                        }
-                    }
-                    return currentData;
-                }, (error, committed) => {
-                    if (committed) {
-                        db.ref('love_days').transaction(c => (c || 0) + 1);
-                        launchHeartsExplosion();
-                        triggerVibration();
-                        dailyModal.style.display = 'none';
-                        alert("✨ تم إتمام تحدي الحب اليومي بنجاح وإضافة عد جديد! ❤️");
-                    }
-                });
-            };
-            
-            checkDailyStatus();
-        }
         
         function setupSharedFingerprint() {
             const btn = document.getElementById('fingerprintBtn');
@@ -1552,11 +1539,9 @@
                 alert("⚠️ يرجى ملء الحقول أولاً!");
                 return;
             }
-
             const authBtnElem = document.getElementById('authBtn');
             authBtnElem.innerText = "جاري التحقق...";
             authBtnElem.disabled = true;
-
             try {
                 const hashedPassword = await hashPassword(passwordInput);
                 const usersRef = db.ref('users');
@@ -1642,7 +1627,6 @@
                 setupLiveChat();
                 setupVoiceRecording();
                 setupChatInput();
-                setupDailyChallengeSystem();
             });
         }
         
