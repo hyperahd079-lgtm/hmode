@@ -95,14 +95,14 @@
         body.lights-off .lamp-shade { background: #333 !important; box-shadow: none !important; }
         body.lights-off .lamp-bulb { background: #555 !important; box-shadow: none !important; }
         
-        .login-card { width: 100%; max-width: 320px; padding: 25px 20px; background: var(--card-bg); border-radius: 18px; border: 1px solid var(--card-border); transition: all 0.4s ease; }
+        .login-card { width: 100%; max-width: 320px; padding: 25px 20px; background: var(--card-bg); border-radius: 18px; border: 1px solid var(--card-border); transition: all 0.4s ease; z-index: 60; position: relative; }
         .login-card h2 { margin-bottom: 15px; text-align: center; color: var(--primary-color); font-size: 20px; }
         .input-group { margin-bottom: 12px; }
         .input-group label { display: block; color: var(--text-sub); margin-bottom: 4px; font-size: 13px; }
-        .input-group input { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-main); outline: none; font-size: 14px; transition: all 0.3s ease; user-select: text !important; -webkit-user-select: text !important; }
+        .input-group input { width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-main); outline: none; font-size: 14px; transition: all 0.3s ease; user-select: text !important; -webkit-user-select: text !important; pointer-events: auto !important; }
         
-        .login-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 0 10px var(--glow-color); }
-        .switch-auth { text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-sub); cursor: pointer; }
+        .login-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 0 10px var(--glow-color); pointer-events: auto !important; }
+        .switch-auth { text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-sub); cursor: pointer; pointer-events: auto !important; }
         .switch-auth span { color: var(--primary-color); font-weight: bold; text-decoration: underline; }
         
         .main-page { 
@@ -126,71 +126,72 @@
         
         .dynamic-island-container { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; z-index: 120; flex-shrink: 0; position: relative; margin-top: 2px; }
         
-        /* تعديل شعاع الجزيرة الديناميكية ليظهر فقط عندما تكون مغلقة ويختفي تماماً عند التوسيع */
         .dynamic-island-container::before {
             content: '';
             position: absolute;
-            top: -1px; left: calc(50% - 89px);
-            width: 177px; height: 33px;
-            background: linear-gradient(90deg, var(--primary-color), #ffd700, var(--secondary-color), var(--primary-color));
-            background-size: 300% 300%;
-            border-radius: 25px;
+            top: -2px; left: calc(50% - 108px);
+            width: 216px; height: 37px;
+            background: radial-gradient(circle, #ffffff 0%, var(--primary-color) 40%, transparent 70%);
+            border-radius: 30px;
             z-index: -1;
-            animation: islandGlowRotate 4s linear infinite;
-            filter: blur(2px);
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
+            opacity: 0.95;
+            animation: meteorOrbit 3s linear infinite;
+            filter: drop-shadow(0 0 6px var(--primary-color));
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        /* إخفاء الشعاع نهائياً عند تكبير الجزيرة */
+        @keyframes meteorOrbit {
+            0% { transform: scale(0.98); opacity: 0.4; }
+            50% { transform: scale(1.03); opacity: 1; filter: drop-shadow(0 0 10px #ffffff); }
+            100% { transform: scale(0.98); opacity: 0.4; }
+        }
         .dynamic-island.expanded ~ .dynamic-island-container::before,
         .dynamic-island-container:has(.dynamic-island.expanded)::before {
             opacity: 0 !important;
+            transform: scale(0.9) !important;
             pointer-events: none !important;
             display: none !important;
-        }
-        @keyframes islandGlowRotate {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
         
         .dynamic-island {
             background: var(--island-bg); border: 1px solid rgba(255, 182, 193, 0.35); border-radius: 22px;
-            width: 175px; height: 31px; display: flex; align-items: center; justify-content: center;
-            padding: 0 12px; cursor: pointer; position: relative; box-shadow: 0 4px 15px rgba(255, 105, 180, 0.18);
-            overflow: hidden; transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1), height 0.45s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.45s cubic-bezier(0.32, 0.72, 0, 1), background 0.45s ease;
+            width: 210px; height: 33px; display: flex; align-items: center; justify-content: center;
+            padding: 0 10px; cursor: pointer; position: relative; box-shadow: 0 4px 18px rgba(255, 105, 180, 0.22);
+            overflow: hidden; transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.4s ease, background 0.4s ease;
             transform-origin: top center; will-change: width, height, border-radius, background;
         }
         .dynamic-island:active { transform: scale(0.97); }
         .dynamic-island.expanded {
-            width: 92%; max-width: 420px; height: 230px; border-radius: 28px; padding: 12px; cursor: default;
+            width: 94%; max-width: 420px; height: 230px; border-radius: 28px; padding: 12px; cursor: default;
             background: var(--island-exp-bg); backdrop-filter: blur(20px); border: 1px solid var(--card-border); box-shadow: 0 12px 30px rgba(0,0,0,0.3);
         }
         
         .island-collapsed-content {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center; padding: 0 14px;
-            font-size: 13px; color: var(--primary-color); font-weight: bold; white-space: nowrap;
-            transition: opacity 0.25s ease; pointer-events: none;
+            display: flex; align-items: center; justify-content: center; padding: 0 10px;
+            font-size: 11px; color: var(--primary-color); font-weight: bold; white-space: nowrap;
+            transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none;
         }
         .dynamic-island.expanded .island-collapsed-content { opacity: 0; transform: scale(0.92); }
         
         .island-voice-wave { display: none; align-items: center; gap: 4px; color: #ffd700; font-size: 11px; font-weight: bold; }
         .island-voice-wave.active { display: flex; }
         
-        .island-recording-dot { display: none; align-items: center; gap: 5px; color: #ff4d4d; font-size: 11px; font-weight: bold; }
+        .island-recording-dot { display: none; align-items: center; gap: 5px; color: #ff4d4d; font-size: 10.5px; font-weight: bold; }
         .island-recording-dot.active { display: flex; }
-        .rec-dot-pulse { width: 8px; height: 8px; background: #ff4d4d; border-radius: 50%; box-shadow: 0 0 8px #ff4d4d; animation: recPulse 1s infinite alternate; }
+        .rec-dot-pulse { width: 7px; height: 7px; background: #ff4d4d; border-radius: 50%; box-shadow: 0 0 8px #ff4d4d; animation: recPulse 1s infinite alternate; }
         @keyframes recPulse { 0% { opacity: 0.3; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
         
         .island-expanded-content {
             display: flex; width: 100%; height: 100%; flex-direction: column; gap: 8px;
-            opacity: 0; transform: scale(0.95); transition: opacity 0.3s ease 0.1s, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) 0.1s; pointer-events: none;
+            opacity: 0; transform: scale(0.95); transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s; pointer-events: none;
         }
         .dynamic-island.expanded .island-expanded-content { opacity: 1; transform: scale(1); pointer-events: auto; }
         
         .island-bottom-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; flex: 1; }
-        body.lights-off .dynamic-island-container { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        /* إبقاء الجزيرة الديناميكية ظاهرة عند إطفاء النور مع تعديل خفيف يتناسب مع الظلام */
+        body.lights-off .dynamic-island-container { opacity: 1; visibility: visible; pointer-events: auto; }
+        body.lights-off .dynamic-island { background: rgba(20, 10, 18, 0.95); border-color: rgba(255, 105, 180, 0.2); }
         
         .counter-card, .touch-card, .miss-card { 
             background: var(--card-bg); border: 1px solid var(--card-border); padding: 8px 10px; 
@@ -279,18 +280,13 @@
             box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
         }
         
-        /* ضبط الخط ليكون واضحاً وقابلاً للكتابة والتحديد بجميع الحالات بما فيها إطفاء الأنوار */
         .chat-input-area input { 
             width: 100%; height: 34px; padding: 0 10px; background: transparent; border: none; 
-            color: #000000; outline: none; font-size: 13px; font-weight: 500; 
+            color: var(--text-main); outline: none; font-size: 13px; font-weight: 500; 
             user-select: text !important; -webkit-user-select: text !important; 
         }
-        body.lights-off .chat-input-area input {
-            color: #ffffff !important;
-        }
-        body.lights-off .chat-input-area input::placeholder {
-            color: rgba(255, 255, 255, 0.5) !important;
-        }
+        body.lights-off .chat-input-area input { color: #f0f0f0 !important; }
+        body.lights-off .chat-input-area input::placeholder { color: rgba(255, 255, 255, 0.45) !important; }
         
         .send-btn, .heart-quick-btn, .voice-record-btn { 
             width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
@@ -311,9 +307,7 @@
             background: var(--chat-input-bg); backdrop-filter: blur(10px); z-index: 10;
             align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 20px;
         }
-        body.lights-off .tg-voice-overlay {
-            background: #000000 !important;
-        }
+        body.lights-off .tg-voice-overlay { background: #000000 !important; }
         .tg-voice-overlay.active { display: flex; }
         .tg-rec-timer { font-size: 13px; font-weight: bold; color: #ff6b6b; display: flex; align-items: center; gap: 6px; }
         .tg-rec-dot { width: 8px; height: 8px; background: #ff4d4d; border-radius: 50%; }
@@ -462,7 +456,7 @@
             <div class="dynamic-island-container">
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
                     <div class="island-collapsed-content" id="islandCollapsedContent">
-                        <span id="islandMainTitle" style="font-size: 13px; font-weight: bold; color: var(--primary-color);">0</span>
+                        <span id="islandMainTitle" style="font-size: 10.5px; font-weight: bold; color: var(--primary-color);">منذ 0 يوم 0 س 0 د 0 ث</span>
                         <div class="island-recording-dot" id="islandRecordingDot">
                             <div class="rec-dot-pulse"></div>
                             <span>يكتب الان...</span>
@@ -556,7 +550,7 @@
                         </div>
                         <button class="heart-quick-btn" id="sendHeartBtn" title="نبضة حب">❤️</button>
                         <div class="input-wrapper">
-                            <input type="text" id="chatInput" placeholder="اكتب رسالة دافئة..." autocomplete="off">
+                            <input type="text" id="chatInput" placeholder="اكتب رسالة ..." autocomplete="off">
                         </div>
                         <button class="voice-record-btn" id="voiceBtn" title="تسجيل صوت">🎤</button>
                         <button class="send-btn" id="sendMsgBtn" title="إرسال">
@@ -919,7 +913,9 @@
                 } else {
                     btn.classList.remove('synced');
                     statusText.innerText = "اضغط باستمرار...";
-                    counterNum.style.display = 'inline';
+                    if(!recDot.classList.contains('typing-active')) {
+                        counterNum.style.display = 'inline';
+                    }
                     recDot.classList.remove('active');
                 }
             });
@@ -949,11 +945,6 @@
             });
         }
         
-        function scrollToBottom(smooth = true) {
-            const chatBox = document.getElementById('chatMessages');
-            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
-        }
-        
         function setupPresenceAndTypingSystem() {
             const myStatusRef = db.ref(`status/${myKey}`);
             const myTypingRef = db.ref(`typing/${myKey}`);
@@ -975,16 +966,16 @@
                 
                 if (typingState === 'text') {
                     counterNum.style.display = 'none';
-                    recDot.classList.add('active');
+                    recDot.classList.add('active', 'typing-active');
                     recDot.innerHTML = `<span class="island-typing-name">${partnerUser}</span><span class="typing-dots"><i></i><i></i><i></i></span><span>يكتب...</span>`;
                 } else if (typingState === 'voice') {
                     counterNum.style.display = 'none';
-                    recDot.classList.add('active');
+                    recDot.classList.add('active', 'typing-active');
                     recDot.innerHTML = `<span class="island-typing-name">${partnerUser}</span>🎙️ <span>يسجل فويس...</span>`;
                 } else {
                     counterNum.style.display = 'inline';
-                    recDot.classList.remove('active');
-                    recDot.innerHTML = '<div class="rec-dot-pulse"></div><span>جاي يكتب...</span>';
+                    recDot.classList.remove('active', 'typing-active');
+                    recDot.innerHTML = '<div class="rec-dot-pulse"></div><span>جاي يكتب</span>';
                 }
             });
             
@@ -992,7 +983,7 @@
                 const data = snap.val();
                 const dot = document.getElementById('partnerStatusDot');
                 const statusText = document.getElementById('partnerStatusText');
-                if (data && data.online) {
+                if (data && data.online === true) {
                     dot.className = "status-dot online";
                     statusText.innerText = "متصل الآن";
                     statusText.style.color = "#2ecc71";
@@ -1030,7 +1021,6 @@
             const markBtn = document.getElementById('markDayBtn');
             const daysCounter = document.getElementById('daysCounter');
             const clockBox = document.getElementById('liveClock');
-            const counterNum = document.getElementById('islandMainTitle');
             
             function updateClockAndCheckDate() {
                 const now = new Date();
@@ -1053,8 +1043,23 @@
             db.ref('love_days').on('value', (snapshot) => {
                 const daysVal = snapshot.val() || 0;
                 daysCounter.innerText = `${daysVal} أيام`;
-                counterNum.innerText = daysVal;
+                updateDetailedCounterDisplay(daysVal);
             });
+            
+            setInterval(() => {
+                db.ref('love_days').once('value', (snapshot) => {
+                    updateDetailedCounterDisplay(snapshot.val() || 0);
+                });
+            }, 1000);
+            function updateDetailedCounterDisplay(daysVal) {
+                const counterNumElem = document.getElementById('islandMainTitle');
+                if(!counterNumElem) return;
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+                counterNumElem.innerText = `منذ ${daysVal} يوم ${hours} س ${minutes} د ${seconds} ث`;
+            }
             
             markBtn.onclick = () => {
                 const now = new Date();
@@ -1241,7 +1246,7 @@
             document.getElementById('msgActionsSheet').style.display = 'none';
             const newText = prompt("تعديل الرسالة:", activeMsgData.text);
             if (newText !== null && newText.trim() !== "") {
-                db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " (معدلة ✏️)" });
+                db.ref(`messages/${activeMsgKey}`).update({ text: newText.trim() + " ( ✏️)" });
             }
         };
         window.actionDelete = function() {
@@ -1282,6 +1287,11 @@
             }
         };
         
+        function scrollToBottom(smooth = false) {
+            const chatBox = document.getElementById('chatMessages');
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+        }
+        
         function setupLiveChat() {
             const chatBox = document.getElementById('chatMessages');
             chatBox.innerHTML = '';
@@ -1316,7 +1326,7 @@
                                 </div>
                                 <div class="tg-voice-meta">
                                     <span class="tg-voice-time">00:00</span>
-                                    <span>🎙️ فويس تليجرام</span>
+                                    <span>🎙️</span>
                                 </div>
                             </div>
                         </div>`;
@@ -1425,7 +1435,7 @@
                 db.ref(`typing/${myKey}`).set('idle');
                 voiceBtn.classList.remove('recording');
                 overlay.classList.remove('active');
-                recDot.classList.remove('active');
+                recDot.classList.remove('active', 'typing-active');
                 counterNum.style.display = 'inline';
                 stopTimer();
             }
@@ -1453,7 +1463,7 @@
                         db.ref(`typing/${myKey}`).set('voice');
                         voiceBtn.classList.add('recording');
                         overlay.classList.add('active');
-                        recDot.classList.add('active');
+                        recDot.classList.add('active', 'typing-active');
                         recDot.querySelector('span').innerText = "يسجل فويس...";
                         counterNum.style.display = 'none';
                         startTimer();
@@ -1568,6 +1578,9 @@
                         await newRef.set({ username: usernameInput, password: hashedPassword });
                         currentUser = usernameInput;
                         myKey = newRef.key;
+                        
+                        // حفظ بيانات الجلسة محلياً لعدم الحاجة لتسجيل الدخول مرة أخرى
+                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
                         finalizeLogin();
                     } else {
                         if (!foundKey) {
@@ -1584,6 +1597,9 @@
                         }
                         currentUser = usernameInput;
                         myKey = foundKey;
+                        
+                        // حفظ بيانات الجلسة محلياً لعدم الحاجة لتسجيل الدخول مرة أخرى
+                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
                         finalizeLogin();
                     }
                 }, (error) => {
@@ -1630,8 +1646,29 @@
             });
         }
         
-        window.handleLogout = function() { location.reload(); };
+        // التحقق من وجود تسجيل دخول محفوظ مسبقاً عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedSession = localStorage.getItem('saved_user');
+            if (savedSession) {
+                try {
+                    const sessionData = JSON.parse(savedSession);
+                    if (sessionData.currentUser && sessionData.myKey) {
+                        currentUser = sessionData.currentUser;
+                        myKey = sessionData.myKey;
+                        finalizeLogin();
+                    }
+                } catch(e) {
+                    localStorage.removeItem('saved_user');
+                }
+            }
+        });
+        
+        window.handleLogout = function() { 
+            localStorage.removeItem('saved_user');
+            location.reload(); 
+        };
         window.unpinMessage = function() { db.ref('pinned_message').remove(); };
     </script>
 </body>
 </html>
+
