@@ -189,7 +189,6 @@
         
         .island-bottom-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; flex: 1; }
         
-        /* إبقاء الجزيرة الديناميكية ظاهرة عند إطفاء النور مع تعديل خفيف يتناسب مع الظلام */
         body.lights-off .dynamic-island-container { opacity: 1; visibility: visible; pointer-events: auto; }
         body.lights-off .dynamic-island { background: rgba(20, 10, 18, 0.95); border-color: rgba(255, 105, 180, 0.2); }
         
@@ -463,7 +462,7 @@
                         </div>
                         <div class="island-voice-wave" id="islandVoiceWave">
                             <span>🎙️</span>
-                            <span>جاي يستمع للفويس...</span>
+                            <span>جاي يسمعه...</span>
                         </div>
                     </div>
                     
@@ -913,7 +912,7 @@
                 } else {
                     btn.classList.remove('synced');
                     statusText.innerText = "اضغط باستمرار...";
-                    if(!recDot.classList.contains('typing-active')) {
+                    if(!recDot.classList.contains('typing-active') && !document.getElementById('islandVoiceWave').classList.contains('active')) {
                         counterNum.style.display = 'inline';
                     }
                     recDot.classList.remove('active');
@@ -954,10 +953,28 @@
                 if (snap.val() === false) return;
                 myStatusRef.onDisconnect().set({ online: false, last_seen: firebase.database.ServerValue.TIMESTAMP });
                 myTypingRef.onDisconnect().set('idle');
+                db.ref(`voice_listening/${myKey}`).onDisconnect().set(false);
                 myStatusRef.set({ online: true, last_seen: firebase.database.ServerValue.TIMESTAMP });
             });
             
             document.getElementById('partnerName').innerText = partnerUser;
+            
+            // مراقبة حالة استماع الفويس للطرف الآخر لتعرض "جاي يسمعه" في الجزيرة
+            db.ref(`voice_listening/${partnerKey}`).on('value', (snapshot) => {
+                const isListening = snapshot.val();
+                const voiceWave = document.getElementById('islandVoiceWave');
+                const counterNum = document.getElementById('islandMainTitle');
+                
+                if (isListening) {
+                    counterNum.style.display = 'none';
+                    voiceWave.classList.add('active');
+                } else {
+                    voiceWave.classList.remove('active');
+                    if(!document.getElementById('islandRecordingDot').classList.contains('active')) {
+                        counterNum.style.display = 'inline';
+                    }
+                }
+            });
             
             db.ref(`typing/${partnerKey}`).on('value', (snapshot) => {
                 const typingState = snapshot.val();
@@ -973,7 +990,9 @@
                     recDot.classList.add('active', 'typing-active');
                     recDot.innerHTML = `<span class="island-typing-name">${partnerUser}</span>🎙️ <span>يسجل فويس...</span>`;
                 } else {
-                    counterNum.style.display = 'inline';
+                    if(!document.getElementById('islandVoiceWave').classList.contains('active')) {
+                        counterNum.style.display = 'inline';
+                    }
                     recDot.classList.remove('active', 'typing-active');
                     recDot.innerHTML = '<div class="rec-dot-pulse"></div><span>جاي يكتب</span>';
                 }
@@ -1258,6 +1277,7 @@
             document.getElementById('openFavsBtn').click();
         };
         
+        // تعديل دالة تشغيل الفويس لتبليغ الطرف الآخر أن الفويس قيد الاستماع
         window.playTgVoice = function(btn, audioUrl) {
             let playerContainer = btn.closest('.tg-voice-player');
             let audio = playerContainer.querySelector('audio');
@@ -1274,6 +1294,10 @@
                 audio.onended = () => { 
                     btn.innerText = "▶"; 
                     timeSpan.innerText = "00:00";
+                    db.ref(`voice_listening/${myKey}`).set(false);
+                };
+                audio.onpause = () => {
+                    db.ref(`voice_listening/${myKey}`).set(false);
                 };
             }
             if (audio.paused) {
@@ -1281,9 +1305,11 @@
                 document.querySelectorAll('.tg-play-btn').forEach(b => b.innerText = "▶");
                 audio.play();
                 btn.innerText = "⏸";
+                db.ref(`voice_listening/${myKey}`).set(true); // إعلام الطرف الآخر ببدء الاستماع
             } else {
                 audio.pause();
                 btn.innerText = "▶";
+                db.ref(`voice_listening/${myKey}`).set(false);
             }
         };
         
@@ -1436,7 +1462,9 @@
                 voiceBtn.classList.remove('recording');
                 overlay.classList.remove('active');
                 recDot.classList.remove('active', 'typing-active');
-                counterNum.style.display = 'inline';
+                if(!document.getElementById('islandVoiceWave').classList.contains('active')) {
+                    counterNum.style.display = 'inline';
+                }
                 stopTimer();
             }
             voiceBtn.onclick = async () => {
@@ -1579,7 +1607,6 @@
                         currentUser = usernameInput;
                         myKey = newRef.key;
                         
-                        // حفظ بيانات الجلسة محلياً لعدم الحاجة لتسجيل الدخول مرة أخرى
                         localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
                         finalizeLogin();
                     } else {
@@ -1598,7 +1625,6 @@
                         currentUser = usernameInput;
                         myKey = foundKey;
                         
-                        // حفظ بيانات الجلسة محلياً لعدم الحاجة لتسجيل الدخول مرة أخرى
                         localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
                         finalizeLogin();
                     }
@@ -1646,7 +1672,6 @@
             });
         }
         
-        // التحقق من وجود تسجيل دخول محفوظ مسبقاً عند تحميل الصفحة
         window.addEventListener('DOMContentLoaded', () => {
             const savedSession = localStorage.getItem('saved_user');
             if (savedSession) {
@@ -1671,4 +1696,3 @@
     </script>
 </body>
 </html>
-
