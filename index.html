@@ -1,149 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الموقع تحت الصيانة</title>
-    <style>
-        /* كود الصيانة الذي يغطي الشاشة بالكامل ويخفي الموقع الأصلي */
-        #maintenance-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #0b070c 0%, #15101a 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999999;
-            overflow: hidden;
-        }
-
-        /* خلفية متحركة جمالية خفيفة */
-        #maintenance-screen::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(217, 83, 79, 0.05) 0%, transparent 50%);
-            animation: pulseGlow 8s ease-in-out infinite alternate;
-        }
-
-        @keyframes pulseGlow {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.15); opacity: 1; }
-        }
-
-        .maintenance-card {
-            position: relative;
-            background: #141416;
-            color: #e0e0e0;
-            width: 85%;
-            max-width: 400px;
-            padding: 35px 25px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-            font-family: Tahoma, sans-serif;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes slideUp {
-            0% { transform: translateY(40px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        /* أيقونة التروس المتحركة */
-        .gear-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-            display: inline-block;
-            animation: rotateGear 4s linear infinite;
-        }
-
-        @keyframes rotateGear {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .maintenance-card h1 {
-            color: #ff5c5c;
-            font-size: 22px;
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-
-        .maintenance-card p {
-            font-size: 15px;
-            line-height: 1.7;
-            color: #aaa;
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- شاشة الصيانة التي ستظهر للزوار -->
-    <div id="maintenance-screen">
-        <div class="maintenance-card">
-            <div class="gear-icon">🛠️</div>
-            <h1>الموقع تحت الصيانة حالياً</h1>
-            <p>استودعتك الله.</p>
-        </div>
-    </div>
-
-    <!-- 🛑 ضع موقعك الأصلي هنا بالأسفل (تحت هذا التعليق) -->
-    <div id="original-website-content" style="display: none;">
-        
-        <!-- هنا ضع كل أكواد موقعك القديمة -->
-        <h1>هذا موقعك الأصلي</h1>
-
-    </div>
-
-    <script>
-        // 1. حالة الصيانة العامة (true تعني أن الموقع مغلق للطرف الثاني ويظهر لهم شاشة الصيانة)
-        const isMaintenanceMode = true; 
-
-        // 2. التحقق مما إذا كنت قد فتحت الموقع مسبقاً من جهازك (محفوظ في المتصفح)
-        const isUnlockedLocally = localStorage.getItem('admin_unlocked') === 'true';
-
-        // 3. التحقق من الرابط السري (يبقى كخيار احتياطي إذا أردت فتحه من متصفح الهاتف مثلاً)
-        const urlParams = new URLSearchParams(window.location.search);
-        const hasSecretAccess = urlParams.get('admin') === 'mysecret123';
-
-        if (hasSecretAccess) {
-            // إذا دخلت بالرابط السري، احفظ الوصول في المتصفح تلقائياً
-            localStorage.setItem('admin_unlocked', 'true');
-        }
-
-        // دالة إظهار الموقع وإخفاء شاشة الصيانة
-        function showWebsite() {
-            document.getElementById('maintenance-screen').style.display = 'none';
-            document.getElementById('original-website-content').style.display = 'block';
-        }
-
-        // إذا كانت الصيانة معطلة، أو معك صلاحية محفوظة، أو دخلت بالرابط السري افتح الموقع فوراً
-        if (!isMaintenanceMode || isUnlockedLocally || hasSecretAccess) {
-            showWebsite();
-        }
-
-        // 4. مفتاح الكيبورد السري: عندما تضغط على زر F4 في لوحة المفاتيح، سيفتح الموقع ويحفظ دخولك للأبد!
-        window.addEventListener('keydown', function(event) {
-            if (event.key === 'F4') { 
-                localStorage.setItem('admin_unlocked', 'true');
-                showWebsite();
-                alert('تم فتح الموقع بنجاح وصلاحيات المدير مفعلة!');
-            }
-        });
-    </script>
-</body>
-</html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>عالمنا الخاص ❤️</title>
@@ -796,6 +653,58 @@
         let voiceSeconds = 0;
         let replyingToData = null;
         
+        // --- نظام زر الرجوع في الموبايل ---
+        function initMobileBackButton() {
+            // دفع حالة أولية للتاريخ عند الدخول للواجهة الرئيسية
+            window.history.pushState({ page: "main" }, "", "");
+
+            window.addEventListener('popstate', (event) => {
+                // 1. إغلاق الـ Modals (لوحة التحكم، السجل، المفضلة، أو خيارات الرسائل) إذا كانت مفتوحة
+                const adminModal = document.getElementById('adminModal');
+                const historyModal = document.getElementById('historyModal');
+                const favsModal = document.getElementById('favsModal');
+                const msgActionsSheet = document.getElementById('msgActionsSheet');
+                const slideMenu = document.getElementById('slideDropdownMenu');
+                const dynamicIsland = document.getElementById('dynamicIsland');
+
+                let wasAnythingOpen = false;
+
+                if (adminModal.style.display === 'flex') {
+                    adminModal.style.display = 'none';
+                    wasAnythingOpen = true;
+                }
+                if (historyModal.style.display === 'flex') {
+                    historyModal.style.display = 'none';
+                    wasAnythingOpen = true;
+                }
+                if (favsModal.style.display === 'flex') {
+                    favsModal.style.display = 'none';
+                    wasAnythingOpen = true;
+                }
+                if (msgActionsSheet.style.display === 'flex') {
+                    msgActionsSheet.style.display = 'none';
+                    wasAnythingOpen = true;
+                }
+                if (slideMenu.classList.contains('open')) {
+                    slideMenu.classList.remove('open');
+                    wasAnythingOpen = true;
+                }
+                if (dynamicIsland.classList.contains('expanded')) {
+                    dynamicIsland.classList.remove('expanded');
+                    wasAnythingOpen = true;
+                }
+
+                // إذا كان هناك شيء مفتوح، نمنع الخروج ونعيد ضبط الـ history state لتثبيت المستخدم في الرئيسية
+                if (wasAnythingOpen) {
+                    window.history.pushState({ page: "main" }, "", "");
+                } else {
+                    // إذا لم يكن شيء مفتوحاً، نبقي المستخدم في الواجهة الرئيسية ولا نجعله يخرج من التطبيق
+                    window.history.pushState({ page: "main" }, "", "");
+                }
+            });
+        }
+        // ----------------------------------
+
         window.addEventListener('online', () => {
             const banner = document.getElementById('netStatusBanner');
             banner.innerHTML = "✨ رجع النت!";
@@ -1126,7 +1035,7 @@
                 if (typingState === 'text') {
                     counterNum.style.display = 'none';
                     recDot.classList.add('active', 'typing-active');
-                    recDot.innerHTML = `<span class="island-typing-name">${partnerUser}</span><span class="typing-dots"><i></i><i></i><i></i></span><span>يكتب...</span>`;
+                    recDot.innerHTML = `<span class="island-typing-name">${partnerUser}</span><span class="typing-dots"><i></i><i></i><i></i></span><span>يكتب</span>`;
                 } else if (typingState === 'voice') {
                     counterNum.style.display = 'none';
                     recDot.classList.add('active', 'typing-active');
@@ -1136,7 +1045,7 @@
                         counterNum.style.display = 'inline';
                     }
                     recDot.classList.remove('active', 'typing-active');
-                    recDot.innerHTML = '<div class="rec-dot-pulse"></div><span>جاي يكتب...</span>';
+                    recDot.innerHTML = '<div class="rec-dot-pulse"></div><span>جاي يكتب</span>';
                 }
             });
             
@@ -1178,7 +1087,6 @@
             return `${date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })} - ${date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`;
         }
         
-        // نظام مزامنة وتفعيل إشعار الحضور للطرفين عبر Firebase
         window.isAttendanceAnimationActive = false;
         let attendanceTimer = null;
 
@@ -1188,15 +1096,12 @@
             const counterNum = document.getElementById('islandMainTitle');
             const recDot = document.getElementById('islandRecordingDot');
             
-            // تصغير وإغلاق الجزيرة الديناميكية لترجع لطبيعتها
             island.classList.remove('expanded');
             
-            // إظهار نص "احبج بكل ايامي" في الجزيرة
             counterNum.style.display = 'inline';
             counterNum.innerText = "احبج بكل ايامي ❤️";
             recDot.classList.remove('active', 'typing-active');
             
-            // إطلاق قلوب تتطاير باستمرار لمدة 10 ثواني
             let duration = 10 * 1000;
             let end = Date.now() + duration;
             let interval = setInterval(() => {
@@ -1206,7 +1111,7 @@
                 confetti({
                     particleCount: 25,
                     spread: 90,
-                    origin: { y: 0.1 }, // تتطاير من أعلى قرب الجزيرة الديناميكية
+                    origin: { y: 0.1 },
                     colors: ['#ff0055', '#ff6699', '#ffffff', '#ff3366']
                 });
             }, 400);
@@ -1280,7 +1185,6 @@
                         db.ref('love_days').transaction(c => (c || 0) + 1);
                         db.ref('last_click_date').set(todayString);
                         
-                        // إرسال إشارة الحضور للطرفين لتفعيل التأثير بالتزامن
                         db.ref('attendance_signal').set(firebase.database.ServerValue.TIMESTAMP);
                         triggerAttendanceEffectLocally();
                         updateClockAndCheckDate();
@@ -1839,6 +1743,9 @@
         function finalizeLogin() {
             loginContainer.style.display = 'none';
             mainPage.style.display = 'flex';
+            
+            // تفعيل نظام زر الرجوع بمجرد الدخول للواجهة الرئيسية
+            initMobileBackButton();
             
             db.ref('users').once('value', (snap) => {
                 const allUsers = snap.val() || {};
