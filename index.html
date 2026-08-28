@@ -1,152 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الموقع تحت الصيانة</title>
-    <style>
-        /* كود الصيانة الذي يغطي الشاشة بالكامل ويخفي الموقع الأصلي */
-        #maintenance-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #0b070c 0%, #15101a 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999999;
-            overflow: hidden;
-        }
-
-        /* خلفية متحركة جمالية خفيفة */
-        #maintenance-screen::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(217, 83, 79, 0.05) 0%, transparent 50%);
-            animation: pulseGlow 8s ease-in-out infinite alternate;
-        }
-
-        @keyframes pulseGlow {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.15); opacity: 1; }
-        }
-
-        .maintenance-card {
-            position: relative;
-            background: #141416;
-            color: #e0e0e0;
-            width: 85%;
-            max-width: 400px;
-            padding: 35px 25px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-            font-family: Tahoma, sans-serif;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes slideUp {
-            0% { transform: translateY(40px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        /* أيقونة التروس المتحركة */
-        .gear-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-            display: inline-block;
-            animation: rotateGear 4s linear infinite;
-        }
-
-        @keyframes rotateGear {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .maintenance-card h1 {
-            color: #ff5c5c;
-            font-size: 22px;
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-
-        .maintenance-card p {
-            font-size: 15px;
-            line-height: 1.7;
-            color: #aaa;
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- شاشة الصيانة التي ستظهر للزوار -->
-    <div id="maintenance-screen">
-        <div class="maintenance-card">
-            <div class="gear-icon">🛠️</div>
-            <h1>الموقع تحت الصيانة حالياً</h1>
-            <p>نقوم حالياً بإجراء بعض التحديثات والتعديلات لتحسين تجرتك، سنعود للعمل قريباً جداً.</p>
-        </div>
-    </div>
-
-    <!-- 🛑 ضع موقعك الأصلي هنا بالأسفل (تحت هذا التعليق) -->
-    <div id="original-website-content" style="display: none;">
-        
-        <!-- هنا ضع كل أكواد موقعك القديمة -->
-        <h1>هذا موقعك الأصلي</h1>
-
-    </div>
-
-    <script>
-        // 1. حالة الصيانة العامة (true تعني أن الموقع مغلق للطرف الثاني ويظهر لهم شاشة الصيانة)
-        const isMaintenanceMode = true; 
-
-        // 2. التحقق مما إذا كنت قد فتحت الموقع مسبقاً من جهازك (محفوظ في المتصفح)
-        const isUnlockedLocally = localStorage.getItem('admin_unlocked') === 'true';
-
-        // 3. التحقق من الرابط السري (يبقى كخيار احتياطي إذا أردت فتحه من متصفح الهاتف مثلاً)
-        const urlParams = new URLSearchParams(window.location.search);
-        const hasSecretAccess = urlParams.get('admin') === 'mysecret123';
-
-        if (hasSecretAccess) {
-            // إذا دخلت بالرابط السري، احفظ الوصول في المتصفح تلقائياً
-            localStorage.setItem('admin_unlocked', 'true');
-        }
-
-        // دالة إظهار الموقع وإخفاء شاشة الصيانة
-        function showWebsite() {
-            document.getElementById('maintenance-screen').style.display = 'none';
-            document.getElementById('original-website-content').style.display = 'block';
-        }
-
-        // إذا كانت الصيانة معطلة، أو معك صلاحية محفوظة، أو دخلت بالرابط السري افتح الموقع فوراً
-        if (!isMaintenanceMode || isUnlockedLocally || hasSecretAccess) {
-            showWebsite();
-        }
-
-        // 4. مفتاح الكيبورد السري: عندما تضغط على زر F4 في لوحة المفاتيح، سيفتح الموقع ويحفظ دخولك للأبد!
-        window.addEventListener('keydown', function(event) {
-            if (event.key === 'F4') { 
-                localStorage.setItem('admin_unlocked', 'true');
-                showWebsite();
-                alert('تم فتح الموقع بنجاح وصلاحيات المدير مفعلة!');
-            }
-        });
-    </script>
-</body>
-</html>
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" href="./icon.png">
-<meta name="theme-color" content="#000000">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>عالمنا الخاص ❤️</title>
@@ -640,7 +494,7 @@
                         </div>
                         <div class="island-voice-wave" id="islandVoiceWave">
                             <span>🎙️</span>
-                            <span>جاي يسمعه...</span>
+                            <span>سمع الفويس...</span>
                         </div>
                     </div>
                     
@@ -1451,7 +1305,6 @@
             if (status === 'delivered') return `<span class="read-status delivered">✓✓</span>`;
             return `<span class="read-status sent">✓</span>`;
         }
-
         // --- نظام التفاعلات والبوب أوفر الثابت والمستقر ---
         function showTelegramPopover(wrapper, msgKey, msgData, author) {
             closeAllPopovers();
@@ -1575,7 +1428,7 @@
             document.getElementById('openFavsBtn').click();
         };
         
-        window.playTgVoice = function(btn, audioUrl) {
+        window.playTgVoice = function(btn, audioUrl, msgAuthor, msgKey) {
             let playerContainer = btn.closest('.tg-voice-player');
             let audio = playerContainer.querySelector('audio');
             let timeSpan = playerContainer.querySelector('.tg-voice-time');
@@ -1591,10 +1444,14 @@
                 audio.onended = () => { 
                     btn.innerText = "▶"; 
                     timeSpan.innerText = "00:00";
-                    db.ref(`voice_listening/${myKey}`).set(false);
+                    if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                        db.ref(`voice_listening/${myKey}`).set(false);
+                    }
                 };
                 audio.onpause = () => {
-                    db.ref(`voice_listening/${myKey}`).set(false);
+                    if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                        db.ref(`voice_listening/${myKey}`).set(false);
+                    }
                 };
             }
             if (audio.paused) {
@@ -1602,11 +1459,16 @@
                 document.querySelectorAll('.tg-play-btn').forEach(b => b.innerText = "▶");
                 audio.play();
                 btn.innerText = "⏸";
-                db.ref(`voice_listening/${myKey}`).set(true);
+                // يتم إرسال تنبيه "سمع الفويس" للطرف الآخر حصراً إذا كان الصوت المرسل ملكاً للطرف الآخر ويقوم المستخدم الحالي بسماعه
+                if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                    db.ref(`voice_listening/${myKey}`).set(true);
+                }
             } else {
                 audio.pause();
                 btn.innerText = "▶";
-                db.ref(`voice_listening/${myKey}`).set(false);
+                if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                    db.ref(`voice_listening/${myKey}`).set(false);
+                }
             }
         };
         
@@ -1642,7 +1504,7 @@
                     contentHtml = `
                         ${replyQuoteHtml}
                         <div class="tg-voice-player">
-                            <button class="tg-play-btn" onclick="playTgVoice(this, '${msg.audioData}')">▶</button>
+                            <button class="tg-play-btn" onclick="playTgVoice(this, '${msg.audioData}', '${msg.author}', '${msgKey}')">▶</button>
                             <div class="tg-voice-info">
                                 <div class="tg-voice-waves">
                                     <i style="height: 8px;"></i><i style="height: 14px;"></i><i style="height: 6px;"></i><i style="height: 12px;"></i><i style="height: 16px;"></i><i style="height: 9px;"></i><i style="height: 5px;"></i><i style="height: 11px;"></i><i style="height: 15px;"></i><i style="height: 7px;"></i><i style="height: 13px;"></i><i style="height: 8px;"></i>
@@ -1695,7 +1557,6 @@
                     const ticksSpan = document.getElementById(`ticks-${msgKey}`);
                     if (ticksSpan && msg.author.toLowerCase() === currentUser.toLowerCase()) ticksSpan.innerHTML = renderStatusTicks(msg.status);
                     
-                    // تحديث التفاعلات بشكل فوري وثابت
                     let existingReactions = wrapper.querySelector('.msg-reactions');
                     if (msg.reactions) {
                         const reactionList = Object.entries(msg.reactions);
@@ -1753,106 +1614,151 @@
                     timerElem.innerText = `${mins}:${secs}`;
                 }, 1000);
             }
-            function stopTimer() {
-                clearInterval(voiceTimerInterval);
-                voiceSeconds = 0;
-                timerElem.innerText = "00:00";
+            
+            async function startRecording() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = async () => {
+                        clearInterval(voiceTimerInterval);
+                        db.ref(`typing/${myKey}`).set('idle');
+                        if (cancelRecording) return;
+                        
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const storageRef = storage.ref(`voices/${Date.now()}_${currentUser}.webm`);
+                        const uploadTask = storageRef.put(audioBlob);
+                        
+                        uploadTask.on('state_changed', null, (error) => {
+                            console.error(error);
+                            alert("حدث خطأ أثناء رفع التسجيل الصوتي.");
+                        }, async () => {
+                            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                            const msgData = {
+                                author: currentUser,
+                                type: 'voice',
+                                audioData: downloadURL,
+                                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                                status: 'sent'
+                            };
+                            if (replyingToData) {
+                                msgData.replyTo = replyingToData;
+                                cancelReply();
+                            }
+                            db.ref('messages').push(msgData);
+                        });
+                    };
+                    mediaRecorder.start();
+                    isRecording = true;
+                    cancelRecording = false;
+                    voiceBtn.classList.add('recording');
+                    overlay.classList.add('active');
+                    startTimer();
+                    db.ref(`typing/${myKey}`).set('voice');
+                } catch(err) {
+                    alert("يرجى السماح بالوصول إلى الميكروفون لتسجيل الصوت.");
+                }
             }
             
-            cancelBtn.onclick = () => {
-                if (isRecording) {
-                    cancelRecording = true;
-                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    resetRecordingState();
+            voiceBtn.onclick = () => {
+                if (!isRecording) {
+                    startRecording();
+                } else {
+                    stopAndSendRecording();
                 }
             };
-            sendVoiceBtn.onclick = () => {
-                if (isRecording) {
-                    cancelRecording = false;
-                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    resetRecordingState();
-                }
-            };
-            function resetRecordingState() {
+            
+            function stopAndSendRecording() {
+                if (!isRecording) return;
                 isRecording = false;
-                db.ref(`typing/${myKey}`).set('idle');
                 voiceBtn.classList.remove('recording');
                 overlay.classList.remove('active');
-                recDot.classList.remove('active', 'typing-active');
-                if(!document.getElementById('islandVoiceWave').classList.contains('active') && !window.isAttendanceAnimationActive) {
-                    counterNum.style.display = 'inline';
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
                 }
-                stopTimer();
             }
-            voiceBtn.onclick = async () => {
-                if (!navigator.mediaDevices?.getUserMedia) {
-                    alert("⚠️ المتصفح لا يدعم الميكروفون.");
-                    return;
-                }
-                if (!isRecording) {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                        mediaRecorder = new MediaRecorder(stream);
-                        audioChunks = [];
-                        cancelRecording = false;
-                        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                        mediaRecorder.onstop = async () => {
-                            if (!cancelRecording) {
-                                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                                uploadAndSendVoice(blob);
-                            }
-                            stream.getTracks().forEach(t => t.stop());
-                        };
-                        mediaRecorder.start();
-                        isRecording = true;
-                        db.ref(`typing/${myKey}`).set('voice');
-                        voiceBtn.classList.add('recording');
-                        overlay.classList.add('active');
-                        recDot.classList.add('active', 'typing-active');
-                        recDot.querySelector('span').innerText = "يسجل فويس...";
-                        counterNum.style.display = 'none';
-                        startTimer();
-                    } catch(e) {
-                        alert("⚠️ لم يتم منح إذن المايكروفون.");
-                    }
-                } else {
-                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    resetRecordingState();
-                }
-            };
-        }
-        
-        function uploadAndSendVoice(blob) {
-            const reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onloadend = () => {
-                const base64Audio = reader.result;
-                let msgData = {
-                    author: currentUser,
-                    type: 'voice',
-                    audioData: base64Audio,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: 'sent'
-                };
-                if (replyingToData) {
-                    msgData.replyTo = replyingToData;
-                    cancelReply();
-                }
-                db.ref('messages').push(msgData);
-            };
-        }
-        
-        function setupChatInput() {
-            const input = document.getElementById('chatInput');
-            const sendBtn = document.getElementById('sendMsgBtn');
-            const quickHeart = document.getElementById('sendHeartBtn');
             
-            function sendTextMessage() {
-                const text = input.value.trim();
+            sendVoiceBtn.onclick = () => {
+                stopAndSendRecording();
+            };
+            
+            cancelBtn.onclick = () => {
+                cancelRecording = true;
+                isRecording = false;
+                voiceBtn.classList.remove('recording');
+                overlay.classList.remove('active');
+                clearInterval(voiceTimerInterval);
+                db.ref(`typing/${myKey}`).set('idle');
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+            };
+        }
+        
+        const authForm = document.getElementById('authForm');
+        authForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value;
+            if(!usernameInput || !passwordInput) return;
+            
+            const hashedPass = await hashPassword(passwordInput);
+            const userRef = db.ref(`users/${usernameInput}`);
+            
+            userRef.once('value', async (snapshot) => {
+                const userData = snapshot.val();
+                if (isRegistering) {
+                    if (userData) {
+                        alert("هذا الاسم مستخدم بالفعل، اختر اسمًا آخر أو سجل دخولك.");
+                        return;
+                    }
+                    await userRef.set({ password: hashedPass });
+                    proceedLogin(usernameInput);
+                } else {
+                    if (!userData) {
+                        alert("الحساب غير موجود، يرجى إنشاء حساب جديد.");
+                        return;
+                    }
+                    if (userData.password !== hashedPass) {
+                        alert("كلمة المرور غير صحيحة!");
+                        return;
+                    }
+                    proceedLogin(usernameInput);
+                }
+            });
+        };
+        
+        function proceedLogin(username) {
+            currentUser = username;
+            myKey = currentUser === 'سجاد' ? 'user1' : (currentUser === 'شهد' ? 'user2' : currentUser.replace(/[.#$\/\[\]]/g, '_'));
+            partnerUser = currentUser === 'سجاد' ? 'شهد' : 'سجاد';
+            partnerKey = partnerUser === 'شهد' ? 'user2' : 'user1';
+            
+            loginContainer.style.display = 'none';
+            mainPage.style.display = 'flex';
+            
+            setupLiveClockAndCounter();
+            setupSharedFingerprint();
+            setupBatterySync();
+            setupPresenceAndTypingSystem();
+            setupMissYouSystem();
+            setupHistoryModal();
+            setupLiveChat();
+            setupVoiceRecording();
+            initMobileBackButton();
+            
+            const sendBtn = document.getElementById('sendMsgBtn');
+            const chatInput = document.getElementById('chatInput');
+            const sendHeartBtn = document.getElementById('sendHeartBtn');
+            
+            function sendMessage() {
+                const text = chatInput.value.trim();
                 if (!text) return;
-                let msgData = {
+                const msgData = {
                     author: currentUser,
-                    type: 'text',
                     text: text,
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
@@ -1862,157 +1768,32 @@
                     cancelReply();
                 }
                 db.ref('messages').push(msgData);
-                input.value = "";
+                chatInput.value = '';
                 db.ref(`typing/${myKey}`).set('idle');
-                scrollToBottom(true);
             }
             
-            sendBtn.onclick = sendTextMessage;
-            input.onkeydown = (e) => { if (e.key === 'Enter') sendTextMessage(); };
+            sendBtn.onclick = sendMessage;
+            chatInput.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
             
-            quickHeart.onclick = () => {
-                db.ref('messages').push({
+            sendHeartBtn.onclick = () => {
+                const msgData = {
                     author: currentUser,
-                    type: 'text',
-                    text: '❤️',
+                    text: "❤️",
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
-                });
-                db.ref('heart_explosions').push(true);
+                };
+                db.ref('messages').push(msgData);
                 launchHeartsExplosion();
                 triggerVibration();
             };
         }
         
-        const authForm = document.getElementById('authForm');
-        authForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
-            
-            if (!usernameInput || !passwordInput) {
-                alert("⚠️ يرجى ملء الحقول أولاً!");
-                return;
-            }
-            const authBtnElem = document.getElementById('authBtn');
-            authBtnElem.innerText = "جاري التحقق...";
-            authBtnElem.disabled = true;
-            try {
-                const hashedPassword = await hashPassword(passwordInput);
-                const usersRef = db.ref('users');
-                
-                usersRef.once('value', async (snapshot) => {
-                    const users = snapshot.val() || {};
-                    let foundKey = null;
-                    
-                    for (let [k, u] of Object.entries(users)) {
-                        if (u.username && u.username.toLowerCase() === usernameInput.toLowerCase()) {
-                            foundKey = k;
-                            break;
-                        }
-                    }
-                    
-                    if (isRegistering) {
-                        if (foundKey) {
-                            alert("⚠️ هذا الاسم مستخدم بالفعل، اختر اسماً آخر أو سجل دخولك.");
-                            authBtnElem.innerText = "تسجيل وحفظ";
-                            authBtnElem.disabled = false;
-                            return;
-                        }
-                        const newRef = usersRef.push();
-                        await newRef.set({ username: usernameInput, password: hashedPassword });
-                        currentUser = usernameInput;
-                        myKey = newRef.key;
-                        
-                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
-                        finalizeLogin();
-                    } else {
-                        if (!foundKey) {
-                            alert("⚠️ اسم المستخدم غير موجود، يرجى إنشاء حساب جديد.");
-                            authBtnElem.innerText = "دخول";
-                            authBtnElem.disabled = false;
-                            return;
-                        }
-                        if (users[foundKey].password !== hashedPassword) {
-                            alert("⚠️ كلمة السر غير صحيحة!");
-                            authBtnElem.innerText = "دخول";
-                            authBtnElem.disabled = false;
-                            return;
-                        }
-                        currentUser = usernameInput;
-                        myKey = foundKey;
-                        
-                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
-                        finalizeLogin();
-                    }
-                }, (error) => {
-                    alert("⚠️ فشل الاتصال بقاعدة البيانات، تأكد من الإنترنت.");
-                    authBtnElem.innerText = "دخول";
-                    authBtnElem.disabled = false;
-                });
-                
-            } catch (err) {
-                console.error(err);
-                alert("⚠️ حدث خطأ غير متوقع.");
-                authBtnElem.innerText = "دخول";
-                authBtnElem.disabled = false;
+        window.handleLogout = function() {
+            if(confirm("هل تريد تسجيل الخروج؟")) {
+                db.ref(`status/${myKey}`).set({ online: false, last_seen: firebase.database.ServerValue.TIMESTAMP });
+                location.reload();
             }
         };
-        
-        function finalizeLogin() {
-            loginContainer.style.display = 'none';
-            mainPage.style.display = 'flex';
-            
-            initMobileBackButton();
-            
-            db.ref('users').once('value', (snap) => {
-                const allUsers = snap.val() || {};
-                for (let [k, u] of Object.entries(allUsers)) {
-                    if (k !== myKey) {
-                        partnerUser = u.username;
-                        partnerKey = k;
-                        break;
-                    }
-                }
-                if (!partnerUser) {
-                    partnerUser = currentUser === "علي" ? "نور" : "الحبيب";
-                    partnerKey = "partner_fallback";
-                }
-                
-                setupPresenceAndTypingSystem();
-                setupLiveClockAndCounter();
-                setupMissYouSystem();
-                setupHistoryModal();
-                setupSharedFingerprint();
-                setupBatterySync();
-                setupLiveChat();
-                setupVoiceRecording();
-                setupChatInput();
-            });
-        }
-        
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedSession = localStorage.getItem('saved_user');
-            if (savedSession) {
-                try {
-                    const sessionData = JSON.parse(savedSession);
-                    if (sessionData.currentUser && sessionData.myKey) {
-                        currentUser = sessionData.currentUser;
-                        myKey = sessionData.myKey;
-                        finalizeLogin();
-                    }
-                } catch(e) {
-                    localStorage.removeItem('saved_user');
-                }
-            }
-        });
-        
-        window.handleLogout = function() { 
-            localStorage.removeItem('saved_user');
-            location.reload(); 
-        };
-        window.unpinMessage = function() { db.ref('pinned_message').remove(); };
     </script>
 </body>
 </html>
-
