@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <link rel="manifest" href="./manifest.json">
@@ -497,7 +496,7 @@
                         </div>
                         <div class="island-voice-wave" id="islandVoiceWave">
                             <span>🎙️</span>
-                            <span>سمع الفويس...</span>
+                            <span>جاي يسمعه...</span>
                         </div>
                     </div>
                     
@@ -1431,7 +1430,7 @@
             document.getElementById('openFavsBtn').click();
         };
         
-        window.playTgVoice = function(btn, audioUrl, msgAuthor, msgKey) {
+        window.playTgVoice = function(btn, audioUrl, msgAuthor) {
             let playerContainer = btn.closest('.tg-voice-player');
             let audio = playerContainer.querySelector('audio');
             let timeSpan = playerContainer.querySelector('.tg-voice-time');
@@ -1447,12 +1446,12 @@
                 audio.onended = () => { 
                     btn.innerText = "▶"; 
                     timeSpan.innerText = "00:00";
-                    if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                    if (msgAuthor && msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
                         db.ref(`voice_listening/${myKey}`).set(false);
                     }
                 };
                 audio.onpause = () => {
-                    if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                    if (msgAuthor && msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
                         db.ref(`voice_listening/${myKey}`).set(false);
                     }
                 };
@@ -1462,14 +1461,15 @@
                 document.querySelectorAll('.tg-play-btn').forEach(b => b.innerText = "▶");
                 audio.play();
                 btn.innerText = "⏸";
-                // يتم إرسال تنبيه "سمع الفويس" للطرف الآخر حصراً إذا كان الصوت المرسل ملكاً للطرف الآخر ويقوم المستخدم الحالي بسماعه
-                if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                if (msgAuthor && msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
                     db.ref(`voice_listening/${myKey}`).set(true);
+                } else {
+                    db.ref(`voice_listening/${myKey}`).set(false);
                 }
             } else {
                 audio.pause();
                 btn.innerText = "▶";
-                if (msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
+                if (msgAuthor && msgAuthor.toLowerCase() !== currentUser.toLowerCase()) {
                     db.ref(`voice_listening/${myKey}`).set(false);
                 }
             }
@@ -1507,7 +1507,7 @@
                     contentHtml = `
                         ${replyQuoteHtml}
                         <div class="tg-voice-player">
-                            <button class="tg-play-btn" onclick="playTgVoice(this, '${msg.audioData}', '${msg.author}', '${msgKey}')">▶</button>
+                            <button class="tg-play-btn" onclick="playTgVoice(this, '${msg.audioData}', '${msg.author}')">▶</button>
                             <div class="tg-voice-info">
                                 <div class="tg-voice-waves">
                                     <i style="height: 8px;"></i><i style="height: 14px;"></i><i style="height: 6px;"></i><i style="height: 12px;"></i><i style="height: 16px;"></i><i style="height: 9px;"></i><i style="height: 5px;"></i><i style="height: 11px;"></i><i style="height: 15px;"></i><i style="height: 7px;"></i><i style="height: 13px;"></i><i style="height: 8px;"></i>
@@ -1560,6 +1560,7 @@
                     const ticksSpan = document.getElementById(`ticks-${msgKey}`);
                     if (ticksSpan && msg.author.toLowerCase() === currentUser.toLowerCase()) ticksSpan.innerHTML = renderStatusTicks(msg.status);
                     
+                    // تحديث التفاعلات بشكل فوري وثابت
                     let existingReactions = wrapper.querySelector('.msg-reactions');
                     if (msg.reactions) {
                         const reactionList = Object.entries(msg.reactions);
@@ -1617,151 +1618,106 @@
                     timerElem.innerText = `${mins}:${secs}`;
                 }, 1000);
             }
-            
-            async function startRecording() {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                    mediaRecorder.onstop = async () => {
-                        clearInterval(voiceTimerInterval);
-                        db.ref(`typing/${myKey}`).set('idle');
-                        if (cancelRecording) return;
-                        
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const storageRef = storage.ref(`voices/${Date.now()}_${currentUser}.webm`);
-                        const uploadTask = storageRef.put(audioBlob);
-                        
-                        uploadTask.on('state_changed', null, (error) => {
-                            console.error(error);
-                            alert("حدث خطأ أثناء رفع التسجيل الصوتي.");
-                        }, async () => {
-                            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                            const msgData = {
-                                author: currentUser,
-                                type: 'voice',
-                                audioData: downloadURL,
-                                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                                status: 'sent'
-                            };
-                            if (replyingToData) {
-                                msgData.replyTo = replyingToData;
-                                cancelReply();
-                            }
-                            db.ref('messages').push(msgData);
-                        });
-                    };
-                    mediaRecorder.start();
-                    isRecording = true;
-                    cancelRecording = false;
-                    voiceBtn.classList.add('recording');
-                    overlay.classList.add('active');
-                    startTimer();
-                    db.ref(`typing/${myKey}`).set('voice');
-                } catch(err) {
-                    alert("يرجى السماح بالوصول إلى الميكروفون لتسجيل الصوت.");
-                }
+            function stopTimer() {
+                clearInterval(voiceTimerInterval);
+                voiceSeconds = 0;
+                timerElem.innerText = "00:00";
             }
-            
-            voiceBtn.onclick = () => {
-                if (!isRecording) {
-                    startRecording();
-                } else {
-                    stopAndSendRecording();
-                }
-            };
-            
-            function stopAndSendRecording() {
-                if (!isRecording) return;
-                isRecording = false;
-                voiceBtn.classList.remove('recording');
-                overlay.classList.remove('active');
-                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                    mediaRecorder.stop();
-                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
-                }
-            }
-            
-            sendVoiceBtn.onclick = () => {
-                stopAndSendRecording();
-            };
             
             cancelBtn.onclick = () => {
-                cancelRecording = true;
+                if (isRecording) {
+                    cancelRecording = true;
+                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+                    resetRecordingState();
+                }
+            };
+            sendVoiceBtn.onclick = () => {
+                if (isRecording) {
+                    cancelRecording = false;
+                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+                    resetRecordingState();
+                }
+            };
+            function resetRecordingState() {
                 isRecording = false;
+                db.ref(`typing/${myKey}`).set('idle');
                 voiceBtn.classList.remove('recording');
                 overlay.classList.remove('active');
-                clearInterval(voiceTimerInterval);
-                db.ref(`typing/${myKey}`).set('idle');
-                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                    mediaRecorder.stop();
-                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                recDot.classList.remove('active', 'typing-active');
+                if(!document.getElementById('islandVoiceWave').classList.contains('active') && !window.isAttendanceAnimationActive) {
+                    counterNum.style.display = 'inline';
+                }
+                stopTimer();
+            }
+            voiceBtn.onclick = async () => {
+                if (!navigator.mediaDevices?.getUserMedia) {
+                    alert("⚠️ المتصفح لا يدعم الميكروفون.");
+                    return;
+                }
+                if (!isRecording) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+                        cancelRecording = false;
+                        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                        mediaRecorder.onstop = async () => {
+                            if (!cancelRecording) {
+                                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                                uploadAndSendVoice(blob);
+                            }
+                            stream.getTracks().forEach(t => t.stop());
+                        };
+                        mediaRecorder.start();
+                        isRecording = true;
+                        db.ref(`typing/${myKey}`).set('voice');
+                        voiceBtn.classList.add('recording');
+                        overlay.classList.add('active');
+                        recDot.classList.add('active', 'typing-active');
+                        recDot.querySelector('span').innerText = "يسجل فويس...";
+                        counterNum.style.display = 'none';
+                        startTimer();
+                    } catch(e) {
+                        alert("⚠️ لم يتم منح إذن المايكروفون.");
+                    }
+                } else {
+                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+                    resetRecordingState();
                 }
             };
         }
         
-        const authForm = document.getElementById('authForm');
-        authForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value;
-            if(!usernameInput || !passwordInput) return;
-            
-            const hashedPass = await hashPassword(passwordInput);
-            const userRef = db.ref(`users/${usernameInput}`);
-            
-            userRef.once('value', async (snapshot) => {
-                const userData = snapshot.val();
-                if (isRegistering) {
-                    if (userData) {
-                        alert("هذا الاسم مستخدم بالفعل، اختر اسمًا آخر أو سجل دخولك.");
-                        return;
-                    }
-                    await userRef.set({ password: hashedPass });
-                    proceedLogin(usernameInput);
-                } else {
-                    if (!userData) {
-                        alert("الحساب غير موجود، يرجى إنشاء حساب جديد.");
-                        return;
-                    }
-                    if (userData.password !== hashedPass) {
-                        alert("كلمة المرور غير صحيحة!");
-                        return;
-                    }
-                    proceedLogin(usernameInput);
-                }
-            });
-        };
-        
-        function proceedLogin(username) {
-            currentUser = username;
-            myKey = currentUser === 'سجاد' ? 'user1' : (currentUser === 'شهد' ? 'user2' : currentUser.replace(/[.#$\/\[\]]/g, '_'));
-            partnerUser = currentUser === 'سجاد' ? 'شهد' : 'سجاد';
-            partnerKey = partnerUser === 'شهد' ? 'user2' : 'user1';
-            
-            loginContainer.style.display = 'none';
-            mainPage.style.display = 'flex';
-            
-            setupLiveClockAndCounter();
-            setupSharedFingerprint();
-            setupBatterySync();
-            setupPresenceAndTypingSystem();
-            setupMissYouSystem();
-            setupHistoryModal();
-            setupLiveChat();
-            setupVoiceRecording();
-            initMobileBackButton();
-            
-            const sendBtn = document.getElementById('sendMsgBtn');
-            const chatInput = document.getElementById('chatInput');
-            const sendHeartBtn = document.getElementById('sendHeartBtn');
-            
-            function sendMessage() {
-                const text = chatInput.value.trim();
-                if (!text) return;
-                const msgData = {
+        function uploadAndSendVoice(blob) {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+                const base64Audio = reader.result;
+                let msgData = {
                     author: currentUser,
+                    type: 'voice',
+                    audioData: base64Audio,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'sent'
+                };
+                if (replyingToData) {
+                    msgData.replyTo = replyingToData;
+                    cancelReply();
+                }
+                db.ref('messages').push(msgData);
+            };
+        }
+        
+        function setupChatInput() {
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendMsgBtn');
+            const quickHeart = document.getElementById('sendHeartBtn');
+            
+            function sendTextMessage() {
+                const text = input.value.trim();
+                if (!text) return;
+                let msgData = {
+                    author: currentUser,
+                    type: 'text',
                     text: text,
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
@@ -1771,32 +1727,156 @@
                     cancelReply();
                 }
                 db.ref('messages').push(msgData);
-                chatInput.value = '';
+                input.value = "";
                 db.ref(`typing/${myKey}`).set('idle');
+                scrollToBottom(true);
             }
             
-            sendBtn.onclick = sendMessage;
-            chatInput.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
+            sendBtn.onclick = sendTextMessage;
+            input.onkeydown = (e) => { if (e.key === 'Enter') sendTextMessage(); };
             
-            sendHeartBtn.onclick = () => {
-                const msgData = {
+            quickHeart.onclick = () => {
+                db.ref('messages').push({
                     author: currentUser,
-                    text: "❤️",
+                    type: 'text',
+                    text: '❤️',
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
-                };
-                db.ref('messages').push(msgData);
+                });
+                db.ref('heart_explosions').push(true);
                 launchHeartsExplosion();
                 triggerVibration();
             };
         }
         
-        window.handleLogout = function() {
-            if(confirm("هل تريد تسجيل الخروج؟")) {
-                db.ref(`status/${myKey}`).set({ online: false, last_seen: firebase.database.ServerValue.TIMESTAMP });
-                location.reload();
+        const authForm = document.getElementById('authForm');
+        authForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            
+            if (!usernameInput || !passwordInput) {
+                alert("⚠️ يرجى ملء الحقول أولاً!");
+                return;
+            }
+            const authBtnElem = document.getElementById('authBtn');
+            authBtnElem.innerText = "جاري التحقق...";
+            authBtnElem.disabled = true;
+            try {
+                const hashedPassword = await hashPassword(passwordInput);
+                const usersRef = db.ref('users');
+                
+                usersRef.once('value', async (snapshot) => {
+                    const users = snapshot.val() || {};
+                    let foundKey = null;
+                    
+                    for (let [k, u] of Object.entries(users)) {
+                        if (u.username && u.username.toLowerCase() === usernameInput.toLowerCase()) {
+                            foundKey = k;
+                            break;
+                        }
+                    }
+                    
+                    if (isRegistering) {
+                        if (foundKey) {
+                            alert("⚠️ هذا الاسم مستخدم بالفعل، اختر اسماً آخر أو سجل دخولك.");
+                            authBtnElem.innerText = "تسجيل وحفظ";
+                            authBtnElem.disabled = false;
+                            return;
+                        }
+                        const newRef = usersRef.push();
+                        await newRef.set({ username: usernameInput, password: hashedPassword });
+                        currentUser = usernameInput;
+                        myKey = newRef.key;
+                        
+                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
+                        finalizeLogin();
+                    } else {
+                        if (!foundKey) {
+                            alert("⚠️ اسم المستخدم غير موجود، يرجى إنشاء حساب جديد.");
+                            authBtnElem.innerText = "دخول";
+                            authBtnElem.disabled = false;
+                            return;
+                        }
+                        if (users[foundKey].password !== hashedPassword) {
+                            alert("⚠️ كلمة السر غير صحيحة!");
+                            authBtnElem.innerText = "دخول";
+                            authBtnElem.disabled = false;
+                            return;
+                        }
+                        currentUser = usernameInput;
+                        myKey = foundKey;
+                        
+                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
+                        finalizeLogin();
+                    }
+                }, (error) => {
+                    alert("⚠️ فشل الاتصال بقاعدة البيانات، تأكد من الإنترنت.");
+                    authBtnElem.innerText = "دخول";
+                    authBtnElem.disabled = false;
+                });
+                
+            } catch (err) {
+                console.error(err);
+                alert("⚠️ حدث خطأ غير متوقع.");
+                authBtnElem.innerText = "دخول";
+                authBtnElem.disabled = false;
             }
         };
+        
+        function finalizeLogin() {
+            loginContainer.style.display = 'none';
+            mainPage.style.display = 'flex';
+            
+            initMobileBackButton();
+            
+            db.ref('users').once('value', (snap) => {
+                const allUsers = snap.val() || {};
+                for (let [k, u] of Object.entries(allUsers)) {
+                    if (k !== myKey) {
+                        partnerUser = u.username;
+                        partnerKey = k;
+                        break;
+                    }
+                }
+                if (!partnerUser) {
+                    partnerUser = currentUser === "علي" ? "نور" : "الحبيب";
+                    partnerKey = "partner_fallback";
+                }
+                
+                setupPresenceAndTypingSystem();
+                setupLiveClockAndCounter();
+                setupMissYouSystem();
+                setupHistoryModal();
+                setupSharedFingerprint();
+                setupBatterySync();
+                setupLiveChat();
+                setupVoiceRecording();
+                setupChatInput();
+            });
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedSession = localStorage.getItem('saved_user');
+            if (savedSession) {
+                try {
+                    const sessionData = JSON.parse(savedSession);
+                    if (sessionData.currentUser && sessionData.myKey) {
+                        currentUser = sessionData.currentUser;
+                        myKey = sessionData.myKey;
+                        finalizeLogin();
+                    }
+                } catch(e) {
+                    localStorage.removeItem('saved_user');
+                }
+            }
+        });
+        
+        window.handleLogout = function() { 
+            localStorage.removeItem('saved_user');
+            location.reload(); 
+        };
+        window.unpinMessage = function() { db.ref('pinned_message').remove(); };
     </script>
 </body>
 </html>
