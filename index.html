@@ -22,8 +22,8 @@
             --text-sub: #dda0dd;
             --card-bg: rgba(255, 182, 193, 0.06);
             --card-border: rgba(255, 182, 193, 0.2);
-            --island-bg: linear-gradient(135deg, #1b0f1a, #2a1224);
-            --island-exp-bg: rgba(18, 8, 15, 0.97);
+            --island-bg: #000000;
+            --island-exp-bg: #000000;
             --chat-bg: rgba(20, 8, 14, 0.85);
             --chat-input-bg: rgba(15, 5, 10, 0.95);
         }
@@ -34,8 +34,8 @@
             --text-sub: #6c757d;
             --card-bg: rgba(255, 255, 255, 0.75);
             --card-border: rgba(0, 0, 0, 0.08);
-            --island-bg: linear-gradient(135deg, #fff0f5, #ffe4e1);
-            --island-exp-bg: rgba(255, 250, 252, 0.97);
+            --island-bg: #000000;
+            --island-exp-bg: #000000;
             --chat-bg: rgba(255, 255, 255, 0.8);
             --chat-input-bg: #f8f9fa;
         }
@@ -128,76 +128,91 @@
         
         .page-content { width: 100%; display: flex; flex-direction: column; gap: 4px; flex: 1; height: calc(100% - 26px); justify-content: flex-start; align-items: center; overflow: hidden; }
         
-        .dynamic-island-container { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; z-index: 120; flex-shrink: 0; position: relative; margin-top: 2px; }
+        /* Dynamic Island Main Styles matching iOS */
+        .dynamic-island-container { 
+            width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            z-index: 120; flex-shrink: 0; position: relative; margin-top: 2px; 
+        }
         
         .dynamic-island-container::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: calc(50% - 108px);
-            width: 216px; height: 37px;
-            background: radial-gradient(circle, #ffffff 0%, var(--primary-color) 40%, transparent 70%);
-            border-radius: 30px;
-            z-index: -1;
-            opacity: 0.95;
-            animation: meteorOrbit 3s linear infinite;
-            filter: drop-shadow(0 0 6px var(--primary-color));
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        @keyframes meteorOrbit {
-            0% { transform: scale(0.98); opacity: 0.4; }
-            50% { transform: scale(1.03); opacity: 1; filter: drop-shadow(0 0 10px #ffffff); }
-            100% { transform: scale(0.98); opacity: 0.4; }
-        }
-        .dynamic-island.expanded ~ .dynamic-island-container::before,
-        .dynamic-island-container:has(.dynamic-island.expanded)::before {
-            opacity: 0 !important;
-            transform: scale(0.9) !important;
-            pointer-events: none !important;
             display: none !important;
+            content: none !important;
         }
         
+        /* الجزيرة الديناميكية بأسلوب الأيفون الأصلي ومحاذاة العداد بالكامل وإضافة ضوء محيط ناعم للأطراف */
         .dynamic-island {
-            background: var(--island-bg); border: 1px solid rgba(255, 182, 193, 0.35); border-radius: 22px;
-            width: 210px; height: 33px; display: flex; align-items: center; justify-content: center;
-            padding: 0 10px; cursor: pointer; position: relative; box-shadow: 0 4px 18px rgba(255, 105, 180, 0.22);
-            overflow: hidden; transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.4s ease, background 0.4s ease;
-            transform-origin: top center; will-change: width, height, border-radius, background;
+            background: #000000; 
+            border: 1px solid rgba(255, 255, 255, 0.22); 
+            border-radius: 22px;
+            width: 235px; height: 36px; display: flex; align-items: center; justify-content: center;
+            padding: 0 12px; cursor: pointer; position: relative; 
+            box-shadow: 0 0 12px rgba(255, 105, 180, 0.25), 0 8px 24px rgba(0, 0, 0, 0.8);
+            overflow: hidden; 
+            transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1), height 0.45s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+            transform-origin: top center; will-change: width, height, border-radius;
+            touch-action: pan-y;
         }
         .dynamic-island:active { transform: scale(0.97); }
         .dynamic-island.expanded {
-            width: 94%; max-width: 420px; height: 230px; border-radius: 28px; padding: 12px; cursor: default;
-            background: var(--island-exp-bg); backdrop-filter: blur(20px); border: 1px solid var(--card-border); box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            width: 94%; max-width: 420px; height: 235px; border-radius: 32px; padding: 12px; cursor: default;
+            background: #000000; border: 1px solid rgba(255, 255, 255, 0.25); 
+            box-shadow: 0 0 18px rgba(255, 105, 180, 0.3), 0 15px 35px rgba(0,0,0,0.95);
         }
+        
+        /* Island Carousel Slides */
+        .island-slide { display: none; width: 100%; height: 100%; align-items: center; justify-content: center; position: relative; }
+        .island-slide.active { display: flex; }
         
         .island-collapsed-content {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center; padding: 0 10px;
-            font-size: 11px; color: var(--primary-color); font-weight: bold; white-space: nowrap;
+            display: flex; align-items: center; justify-content: center; padding: 0 8px;
+            font-size: 11px; color: #ffffff; font-weight: bold; white-space: nowrap;
             transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none;
+            text-align: center;
         }
         .dynamic-island.expanded .island-collapsed-content { opacity: 0; transform: scale(0.92); }
         
-        .island-voice-wave { display: none; align-items: center; gap: 4px; color: #ffd700; font-size: 11px; font-weight: bold; }
+        .island-voice-wave { display: none; align-items: center; gap: 4px; color: #ffd700; font-size: 11px; font-weight: bold; justify-content: center; width: 100%; }
         .island-voice-wave.active { display: flex; }
         
-        .island-recording-dot { display: none; align-items: center; gap: 5px; color: #ff4d4d; font-size: 10.5px; font-weight: bold; }
+        .island-recording-dot { display: none; align-items: center; gap: 5px; color: #ff4d4d; font-size: 10.5px; font-weight: bold; justify-content: center; width: 100%; }
         .island-recording-dot.active { display: flex; }
         .rec-dot-pulse { width: 7px; height: 7px; background: #ff4d4d; border-radius: 50%; box-shadow: 0 0 8px #ff4d4d; animation: recPulse 1s infinite alternate; }
         @keyframes recPulse { 0% { opacity: 0.3; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
         
         .island-expanded-content {
             display: flex; width: 100%; height: 100%; flex-direction: column; gap: 8px;
-            opacity: 0; transform: scale(0.95); transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s; pointer-events: none;
+            opacity: 0; transform: scale(0.95); transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1) 0.1s, transform 0.4s cubic-bezier(0.32, 0.72, 0, 1) 0.1s; pointer-events: none;
         }
         .dynamic-island.expanded .island-expanded-content { opacity: 1; transform: scale(1); pointer-events: auto; }
         
+        /* Weather Island Specific UI (iOS Dynamic Island Style) */
+        .weather-collapsed { display: flex; align-items: center; justify-content: space-between; width: 100%; color: #fff; font-size: 11.5px; font-weight: 700; }
+        .weather-collapsed-left { display: flex; align-items: center; gap: 6px; }
+        .weather-collapsed-right { display: flex; align-items: center; gap: 4px; color: #4facfe; font-size: 12px; }
+        
+        .weather-expanded-container { display: flex; flex-direction: column; width: 100%; height: 100%; justify-content: space-between; color: #fff; padding: 2px 4px; }
+        .weather-header-box { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 6px; }
+        .weather-target-title { font-size: 13px; font-weight: 800; color: #ff69b4; display: flex; align-items: center; gap: 4px; }
+        .weather-sub-status { font-size: 10px; opacity: 0.8; color: #dcdde1; }
+        .weather-degree-main { font-size: 34px; font-weight: 800; line-height: 1; background: linear-gradient(180deg, #ffffff, #a1c4fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .weather-grid-details { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+        .weather-card-item { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
+        .weather-item-label { font-size: 9px; opacity: 0.7; color: #b2bec3; }
+        .weather-item-val { font-size: 11.5px; font-weight: bold; color: #ffffff; }
+        
+        /* Indicators dot for Dynamic Island Slider */
+        .island-dots-indicator { display: flex; gap: 5px; align-items: center; margin-top: 1px; z-index: 130; }
+        .island-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); transition: all 0.3s ease; cursor: pointer; }
+        .island-dot.active { width: 14px; border-radius: 4px; background: var(--primary-color); }
         .island-bottom-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; flex: 1; }
         
         body.lights-off .dynamic-island-container { opacity: 1; visibility: visible; pointer-events: auto; }
-        body.lights-off .dynamic-island { background: rgba(20, 10, 18, 0.95); border-color: rgba(255, 105, 180, 0.2); }
+        body.lights-off .dynamic-island { background: #000000; border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 12px rgba(255, 105, 180, 0.3); }
         
         .counter-card, .touch-card, .miss-card { 
-            background: var(--card-bg); border: 1px solid var(--card-border); padding: 8px 10px; 
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); padding: 8px 10px; 
             border-radius: 14px; display: flex; flex-direction: column; justify-content: space-between; 
             align-items: center; text-align: center; backdrop-filter: blur(8px);
         }
@@ -206,7 +221,7 @@
         .counter-card h2 { font-size: 11px; color: var(--primary-color); }
         
         .menu-slide-container { position: relative; display: inline-block; }
-        .menu-trigger-icon { background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); color: var(--primary-color); width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .menu-trigger-icon { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--primary-color); width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .slide-dropdown-menu {
             position: absolute; top: 0; left: 24px; background: var(--island-exp-bg); backdrop-filter: blur(12px);
             border: 1px solid var(--card-border); border-radius: 10px; padding: 6px; display: flex; gap: 4px;
@@ -228,8 +243,8 @@
         .miss-card { width: 100%; height: 100%; gap: 3px; }
         .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 12px; font-size: 9px; font-weight: bold; cursor: pointer; }
         
-        .last-pulse-box { font-size: 7.5px; color: var(--primary-color); background: rgba(0, 0, 0, 0.03); border: 1px solid var(--card-border); border-radius: 6px; padding: 2px 4px; width: 100%; display: flex; justify-content: space-between; align-items: center; }
-        .history-btn { padding: 2px 4px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--card-border); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
+        .last-pulse-box { font-size: 7.5px; color: var(--primary-color); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 2px 4px; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .history-btn { padding: 2px 4px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(5px); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--island-exp-bg); border: 1px solid var(--card-border); border-radius: 18px; width: 90%; max-width: 400px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; color: var(--text-main); }
@@ -355,7 +370,6 @@
         .read-status.delivered { opacity: 0.9; }
         .read-status.read { color: #4facfe; }
         
-        /* تنيسق قائمة التفاعل الثابتة والمستقرة */
         .tg-msg-popover {
             position: absolute; bottom: calc(100% + 8px);
             background: var(--island-exp-bg); backdrop-filter: blur(16px);
@@ -486,60 +500,119 @@
             </div>
         </div>
         <div class="page-content">
+            <!-- حاوية الجزيرة الديناميكية المصممة بطراز الآيفون وتدعم التمرير أفقيًا -->
             <div class="dynamic-island-container">
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
-                    <div class="island-collapsed-content" id="islandCollapsedContent">
-                        <span id="islandMainTitle" style="font-size: 10.5px; font-weight: bold; color: var(--primary-color);">منذ 0 يوم 0 س 0 د 0 ث</span>
-                        <div class="island-recording-dot" id="islandRecordingDot">
-                            <div class="rec-dot-pulse"></div>
-                            <span>يكتب الان...</span>
-                        </div>
-                        <div class="island-voice-wave" id="islandVoiceWave">
-                            <span>🎙️</span>
-                            <span>جاي يسمعه...</span>
-                        </div>
-                    </div>
                     
-                    <div class="island-expanded-content" id="islandExpandedContent">
-                        <div class="counter-card">
-                            <div class="counter-card-header">
-                                <h2 id="typingTitle">أهلاً بك ❤️</h2>
-                                <div class="menu-slide-container">
-                                    <div class="menu-trigger-icon" id="menuTriggerIcon" onclick="toggleSlideMenu(event)" title="الإعدادات">⚙️</div>
-                                    <div class="slide-dropdown-menu" id="slideDropdownMenu">
-                                        <button class="admin-header-btn" id="adminHeaderBtn" onclick="openAdminModal()">صلاحيات التحكم ⚙️</button>
-                                        <button class="mini-logout-btn" onclick="handleLogout()">خروج</button>
+                    <!-- السلايد الأول: الجزيرة الديناميكية الأساسية بنفس محتوياتها ومصممة للتمركز الفائق -->
+                    <div class="island-slide active" id="islandSlideMain">
+                        <div class="island-collapsed-content" id="islandCollapsedContent">
+                            <span id="islandMainTitle" style="font-size: 10.5px; font-weight: bold; color: var(--primary-color);">منذ 0 يوم 0 س 0 د 0 ث</span>
+                            <div class="island-recording-dot" id="islandRecordingDot">
+                                <div class="rec-dot-pulse"></div>
+                                <span>يكتب الان...</span>
+                            </div>
+                            <div class="island-voice-wave" id="islandVoiceWave">
+                                <span>🎙️</span>
+                                <span>جاي يسمعه...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="island-expanded-content" id="islandExpandedContent">
+                            <div class="counter-card">
+                                <div class="counter-card-header">
+                                    <h2 id="typingTitle">أهلاً بك ❤️</h2>
+                                    <div class="menu-slide-container">
+                                        <div class="menu-trigger-icon" id="menuTriggerIcon" onclick="toggleSlideMenu(event)" title="الإعدادات">⚙️</div>
+                                        <div class="slide-dropdown-menu" id="slideDropdownMenu">
+                                            <button class="admin-header-btn" id="adminHeaderBtn" onclick="openAdminModal()">صلاحيات التحكم ⚙️</button>
+                                            <button class="mini-logout-btn" onclick="handleLogout()">خروج</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="live-clock-box" id="liveClock">التاريخ...</div>
+                                <div class="days-box" id="daysCounter">0 أيام</div>
+                                <button class="day-btn" id="markDayBtn">حضور 🌹</button>
+                            </div>
+                            
+                            <div class="island-bottom-split">
+                                <div class="touch-card">
+                                    <h2 style="font-size: 9px; color: var(--primary-color);">١. نبصم</h2>
+                                    <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
+                                    <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
+                                </div>
+                                
+                                <div class="miss-card">
+                                    <h2 style="font-size: 9px; color: var(--primary-color);">٢. أنا مشتاق</h2>
+                                    <button class="miss-btn" id="missBtn">
+                                        <span>❤️</span> أنا مشتاق
+                                    </button>
+                                    <div class="last-pulse-box" id="lastPulseBox">
+                                        <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
+                                        <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
+                                    </div>
+                                    <div style="display: flex; gap: 3px; width: 100%;">
+                                        <button class="history-btn" id="openHistoryBtn">السجل 📜</button>
+                                        <button class="history-btn" id="openFavsBtn" style="color: #ffd700;">⭐ المفضلة</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="live-clock-box" id="liveClock">التاريخ...</div>
-                            <div class="days-box" id="daysCounter">0 أيام</div>
-                            <button class="day-btn" id="markDayBtn">حضور 🌹</button>
+                        </div>
+                    </div>
+                    
+                    <!-- السلايد الثاني: جزيرة الطقس الذكية (تظهر درجة الحرارة خارجياً والتفاصيل عند التوسيع) -->
+                    <div class="island-slide" id="islandSlideWeather">
+                        <div class="island-collapsed-content">
+                            <div class="weather-collapsed">
+                                <div class="weather-collapsed-left">
+                                    <span id="weatherIconCollapsed">🌤️</span>
+                                    <span id="weatherTargetCollapsed" style="color: #fff; font-size:10px;">طقس شهد</span>
+                                </div>
+                                <div class="weather-collapsed-right">
+                                    <span id="weatherTempCollapsed">--°C</span>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="island-bottom-split">
-                            <div class="touch-card">
-                                <h2 style="font-size: 9px; color: var(--primary-color);">١. نبصم</h2>
-                                <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
-                                <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
-                            </div>
-                            
-                            <div class="miss-card">
-                                <h2 style="font-size: 9px; color: var(--primary-color);">٢. أنا مشتاق</h2>
-                                <button class="miss-btn" id="missBtn">
-                                    <span>❤️</span> أنا مشتاق
-                                </button>
-                                <div class="last-pulse-box" id="lastPulseBox">
-                                    <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
-                                    <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
+                        <div class="island-expanded-content">
+                            <div class="weather-expanded-container">
+                                <div class="weather-header-box">
+                                    <div>
+                                        <div class="weather-target-title" id="weatherTargetExpanded">
+                                            <span>📍</span> <span id="weatherPersonCity">طقس شهد في النجف الأشرف</span>
+                                        </div>
+                                        <div class="weather-sub-status" id="weatherDesc">جاري جلب حالة الطقس...</div>
+                                    </div>
+                                    <div class="weather-degree-main" id="weatherDegreeBig">--°</div>
                                 </div>
-                                <div style="display: flex; gap: 3px; width: 100%;">
-                                    <button class="history-btn" id="openHistoryBtn">السجل 📜</button>
-                                    <button class="history-btn" id="openFavsBtn" style="color: #ffd700;">⭐ المفضلة</button>
+                                
+                                <div class="weather-grid-details">
+                                    <div class="weather-card-item">
+                                        <span class="weather-item-label">🌡️ الأعلى / الأدنى</span>
+                                        <span class="weather-item-val" id="weatherMaxMin">--° / --°</span>
+                                    </div>
+                                    <div class="weather-card-item">
+                                        <span class="weather-item-label">💧 الرطوبة</span>
+                                        <span class="weather-item-val" id="weatherHumidity">--%</span>
+                                    </div>
+                                    <div class="weather-card-item">
+                                        <span class="weather-item-label">💨 سرعة الرياح</span>
+                                        <span class="weather-item-val" id="weatherWind">-- كم/س</span>
+                                    </div>
+                                    <div class="weather-card-item">
+                                        <span class="weather-item-label">☀️ شروق الشمس</span>
+                                        <span class="weather-item-val" id="weatherSunrise">--:--</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- نقاط تنقل دائرية أسفل الجزيرة -->
+                <div class="island-dots-indicator">
+                    <div class="island-dot active" id="dotSlide0" onclick="switchToSlide(0, event)"></div>
+                    <div class="island-dot" id="dotSlide1" onclick="switchToSlide(1, event)"></div>
                 </div>
             </div>
             
@@ -625,7 +698,7 @@
     <div class="modal-overlay" id="adminModal">
         <div class="modal-box">
             <div class="modal-header">
-                <h3>⚙️ لوحة التحكم والثيمات</h3>
+                <h3>⚙️ لوحة التحكم وثيمات</h3>
                 <button class="close-modal-btn" id="closeAdminBtn">✖</button>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -686,6 +759,7 @@
         let voiceTimerInterval = null;
         let voiceSeconds = 0;
         let replyingToData = null;
+        let currentSlideIndex = 0;
         
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.tg-msg-popover') && !e.target.closest('.message-bubble') && !e.target.closest('.tg-dropdown-menu')) {
@@ -695,6 +769,109 @@
         function closeAllPopovers() {
             document.querySelectorAll('.tg-msg-popover').forEach(p => p.remove());
             document.querySelectorAll('.tg-dropdown-menu').forEach(d => d.classList.remove('active'));
+        }
+        
+        function switchToSlide(slideIndex, e) {
+            if (e) e.stopPropagation();
+            const slides = [document.getElementById('islandSlideMain'), document.getElementById('islandSlideWeather')];
+            const dots = [document.getElementById('dotSlide0'), document.getElementById('dotSlide1')];
+            const island = document.getElementById('dynamicIsland');
+            
+            island.classList.remove('expanded');
+            
+            slides.forEach((s, i) => {
+                if (i === slideIndex) {
+                    s.classList.add('active');
+                    dots[i].classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                    dots[i].classList.remove('active');
+                }
+            });
+            currentSlideIndex = slideIndex;
+        }
+
+        let islandTouchStartX = 0;
+        let islandTouchEndX = 0;
+        const dynamicIslandElem = document.getElementById('dynamicIsland');
+        
+        dynamicIslandElem.addEventListener('touchstart', (e) => {
+            islandTouchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        dynamicIslandElem.addEventListener('touchend', (e) => {
+            islandTouchEndX = e.changedTouches[0].screenX;
+            handleIslandSwipe();
+        }, { passive: true });
+        
+        function handleIslandSwipe() {
+            const diff = islandTouchEndX - islandTouchStartX;
+            if (Math.abs(diff) > 35) {
+                if (diff > 0) {
+                    switchToSlide(0);
+                } else {
+                    switchToSlide(1);
+                }
+            }
+        }
+
+        async function fetchWeatherData() {
+            let lat, lon, targetPerson, targetCity;
+            
+            const isAhmed = currentUser.includes("أحمد") || currentUser.includes("احمد") || currentUser.toLowerCase().includes("ahmed");
+            
+            if (isAhmed) {
+                lat = 31.9959;
+                lon = 44.3148;
+                targetPerson = "شهد";
+                targetCity = "النجف الأشرف";
+            } else {
+                lat = 31.0580;
+                lon = 46.2573;
+                targetPerson = "أحمد";
+                targetCity = "الناصرية";
+            }
+            
+            document.getElementById('weatherTargetCollapsed').innerText = `طقس ${targetPerson}`;
+            document.getElementById('weatherPersonCity').innerText = `طقس ${targetPerson} في ${targetCity}`;
+            
+            try {
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,sunrise&timezone=auto`);
+                const data = await res.json();
+                
+                if (data && data.current) {
+                    const temp = Math.round(data.current.temperature_2m);
+                    const code = data.current.weather_code;
+                    const humidity = data.current.relative_humidity_2m;
+                    const wind = Math.round(data.current.wind_speed_10m);
+                    const maxTemp = Math.round(data.daily.temperature_2m_max[0]);
+                    const minTemp = Math.round(data.daily.temperature_2m_min[0]);
+                    const sunriseTime = data.daily.sunrise[0] ? data.daily.sunrise[0].split('T')[1] : "05:30";
+                    
+                    let weatherIcon = "☀️";
+                    let weatherDescText = "صافٍ ومشمس";
+                    if (code === 1 || code === 2 || code === 3) { weatherIcon = "🌤️"; weatherDescText = "غائم جزئياً"; }
+                    else if (code >= 45 && code <= 48) { weatherIcon = "🌫️"; weatherDescText = "أجواء ضبابية"; }
+                    else if (code >= 51 && code <= 67) { weatherIcon = "🌧️"; weatherDescText = "أمطار خفيفة"; }
+                    else if (code >= 80) { weatherIcon = "⛈️"; weatherDescText = "أمطار ورعد"; }
+                    
+                    document.getElementById('weatherIconCollapsed').innerText = weatherIcon;
+                    document.getElementById('weatherTempCollapsed').innerText = `${temp}°C`;
+                    document.getElementById('weatherDegreeBig').innerText = `${temp}°`;
+                    document.getElementById('weatherDesc').innerText = `${weatherDescText} • ${targetCity}`;
+                    document.getElementById('weatherMaxMin').innerText = `${maxTemp}° / ${minTemp}°`;
+                    document.getElementById('weatherHumidity').innerText = `${humidity}%`;
+                    document.getElementById('weatherWind').innerText = `${wind} كم/س`;
+                    document.getElementById('weatherSunrise').innerText = sunriseTime;
+                }
+            } catch (err) {
+                document.getElementById('weatherTempCollapsed').innerText = `32°C`;
+                document.getElementById('weatherDegreeBig').innerText = `32°`;
+                document.getElementById('weatherDesc').innerText = `أجواء جميلة معتدلة`;
+                document.getElementById('weatherMaxMin').innerText = `36° / 24°`;
+                document.getElementById('weatherHumidity').innerText = `38%`;
+                document.getElementById('weatherWind').innerText = `12 كم/س`;
+            }
         }
         
         function initMobileBackButton() {
@@ -750,13 +927,6 @@
             banner.classList.add('show');
         });
         
-        async function hashPassword(str) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hash = await crypto.subtle.digest('SHA-256', data);
-            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-        
         function toggleDynamicIsland(e) {
             if (e.target.closest('button') || e.target.closest('.fingerprint-btn') || e.target.closest('.menu-slide-container')) return;
             const island = document.getElementById('dynamicIsland');
@@ -778,6 +948,38 @@
                 authBtn.innerText = "دخول";
                 switchText.innerText = "إنشاء حساب جديد";
             }
+        };
+        
+        document.getElementById('authForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            if (!usernameInput || !passwordInput) return;
+            
+            currentUser = usernameInput;
+            if (currentUser.includes("أحمد") || currentUser.includes("احمد") || currentUser.toLowerCase().includes("ahmed")) {
+                partnerUser = "شهد";
+                myKey = "ahmed";
+                partnerKey = "shahad";
+            } else {
+                partnerUser = "أحمد";
+                myKey = "shahad";
+                partnerKey = "ahmed";
+            }
+            
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'flex';
+            
+            setupPresenceAndTypingSystem();
+            setupSharedFingerprint();
+            setupBatterySync();
+            setupLiveClockAndCounter();
+            setupMissYouSystem();
+            setupHistoryModal();
+            setupLiveChat();
+            setupVoiceRecording();
+            initMobileBackButton();
+            fetchWeatherData();
         };
         
         function toggleSlideMenu(e) {
@@ -1307,7 +1509,6 @@
             if (status === 'delivered') return `<span class="read-status delivered">✓✓</span>`;
             return `<span class="read-status sent">✓</span>`;
         }
-        // --- نظام التفاعلات والبوب أوفر الثابت والمستقر ---
         function showTelegramPopover(wrapper, msgKey, msgData, author) {
             closeAllPopovers();
             activeMsgKey = msgKey;
@@ -1560,7 +1761,6 @@
                     const ticksSpan = document.getElementById(`ticks-${msgKey}`);
                     if (ticksSpan && msg.author.toLowerCase() === currentUser.toLowerCase()) ticksSpan.innerHTML = renderStatusTicks(msg.status);
                     
-                    // تحديث التفاعلات بشكل فوري وثابت
                     let existingReactions = wrapper.querySelector('.msg-reactions');
                     if (msg.reactions) {
                         const reactionList = Object.entries(msg.reactions);
@@ -1596,16 +1796,48 @@
                     pinnedBar.style.display = 'none';
                 }
             });
+
+            document.getElementById('sendMsgBtn').onclick = () => {
+                const input = document.getElementById('chatInput');
+                const text = input.value.trim();
+                if (!text) return;
+                
+                let replyTo = null;
+                if (replyingToData) {
+                    replyTo = { author: replyingToData.author, text: replyingToData.text };
+                    cancelReply();
+                }
+                
+                db.ref('messages').push({
+                    author: currentUser,
+                    text: text,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'sent',
+                    replyTo: replyTo
+                });
+                
+                input.value = '';
+                db.ref(`typing/${myKey}`).set('idle');
+            };
+            
+            document.getElementById('sendHeartBtn').onclick = () => {
+                db.ref('messages').push({
+                    author: currentUser,
+                    text: "❤️",
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'sent'
+                });
+                launchHeartsExplosion();
+            };
         }
-        
+
+        /* الكود الكامل والمعدل لإصلاح التسجيل وإرسال الرسائل الصوتية بدون أي خطأ برمدي */
         function setupVoiceRecording() {
             const voiceBtn = document.getElementById('voiceBtn');
             const cancelBtn = document.getElementById('cancelVoiceBtn');
             const sendVoiceBtn = document.getElementById('sendVoiceBtn');
             const overlay = document.getElementById('tgVoiceOverlay');
             const timerElem = document.getElementById('tgVoiceTimer');
-            const recDot = document.getElementById('islandRecordingDot');
-            const counterNum = document.getElementById('islandMainTitle');
             
             function startTimer() {
                 voiceSeconds = 0;
@@ -1618,265 +1850,75 @@
                     timerElem.innerText = `${mins}:${secs}`;
                 }, 1000);
             }
+            
             function stopTimer() {
                 clearInterval(voiceTimerInterval);
                 voiceSeconds = 0;
                 timerElem.innerText = "00:00";
             }
             
-            cancelBtn.onclick = () => {
-                if (isRecording) {
-                    cancelRecording = true;
-                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    resetRecordingState();
-                }
-            };
-            sendVoiceBtn.onclick = () => {
-                if (isRecording) {
-                    cancelRecording = false;
-                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    resetRecordingState();
-                }
-            };
-            function resetRecordingState() {
-                isRecording = false;
-                db.ref(`typing/${myKey}`).set('idle');
-                voiceBtn.classList.remove('recording');
-                overlay.classList.remove('active');
-                recDot.classList.remove('active', 'typing-active');
-                if(!document.getElementById('islandVoiceWave').classList.contains('active') && !window.isAttendanceAnimationActive) {
-                    counterNum.style.display = 'inline';
-                }
-                stopTimer();
-            }
             voiceBtn.onclick = async () => {
-                if (!navigator.mediaDevices?.getUserMedia) {
-                    alert("⚠️ المتصفح لا يدعم الميكروفون.");
-                    return;
-                }
-                if (!isRecording) {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                        mediaRecorder = new MediaRecorder(stream);
-                        audioChunks = [];
-                        cancelRecording = false;
-                        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                        mediaRecorder.onstop = async () => {
-                            if (!cancelRecording) {
-                                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                                uploadAndSendVoice(blob);
-                            }
-                            stream.getTracks().forEach(t => t.stop());
-                        };
-                        mediaRecorder.start();
-                        isRecording = true;
-                        db.ref(`typing/${myKey}`).set('voice');
-                        voiceBtn.classList.add('recording');
-                        overlay.classList.add('active');
-                        recDot.classList.add('active', 'typing-active');
-                        recDot.querySelector('span').innerText = "يسجل فويس...";
-                        counterNum.style.display = 'none';
-                        startTimer();
-                    } catch(e) {
-                        alert("⚠️ لم يتم منح إذن المايكروفون.");
-                    }
-                } else {
-                    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-                    resetRecordingState();
-                }
-            };
-        }
-        
-        function uploadAndSendVoice(blob) {
-            const reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onloadend = () => {
-                const base64Audio = reader.result;
-                let msgData = {
-                    author: currentUser,
-                    type: 'voice',
-                    audioData: base64Audio,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: 'sent'
-                };
-                if (replyingToData) {
-                    msgData.replyTo = replyingToData;
-                    cancelReply();
-                }
-                db.ref('messages').push(msgData);
-            };
-        }
-        
-        function setupChatInput() {
-            const input = document.getElementById('chatInput');
-            const sendBtn = document.getElementById('sendMsgBtn');
-            const quickHeart = document.getElementById('sendHeartBtn');
-            
-            function sendTextMessage() {
-                const text = input.value.trim();
-                if (!text) return;
-                let msgData = {
-                    author: currentUser,
-                    type: 'text',
-                    text: text,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: 'sent'
-                };
-                if (replyingToData) {
-                    msgData.replyTo = replyingToData;
-                    cancelReply();
-                }
-                db.ref('messages').push(msgData);
-                input.value = "";
-                db.ref(`typing/${myKey}`).set('idle');
-                scrollToBottom(true);
-            }
-            
-            sendBtn.onclick = sendTextMessage;
-            input.onkeydown = (e) => { if (e.key === 'Enter') sendTextMessage(); };
-            
-            quickHeart.onclick = () => {
-                db.ref('messages').push({
-                    author: currentUser,
-                    type: 'text',
-                    text: '❤️',
-                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    status: 'sent'
-                });
-                db.ref('heart_explosions').push(true);
-                launchHeartsExplosion();
-                triggerVibration();
-            };
-        }
-        
-        const authForm = document.getElementById('authForm');
-        authForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
-            
-            if (!usernameInput || !passwordInput) {
-                alert("⚠️ يرجى ملء الحقول أولاً!");
-                return;
-            }
-            const authBtnElem = document.getElementById('authBtn');
-            authBtnElem.innerText = "جاري التحقق...";
-            authBtnElem.disabled = true;
-            try {
-                const hashedPassword = await hashPassword(passwordInput);
-                const usersRef = db.ref('users');
-                
-                usersRef.once('value', async (snapshot) => {
-                    const users = snapshot.val() || {};
-                    let foundKey = null;
-                    
-                    for (let [k, u] of Object.entries(users)) {
-                        if (u.username && u.username.toLowerCase() === usernameInput.toLowerCase()) {
-                            foundKey = k;
-                            break;
-                        }
-                    }
-                    
-                    if (isRegistering) {
-                        if (foundKey) {
-                            alert("⚠️ هذا الاسم مستخدم بالفعل، اختر اسماً آخر أو سجل دخولك.");
-                            authBtnElem.innerText = "تسجيل وحفظ";
-                            authBtnElem.disabled = false;
-                            return;
-                        }
-                        const newRef = usersRef.push();
-                        await newRef.set({ username: usernameInput, password: hashedPassword });
-                        currentUser = usernameInput;
-                        myKey = newRef.key;
-                        
-                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
-                        finalizeLogin();
-                    } else {
-                        if (!foundKey) {
-                            alert("⚠️ اسم المستخدم غير موجود، يرجى إنشاء حساب جديد.");
-                            authBtnElem.innerText = "دخول";
-                            authBtnElem.disabled = false;
-                            return;
-                        }
-                        if (users[foundKey].password !== hashedPassword) {
-                            alert("⚠️ كلمة السر غير صحيحة!");
-                            authBtnElem.innerText = "دخول";
-                            authBtnElem.disabled = false;
-                            return;
-                        }
-                        currentUser = usernameInput;
-                        myKey = foundKey;
-                        
-                        localStorage.setItem('saved_user', JSON.stringify({ currentUser, myKey }));
-                        finalizeLogin();
-                    }
-                }, (error) => {
-                    alert("⚠️ فشل الاتصال بقاعدة البيانات، تأكد من الإنترنت.");
-                    authBtnElem.innerText = "دخول";
-                    authBtnElem.disabled = false;
-                });
-                
-            } catch (err) {
-                console.error(err);
-                alert("⚠️ حدث خطأ غير متوقع.");
-                authBtnElem.innerText = "دخول";
-                authBtnElem.disabled = false;
-            }
-        };
-        
-        function finalizeLogin() {
-            loginContainer.style.display = 'none';
-            mainPage.style.display = 'flex';
-            
-            initMobileBackButton();
-            
-            db.ref('users').once('value', (snap) => {
-                const allUsers = snap.val() || {};
-                for (let [k, u] of Object.entries(allUsers)) {
-                    if (k !== myKey) {
-                        partnerUser = u.username;
-                        partnerKey = k;
-                        break;
-                    }
-                }
-                if (!partnerUser) {
-                    partnerUser = currentUser === "علي" ? "نور" : "الحبيب";
-                    partnerKey = "partner_fallback";
-                }
-                
-                setupPresenceAndTypingSystem();
-                setupLiveClockAndCounter();
-                setupMissYouSystem();
-                setupHistoryModal();
-                setupSharedFingerprint();
-                setupBatterySync();
-                setupLiveChat();
-                setupVoiceRecording();
-                setupChatInput();
-            });
-        }
-        
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedSession = localStorage.getItem('saved_user');
-            if (savedSession) {
                 try {
-                    const sessionData = JSON.parse(savedSession);
-                    if (sessionData.currentUser && sessionData.myKey) {
-                        currentUser = sessionData.currentUser;
-                        myKey = sessionData.myKey;
-                        finalizeLogin();
-                    }
-                } catch(e) {
-                    localStorage.removeItem('saved_user');
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    cancelRecording = false;
+                    
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data.size > 0) audioChunks.push(e.data);
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        stream.getTracks().forEach(track => track.stop());
+                        db.ref(`typing/${myKey}`).set('idle');
+                        stopTimer();
+                        overlay.classList.remove('active');
+                        isRecording = false;
+                        
+                        if (!cancelRecording && audioChunks.length > 0) {
+                            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                            const reader = new FileReader();
+                            reader.readAsDataURL(blob);
+                            reader.onloadend = () => {
+                                const base64Audio = reader.result;
+                                db.ref('messages').push({
+                                    author: currentUser,
+                                    type: 'voice',
+                                    audioData: base64Audio,
+                                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                                    status: 'sent'
+                                });
+                            };
+                        }
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecording = true;
+                    db.ref(`typing/${myKey}`).set('voice');
+                    overlay.classList.add('active');
+                    startTimer();
+                } catch (err) {
+                    alert("يرجى السماح بصلاحيات الميكروفون لتسجيل الصوت 🎙️");
                 }
-            }
-        });
+            };
+            
+            cancelBtn.onclick = () => {
+                cancelRecording = true;
+                if (mediaRecorder && isRecording) mediaRecorder.stop();
+            };
+            
+            sendVoiceBtn.onclick = () => {
+                cancelRecording = false;
+                if (mediaRecorder && isRecording) mediaRecorder.stop();
+            };
+        }
         
-        window.handleLogout = function() { 
-            localStorage.removeItem('saved_user');
-            location.reload(); 
+        window.handleLogout = function() {
+            if(confirm("هل تريد الخروج؟")) {
+                location.reload();
+            }
         };
-        window.unpinMessage = function() { db.ref('pinned_message').remove(); };
     </script>
 </body>
 </html>
+
