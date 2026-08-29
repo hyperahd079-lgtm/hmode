@@ -128,7 +128,6 @@
         
         .page-content { width: 100%; display: flex; flex-direction: column; gap: 4px; flex: 1; height: calc(100% - 26px); justify-content: flex-start; align-items: center; overflow: hidden; }
         
-        /* Dynamic Island Main Styles matching iOS */
         .dynamic-island-container { 
             width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; 
             z-index: 120; flex-shrink: 0; position: relative; margin-top: 2px; 
@@ -139,16 +138,18 @@
             content: none !important;
         }
         
-        /* الجزيرة الديناميكية بأسلوب الأيفون الأصلي ومحاذاة العداد بالكامل وإضافة ضوء محيط ناعم للأطراف */
         .dynamic-island {
             background: #000000; 
             border: 1px solid rgba(255, 255, 255, 0.22); 
             border-radius: 22px;
             width: 235px; height: 36px; display: flex; align-items: center; justify-content: center;
             padding: 0 12px; cursor: pointer; position: relative; 
-            box-shadow: 0 0 12px rgba(255, 105, 180, 0.25), 0 8px 24px rgba(0, 0, 0, 0.8);
             overflow: hidden; 
-            transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1), height 0.45s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: translateZ(0);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+            transition: width 0.45s cubic-bezier(0.32, 0.72, 0, 1), height 0.45s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.4s ease, background 0.4s ease;
             transform-origin: top center; will-change: width, height, border-radius;
             touch-action: pan-y;
         }
@@ -156,10 +157,9 @@
         .dynamic-island.expanded {
             width: 94%; max-width: 420px; height: 235px; border-radius: 32px; padding: 12px; cursor: default;
             background: #000000; border: 1px solid rgba(255, 255, 255, 0.25); 
-            box-shadow: 0 0 18px rgba(255, 105, 180, 0.3), 0 15px 35px rgba(0,0,0,0.95);
+            box-shadow: 0 0 18px rgba(255, 255, 255, 0.15), 0 15px 35px rgba(0,0,0,0.95);
         }
         
-        /* Island Carousel Slides */
         .island-slide { display: none; width: 100%; height: 100%; align-items: center; justify-content: center; position: relative; }
         .island-slide.active { display: flex; }
         
@@ -172,12 +172,12 @@
         }
         .dynamic-island.expanded .island-collapsed-content { opacity: 0; transform: scale(0.92); }
         
-        .island-voice-wave { display: none; align-items: center; gap: 4px; color: #ffd700; font-size: 11px; font-weight: bold; justify-content: center; width: 100%; }
+        .island-voice-wave { display: none; align-items: center; gap: 4px; color: #ffffff; font-size: 11px; font-weight: bold; justify-content: center; width: 100%; }
         .island-voice-wave.active { display: flex; }
         
-        .island-recording-dot { display: none; align-items: center; gap: 5px; color: #ff4d4d; font-size: 10.5px; font-weight: bold; justify-content: center; width: 100%; }
+        .island-recording-dot { display: none; align-items: center; gap: 5px; color: #ffffff; font-size: 10.5px; font-weight: bold; justify-content: center; width: 100%; }
         .island-recording-dot.active { display: flex; }
-        .rec-dot-pulse { width: 7px; height: 7px; background: #ff4d4d; border-radius: 50%; box-shadow: 0 0 8px #ff4d4d; animation: recPulse 1s infinite alternate; }
+        .rec-dot-pulse { width: 7px; height: 7px; background: #ffffff; border-radius: 50%; box-shadow: 0 0 8px #ffffff; animation: recPulse 1s infinite alternate; }
         @keyframes recPulse { 0% { opacity: 0.3; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
         
         .island-expanded-content {
@@ -186,30 +186,28 @@
         }
         .dynamic-island.expanded .island-expanded-content { opacity: 1; transform: scale(1); pointer-events: auto; }
         
-        /* Weather Island Specific UI (iOS Dynamic Island Style) */
         .weather-collapsed { display: flex; align-items: center; justify-content: space-between; width: 100%; color: #fff; font-size: 11.5px; font-weight: 700; }
         .weather-collapsed-left { display: flex; align-items: center; gap: 6px; }
-        .weather-collapsed-right { display: flex; align-items: center; gap: 4px; color: #4facfe; font-size: 12px; }
+        .weather-collapsed-right { display: flex; align-items: center; gap: 4px; color: #ffffff; font-size: 12px; }
         
         .weather-expanded-container { display: flex; flex-direction: column; width: 100%; height: 100%; justify-content: space-between; color: #fff; padding: 2px 4px; }
         .weather-header-box { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 6px; }
-        .weather-target-title { font-size: 13px; font-weight: 800; color: #ff69b4; display: flex; align-items: center; gap: 4px; }
+        .weather-target-title { font-size: 13px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 4px; }
         .weather-sub-status { font-size: 10px; opacity: 0.8; color: #dcdde1; }
-        .weather-degree-main { font-size: 34px; font-weight: 800; line-height: 1; background: linear-gradient(180deg, #ffffff, #a1c4fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .weather-degree-main { font-size: 34px; font-weight: 800; line-height: 1; color: #ffffff; }
         
         .weather-grid-details { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
         .weather-card-item { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
         .weather-item-label { font-size: 9px; opacity: 0.7; color: #b2bec3; }
         .weather-item-val { font-size: 11.5px; font-weight: bold; color: #ffffff; }
         
-        /* Indicators dot for Dynamic Island Slider */
         .island-dots-indicator { display: flex; gap: 5px; align-items: center; margin-top: 1px; z-index: 130; }
         .island-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); transition: all 0.3s ease; cursor: pointer; }
-        .island-dot.active { width: 14px; border-radius: 4px; background: var(--primary-color); }
+        .island-dot.active { width: 14px; border-radius: 4px; background: #ffffff; }
         .island-bottom-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; flex: 1; }
         
         body.lights-off .dynamic-island-container { opacity: 1; visibility: visible; pointer-events: auto; }
-        body.lights-off .dynamic-island { background: #000000; border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 12px rgba(255, 105, 180, 0.3); }
+        body.lights-off .dynamic-island { background: #000000; border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 12px rgba(255, 255, 255, 0.2); }
         
         .counter-card, .touch-card, .miss-card { 
             background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); padding: 8px 10px; 
@@ -218,10 +216,10 @@
         }
         .counter-card { width: 100%; }
         .counter-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2px; }
-        .counter-card h2 { font-size: 11px; color: var(--primary-color); }
+        .counter-card h2 { font-size: 11px; color: #ffffff; }
         
         .menu-slide-container { position: relative; display: inline-block; }
-        .menu-trigger-icon { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--primary-color); width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .menu-trigger-icon { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); color: #ffffff; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .slide-dropdown-menu {
             position: absolute; top: 0; left: 24px; background: var(--island-exp-bg); backdrop-filter: blur(12px);
             border: 1px solid var(--card-border); border-radius: 10px; padding: 6px; display: flex; gap: 4px;
@@ -231,20 +229,20 @@
         .mini-logout-btn { background: rgba(255, 77, 77, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 77, 77, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 9px; cursor: pointer; }
         .admin-header-btn { background: linear-gradient(135deg, #f39c12, #d35400); color: #fff; border: none; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: bold; cursor: pointer; display: inline-block; }
         
-        .live-clock-box { font-size: 9px; color: var(--text-sub); margin-bottom: 2px; direction: ltr; }
-        .days-box { font-size: 13px; font-weight: bold; color: var(--primary-color); margin: 2px 0; }
+        .live-clock-box { font-size: 9px; color: #ffffff; margin-bottom: 2px; direction: ltr; opacity: 0.9; }
+        .days-box { font-size: 13px; font-weight: bold; color: #ffffff; margin: 2px 0; }
         .day-btn { padding: 3px 10px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; border: none; border-radius: 14px; font-size: 9px; font-weight: bold; cursor: pointer; box-shadow: 0 0 6px var(--glow-color); }
         
         .touch-card { width: 100%; height: 100%; }
-        .fingerprint-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 105, 180, 0.12); border: 2px dashed var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; margin: 4px 0; }
+        .fingerprint-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 255, 255, 0.12); border: 2px dashed #ffffff; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; margin: 4px 0; }
         .fingerprint-btn.synced { background: #2ecc71; border-color: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
-        .touch-status { font-size: 8px; color: var(--text-sub); }
+        .touch-status { font-size: 8px; color: #ffffff; opacity: 0.85; }
         
         .miss-card { width: 100%; height: 100%; gap: 3px; }
         .miss-btn { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 4px 6px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; border-radius: 12px; font-size: 9px; font-weight: bold; cursor: pointer; }
         
-        .last-pulse-box { font-size: 7.5px; color: var(--primary-color); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 2px 4px; width: 100%; display: flex; justify-content: space-between; align-items: center; }
-        .history-btn { padding: 2px 4px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; color: var(--primary-color); font-size: 8px; cursor: pointer; width: 100%; }
+        .last-pulse-box { font-size: 7.5px; color: #ffffff; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 2px 4px; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .history-btn { padding: 2px 4px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; color: #ffffff; font-size: 8px; cursor: pointer; width: 100%; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(5px); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--island-exp-bg); border: 1px solid var(--card-border); border-radius: 18px; width: 90%; max-width: 400px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; color: var(--text-main); }
@@ -500,14 +498,14 @@
             </div>
         </div>
         <div class="page-content">
-            <!-- حاوية الجزيرة الديناميكية المصممة بطراز الآيفون وتدعم التمرير أفقيًا -->
+            <!-- حاوية الجزيرة الديناميكية -->
             <div class="dynamic-island-container">
                 <div class="dynamic-island" id="dynamicIsland" onclick="toggleDynamicIsland(event)">
                     
-                    <!-- السلايد الأول: الجزيرة الديناميكية الأساسية بنفس محتوياتها ومصممة للتمركز الفائق -->
+                    <!-- السلايد الأول: الجزيرة الديناميكية الأساسية خط أبيض بدون أي أحمر -->
                     <div class="island-slide active" id="islandSlideMain">
                         <div class="island-collapsed-content" id="islandCollapsedContent">
-                            <span id="islandMainTitle" style="font-size: 10.5px; font-weight: bold; color: var(--primary-color);">منذ 0 يوم 0 س 0 د 0 ث</span>
+                            <span id="islandMainTitle" style="font-size: 10.5px; font-weight: bold; color: #ffffff;">منذ 0 يوم 0 س 0 د 0 ث</span>
                             <div class="island-recording-dot" id="islandRecordingDot">
                                 <div class="rec-dot-pulse"></div>
                                 <span>يكتب الان...</span>
@@ -537,18 +535,18 @@
                             
                             <div class="island-bottom-split">
                                 <div class="touch-card">
-                                    <h2 style="font-size: 9px; color: var(--primary-color);">١. نبصم</h2>
+                                    <h2 style="font-size: 9px; color: #ffffff;">١. نبصم</h2>
                                     <div class="fingerprint-btn" id="fingerprintBtn">🖐️</div>
                                     <span class="touch-status" id="touchStatus">اضغط باستمرار...</span>
                                 </div>
                                 
                                 <div class="miss-card">
-                                    <h2 style="font-size: 9px; color: var(--primary-color);">٢. أنا مشتاق</h2>
+                                    <h2 style="font-size: 9px; color: #ffffff;">٢. أنا مشتاق</h2>
                                     <button class="miss-btn" id="missBtn">
                                         <span>❤️</span> أنا مشتاق
                                     </button>
                                     <div class="last-pulse-box" id="lastPulseBox">
-                                        <span id="lastPulseSender" style="font-weight: bold; color: var(--primary-color);">--</span>
+                                        <span id="lastPulseSender" style="font-weight: bold; color: #ffffff;">--</span>
                                         <span id="lastPulseTime" style="opacity: 0.9; direction: ltr;">--:--</span>
                                     </div>
                                     <div style="display: flex; gap: 3px; width: 100%;">
@@ -560,7 +558,7 @@
                         </div>
                     </div>
                     
-                    <!-- السلايد الثاني: جزيرة الطقس الذكية (تظهر درجة الحرارة خارجياً والتفاصيل عند التوسيع) -->
+                    <!-- السلايد الثاني: جزيرة الطقس الذكية -->
                     <div class="island-slide" id="islandSlideWeather">
                         <div class="island-collapsed-content">
                             <div class="weather-collapsed">
@@ -790,7 +788,6 @@
             });
             currentSlideIndex = slideIndex;
         }
-
         let islandTouchStartX = 0;
         let islandTouchEndX = 0;
         const dynamicIslandElem = document.getElementById('dynamicIsland');
@@ -814,7 +811,6 @@
                 }
             }
         }
-
         async function fetchWeatherData() {
             let lat, lon, targetPerson, targetCity;
             
@@ -950,13 +946,11 @@
             }
         };
         
-        document.getElementById('authForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
-            if (!usernameInput || !passwordInput) return;
-            
+        // البدء وحفظ جلسة الدخول تلقائياً
+        function startAppWithUser(usernameInput) {
             currentUser = usernameInput;
+            localStorage.setItem('saved_user_session', currentUser);
+            
             if (currentUser.includes("أحمد") || currentUser.includes("احمد") || currentUser.toLowerCase().includes("ahmed")) {
                 partnerUser = "شهد";
                 myKey = "ahmed";
@@ -980,7 +974,28 @@
             setupVoiceRecording();
             initMobileBackButton();
             fetchWeatherData();
+        }
+
+        window.handleLogout = function() {
+            localStorage.removeItem('saved_user_session');
+            location.reload();
         };
+
+        document.getElementById('authForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            if (!usernameInput || !passwordInput) return;
+            startAppWithUser(usernameInput);
+        };
+
+        // فحص حالة الجلسة المحفوظة عند تحميل الصفحة تلقائياً
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('saved_user_session');
+            if (savedUser) {
+                startAppWithUser(savedUser);
+            }
+        });
         
         function toggleSlideMenu(e) {
             e.stopPropagation();
@@ -1190,7 +1205,7 @@
                     recDot.querySelector('span').innerText = `بانتظار ${partnerUser}...`;
                 } else if (partnerTouch) {
                     btn.classList.remove('synced');
-                    statusText.innerHTML = `<span style='color:var(--primary-color);'>${partnerUser} يضع أصبعه!</span>`;
+                    statusText.innerHTML = `<span style='color:#ffffff;'>${partnerUser} يضع أصبعه!</span>`;
                     counterNum.style.display = 'none';
                     recDot.classList.add('active');
                     recDot.querySelector('span').innerText = `${partnerUser} يضع أصبعه 🖐️`;
@@ -1796,7 +1811,6 @@
                     pinnedBar.style.display = 'none';
                 }
             });
-
             document.getElementById('sendMsgBtn').onclick = () => {
                 const input = document.getElementById('chatInput');
                 const text = input.value.trim();
@@ -1823,86 +1837,83 @@
             document.getElementById('sendHeartBtn').onclick = () => {
                 db.ref('messages').push({
                     author: currentUser,
-                    text: "❤️",
+                    text: "❤️ أرسل نبضة حب",
                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                     status: 'sent'
                 });
                 launchHeartsExplosion();
+                triggerVibration();
             };
         }
-
-        /* الكود الكامل والمعدل لإصلاح التسجيل وإرسال الرسائل الصوتية بدون أي خطأ برمدي */
         function setupVoiceRecording() {
             const voiceBtn = document.getElementById('voiceBtn');
-            const cancelBtn = document.getElementById('cancelVoiceBtn');
+            const tgVoiceOverlay = document.getElementById('tgVoiceOverlay');
+            const cancelVoiceBtn = document.getElementById('cancelVoiceBtn');
             const sendVoiceBtn = document.getElementById('sendVoiceBtn');
-            const overlay = document.getElementById('tgVoiceOverlay');
-            const timerElem = document.getElementById('tgVoiceTimer');
-            
-            function startTimer() {
-                voiceSeconds = 0;
-                timerElem.innerText = "00:00";
-                clearInterval(voiceTimerInterval);
-                voiceTimerInterval = setInterval(() => {
-                    voiceSeconds++;
-                    const mins = String(Math.floor(voiceSeconds / 60)).padStart(2, '0');
-                    const secs = String(voiceSeconds % 60).padStart(2, '0');
-                    timerElem.innerText = `${mins}:${secs}`;
-                }, 1000);
-            }
-            
-            function stopTimer() {
-                clearInterval(voiceTimerInterval);
-                voiceSeconds = 0;
-                timerElem.innerText = "00:00";
-            }
+            const tgVoiceTimer = document.getElementById('tgVoiceTimer');
             
             voiceBtn.onclick = async () => {
+                if (isRecording) return;
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
+                    voiceSeconds = 0;
                     cancelRecording = false;
                     
-                    mediaRecorder.ondataavailable = (e) => {
-                        if (e.data.size > 0) audioChunks.push(e.data);
-                    };
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     
-                    mediaRecorder.onstop = () => {
-                        stream.getTracks().forEach(track => track.stop());
-                        db.ref(`typing/${myKey}`).set('idle');
-                        stopTimer();
-                        overlay.classList.remove('active');
+                    mediaRecorder.onstop = async () => {
+                        clearInterval(voiceTimerInterval);
+                        tgVoiceOverlay.classList.remove('active');
+                        voiceBtn.classList.remove('recording');
                         isRecording = false;
+                        db.ref(`typing/${myKey}`).set('idle');
                         
-                        if (!cancelRecording && audioChunks.length > 0) {
-                            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const reader = new FileReader();
-                            reader.readAsDataURL(blob);
-                            reader.onloadend = () => {
-                                const base64Audio = reader.result;
-                                db.ref('messages').push({
-                                    author: currentUser,
-                                    type: 'voice',
-                                    audioData: base64Audio,
-                                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                                    status: 'sent'
-                                });
-                            };
-                        }
+                        stream.getTracks().forEach(track => track.stop());
+                        
+                        if (cancelRecording) return;
+                        
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            const base64Audio = reader.result;
+                            let replyTo = null;
+                            if (replyingToData) {
+                                replyTo = { author: replyingToData.author, text: replyingToData.text };
+                                cancelReply();
+                            }
+                            db.ref('messages').push({
+                                author: currentUser,
+                                type: 'voice',
+                                audioData: base64Audio,
+                                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                                status: 'sent',
+                                replyTo: replyTo
+                            });
+                        };
                     };
                     
                     mediaRecorder.start();
                     isRecording = true;
+                    voiceBtn.classList.add('recording');
+                    tgVoiceOverlay.classList.add('active');
                     db.ref(`typing/${myKey}`).set('voice');
-                    overlay.classList.add('active');
-                    startTimer();
-                } catch (err) {
-                    alert("يرجى السماح بصلاحيات الميكروفون لتسجيل الصوت 🎙️");
+                    
+                    voiceTimerInterval = setInterval(() => {
+                        voiceSeconds++;
+                        const m = String(Math.floor(voiceSeconds / 60)).padStart(2, '0');
+                        const s = String(voiceSeconds % 60).padStart(2, '0');
+                        tgVoiceTimer.innerText = `${m}:${s}`;
+                    }, 1000);
+                    
+                } catch(err) {
+                    alert("تعذر استخدام الميكروفون!");
                 }
             };
             
-            cancelBtn.onclick = () => {
+            cancelVoiceBtn.onclick = () => {
                 cancelRecording = true;
                 if (mediaRecorder && isRecording) mediaRecorder.stop();
             };
@@ -1912,13 +1923,6 @@
                 if (mediaRecorder && isRecording) mediaRecorder.stop();
             };
         }
-        
-        window.handleLogout = function() {
-            if(confirm("هل تريد الخروج؟")) {
-                location.reload();
-            }
-        };
     </script>
 </body>
 </html>
-
